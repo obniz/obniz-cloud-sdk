@@ -1,16 +1,16 @@
 query webapp($first: first, $skip: skip){
-    webapp{
-        id,
-        title,
-        installs(first: $first, skip: $skip) {
-            pageInfo {
-                ...pageInfoFields
-            },
-            edges {
-                ...installEdgeFields
-            }
-        }
+  webapp{
+    id,
+    title,
+    installs(first: $first, skip: $skip) {
+      pageInfo {
+        ...pageInfoFields
+      },
+      edges {
+        ...installEdgeFields
+      }
     }
+  }
 }
 
 query user {
@@ -26,83 +26,83 @@ query user {
 }
 
 query devices($first: first, $skip: skip) {
-    devices(first: $first, skip: $skip) {
-        totalCount,
-        pageInfo {
-            ...pageInfoFields
-        },
-        edges {
-            ...deviceEdgeFields
-        }
+  devices(first: $first, skip: $skip) {
+    totalCount,
+    pageInfo {
+      ...pageInfoFields
+    },
+    edges {
+      ...deviceEdgeFields
     }
+  }
 }
 
 query events($first: first, $skip: skip) {
-    events(first: $first, skip: $skip) {
-        totalCount,
-        pageInfo {
-            ...pageInfoFields
-        },
-        edges {
-            ...eventEdgeFields
-        }
+  events(first: $first, skip: $skip) {
+    totalCount,
+    pageInfo {
+      ...pageInfoFields
+    },
+    edges {
+      ...eventEdgeFields
     }
+  }
 }
 
 fragment pageInfoFields on pageInfo {
-    hasPreviousPage,
-    hasNextPage
+  hasPreviousPage,
+  hasNextPage
 }
 
 fragment installEdgeFields on installEdge {
-    node {
-        id,
-        configs,
-        createdAt,
-        updatedAt,
-        user {
-            id,
-            name,
-            email,
-            picture,
-            createdAt,
-            credit
-        },
-        devicesInConfig {
-            id,
-            access_token,
-            description,
-            hardware,
-            os,
-            osVersion,
-            region,
-            status,
-            createdAt
-        }
+  node {
+    id,
+    configs,
+    createdAt,
+    updatedAt,
+    user {
+      id,
+      name,
+      email,
+      picture,
+      createdAt,
+      credit
+    },
+    devicesInConfig {
+      id,
+      access_token,
+      description,
+      hardware,
+      os,
+      osVersion,
+      region,
+      status,
+      createdAt
     }
+  }
 }
 
 fragment deviceEdgeFields on deviceEdge {
-    node {
-        id,
-        access_token,
-        description,
-        hardware,
-        os,
-        osVersion,
-        region,
-        status,
-        createdAt
-    }
+  node {
+    id,
+    access_token,
+    description,
+    hardware,
+    os,
+    osVersion,
+    region,
+    status,
+    createdAt
+  }
 }
 
 fragment eventEdgeFields on eventEdge {
-    node {
-        id,
-        name,
-        trigger,
-        action,
-        webhookUri,
-        createdAt
-    }
+  node {
+    id,
+    name,
+    trigger,
+    action,
+    webhookUri,
+    createdAt
+  }
 }
