@@ -1,0 +1,9 @@
+overwrite: true
+schema: "https://api.obniz.io/v1/graphql"
+documents: "./*.graphql"
+generates:
+  sdk.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-graphql-request

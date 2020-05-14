@@ -1,0 +1,27 @@
+{
+  "name": "graphql_sdk_test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "codegen": "graphql-codegen --config codegen.yml"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@graphql-codegen/typescript": "^1.13.5",
+    "@graphql-codegen/typescript-graphql-request": "^1.13.5",
+    "@graphql-codegen/typescript-operations": "^1.13.5",
+    "get-graphql-schema": "^2.1.2",
+    "graphql": "^15.0.0",
+    "graphql-request": "^1.8.2"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "1.13.5",
+    "@graphql-codegen/typescript": "1.13.5",
+    "@graphql-codegen/typescript-document-nodes": "1.13.5",
+    "@graphql-codegen/introspection": "1.13.5"
+  }
+}
