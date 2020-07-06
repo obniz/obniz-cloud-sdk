@@ -23,19 +23,9 @@ exports.InstallEdgeFieldsFragmentDoc = graphql_tag_1.default `
       name
       email
       picture
+      plan
       createdAt
       credit
-    }
-    devicesInConfig {
-      id
-      access_token
-      description
-      hardware
-      os
-      osVersion
-      region
-      status
-      createdAt
     }
   }
 }
@@ -46,6 +36,7 @@ exports.DeviceEdgeFieldsFragmentDoc = graphql_tag_1.default `
     id
     access_token
     description
+    devicekey
     hardware
     os
     osVersion
@@ -72,7 +63,11 @@ exports.WebappDocument = graphql_tag_1.default `
   webapp {
     id
     title
+    short_body
+    type
+    store_status
     installs(first: $first, skip: $skip) {
+      totalCount
       pageInfo {
         ...pageInfoFields
       }

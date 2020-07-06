@@ -9,7 +9,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** [Int] Limitation of query results. range is 1..30 */
+  /** [Int] Limitation of query results. range is 1..50 */
   first: any;
   /** [Int] offset of query results. range is 0<= */
   skip: any;
@@ -28,6 +28,10 @@ export type Query = {
   devices?: Maybe<DeviceConnection>;
   /** User Configured Serverless Events */
   events?: Maybe<EventConnection>;
+  /** Registrated obniz hardware list on obniz Cloud */
+  hardwares: Array<Maybe<Hardware>>;
+  /** obnizOS versions on obniz Cloud for queried hardware */
+  os: Array<Maybe<Os>>;
 };
 
 
@@ -35,6 +39,7 @@ export type Query = {
 export type QueryDevicesArgs = {
   first?: Maybe<Scalars['first']>;
   skip?: Maybe<Scalars['skip']>;
+  id?: Maybe<Scalars['String']>;
 };
 
 
@@ -42,6 +47,12 @@ export type QueryDevicesArgs = {
 export type QueryEventsArgs = {
   first?: Maybe<Scalars['first']>;
   skip?: Maybe<Scalars['skip']>;
+};
+
+
+/** Root of api.obniz.io graphql api endpoint queries */
+export type QueryOsArgs = {
+  hardware: Scalars['String'];
 };
 
 /** WebApp object. This contains webapp information which created on obniz.io as WebApp */
@@ -110,8 +121,6 @@ export type Install = {
   updatedAt: Scalars['Date'];
   /** JSON Representation of Installed app configration */
   configs: Scalars['String'];
-  /** Device information configured in Install */
-  devicesInConfig: Array<Maybe<Device>>;
 };
 
 /** User information */
@@ -134,6 +143,24 @@ export type User = {
 };
 
 
+/** Connection of Device */
+export type DeviceConnection = {
+   __typename?: 'deviceConnection';
+  /** Total Count of device edges */
+  totalCount: Scalars['Int'];
+  /** Page Information */
+  pageInfo: PageInfo;
+  /** Edges */
+  edges: Array<Maybe<DeviceEdge>>;
+};
+
+/** Device Edge */
+export type DeviceEdge = {
+   __typename?: 'deviceEdge';
+  /** Cursor */
+  node?: Maybe<Device>;
+};
+
 /** Device information */
 export type Device = {
    __typename?: 'device';
@@ -147,6 +174,12 @@ export type Device = {
    *       User Defined Metadata. Useful for labeling device location or attached machine.
    */
   description: Scalars['String'];
+  /**
+   * DeviceKey
+   * 
+   *       String representation of DeviceKey which installed or to be installed on the device.
+   */
+  devicekey?: Maybe<Scalars['String']>;
   /**
    * Hardware Identifier
    * 
@@ -197,24 +230,6 @@ export type Device = {
   status: Scalars['String'];
   /** Installed time */
   createdAt: Scalars['Date'];
-};
-
-/** Connection of Device */
-export type DeviceConnection = {
-   __typename?: 'deviceConnection';
-  /** Total Count of device edges */
-  totalCount: Scalars['Int'];
-  /** Page Information */
-  pageInfo: PageInfo;
-  /** Edges */
-  edges: Array<Maybe<DeviceEdge>>;
-};
-
-/** Device Edge */
-export type DeviceEdge = {
-   __typename?: 'deviceEdge';
-  /** Cursor */
-  node?: Maybe<Device>;
 };
 
 /** Connection of Event */
@@ -270,6 +285,28 @@ export type Event = {
   createdAt: Scalars['Date'];
 };
 
+/** Hardware Information. This indicate related os information for each hardware */
+export type Hardware = {
+   __typename?: 'hardware';
+  /** Hardware Identifier  */
+  hardware: Scalars['String'];
+  /** OS identifier for hardware. */
+  os: Scalars['String'];
+};
+
+/** OS Information. Return value may different in user. */
+export type Os = {
+   __typename?: 'os';
+  /** version string */
+  version: Scalars['String'];
+  /** Binary URL for application */
+  app_url: Scalars['String'];
+  /** Binary URL for bootloader */
+  bootloader_url: Scalars['String'];
+  /** Binary URL for partition table */
+  partition_url: Scalars['String'];
+};
+
 /** Root of api.obniz.io graphql api endpoint mutations */
 export type Mutation = {
    __typename?: 'Mutation';
@@ -279,6 +316,10 @@ export type Mutation = {
   updateEvent?: Maybe<Event>;
   /** Delete Exist Event */
   deleteEvent: Scalars['ID'];
+  /** Create New Device */
+  createDevice?: Maybe<Device>;
+  /** Update Device */
+  updateDevice?: Maybe<Device>;
 };
 
 
@@ -297,6 +338,18 @@ export type MutationUpdateEventArgs = {
 /** Root of api.obniz.io graphql api endpoint mutations */
 export type MutationDeleteEventArgs = {
   id: Scalars['ID'];
+};
+
+
+/** Root of api.obniz.io graphql api endpoint mutations */
+export type MutationCreateDeviceArgs = {
+  device: DeviceCreateInput;
+};
+
+
+/** Root of api.obniz.io graphql api endpoint mutations */
+export type MutationUpdateDeviceArgs = {
+  device: DeviceUpdateInput;
 };
 
 export type EventCreateInput = {
@@ -353,6 +406,58 @@ export type EventUpdateInput = {
   action: Scalars['String'];
 };
 
+export type DeviceCreateInput = {
+  /**
+   * Hardware Identifier
+   * 
+   *       'esp32w': obnizOS for ESP32
+   * 
+   *       'esp32p': obnizOS for ESP32 on ESP32-PICO
+   */
+  hardware: Scalars['String'];
+  /**
+   * Server Region
+   * 
+   *       'jp': Japan(East Asia)
+   * 
+   *       'us': United States of America(West-America)
+   */
+  region?: Maybe<Scalars['String']>;
+  /**
+   * Description
+   * 
+   *       User Defined Metadata. Useful for labeling device location or attached machine.
+   */
+  description?: Maybe<Scalars['String']>;
+};
+
+export type DeviceUpdateInput = {
+  /** obnizID */
+  id: Scalars['ID'];
+  /**
+   * Server Region
+   * 
+   *       'jp': Japan(East Asia)
+   * 
+   *       'us': United States of America(West-America)
+   */
+  region?: Maybe<Scalars['String']>;
+  /**
+   * Description
+   * 
+   *       User Defined Metadata. Useful for labeling device location or attached machine.
+   */
+  description?: Maybe<Scalars['String']>;
+  /**
+   * Status
+   * 
+   *       'active': activated
+   * 
+   *       'inactive': inactivated
+   */
+  status?: Maybe<Scalars['String']>;
+};
+
 export type WebappQueryVariables = {
   first?: Maybe<Scalars['first']>;
   skip?: Maybe<Scalars['skip']>;
@@ -363,9 +468,10 @@ export type WebappQuery = (
   { __typename?: 'Query' }
   & { webapp?: Maybe<(
     { __typename?: 'webapp' }
-    & Pick<Webapp, 'id' | 'title'>
+    & Pick<Webapp, 'id' | 'title' | 'short_body' | 'type' | 'store_status'>
     & { installs?: Maybe<(
       { __typename?: 'installConnection' }
+      & Pick<InstallConnection, 'totalCount'>
       & { pageInfo: (
         { __typename?: 'pageInfo' }
         & PageInfoFieldsFragment
@@ -442,11 +548,8 @@ export type InstallEdgeFieldsFragment = (
     & Pick<Install, 'id' | 'configs' | 'createdAt' | 'updatedAt'>
     & { user?: Maybe<(
       { __typename?: 'user' }
-      & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'createdAt' | 'credit'>
-    )>, devicesInConfig: Array<Maybe<(
-      { __typename?: 'device' }
-      & Pick<Device, 'id' | 'access_token' | 'description' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt'>
-    )>> }
+      & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'createdAt' | 'credit'>
+    )> }
   )> }
 );
 
@@ -454,7 +557,7 @@ export type DeviceEdgeFieldsFragment = (
   { __typename?: 'deviceEdge' }
   & { node?: Maybe<(
     { __typename?: 'device' }
-    & Pick<Device, 'id' | 'access_token' | 'description' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt'>
+    & Pick<Device, 'id' | 'access_token' | 'description' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt'>
   )> }
 );
 
@@ -484,19 +587,9 @@ export const InstallEdgeFieldsFragmentDoc = gql`
       name
       email
       picture
+      plan
       createdAt
       credit
-    }
-    devicesInConfig {
-      id
-      access_token
-      description
-      hardware
-      os
-      osVersion
-      region
-      status
-      createdAt
     }
   }
 }
@@ -507,6 +600,7 @@ export const DeviceEdgeFieldsFragmentDoc = gql`
     id
     access_token
     description
+    devicekey
     hardware
     os
     osVersion
@@ -533,7 +627,11 @@ export const WebappDocument = gql`
   webapp {
     id
     title
+    short_body
+    type
+    store_status
     installs(first: $first, skip: $skip) {
+      totalCount
       pageInfo {
         ...pageInfoFields
       }

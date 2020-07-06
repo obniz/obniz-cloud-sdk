@@ -2,7 +2,11 @@ query webapp($first: first, $skip: skip){
   webapp{
     id,
     title,
+    short_body,
+    type,
+    store_status,
     installs(first: $first, skip: $skip) {
+      totalCount,
       pageInfo {
         ...pageInfoFields
       },
@@ -65,19 +69,9 @@ fragment installEdgeFields on installEdge {
       name,
       email,
       picture,
+      plan,
       createdAt,
       credit
-    },
-    devicesInConfig {
-      id,
-      access_token,
-      description,
-      hardware,
-      os,
-      osVersion,
-      region,
-      status,
-      createdAt
     }
   }
 }
@@ -87,6 +81,7 @@ fragment deviceEdgeFields on deviceEdge {
     id,
     access_token,
     description,
+    devicekey,
     hardware,
     os,
     osVersion,
