@@ -1,8 +1,8 @@
 {
-  "name": "graphql_sdk_test",
+  "name": "obniz-cloud-sdk",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "sdk.js",
   "scripts": {
     "start": "node dist/src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
