@@ -17,6 +17,25 @@ query webapp($first: first, $skip: skip){
   }
 }
 
+query app($first: first, $skip: skip) {
+  app {
+    id,
+    title,
+    short_body,
+    type,
+    store_status,
+    installs(first: $first, skip: $skip) {
+      totalCount,
+      pageInfo {
+        ...pageInfoFields
+      },
+      edges {
+        ...appInstallEdgeFields
+      }
+    }
+  }
+}
+
 query user {
   user {
     id,
@@ -73,6 +92,32 @@ fragment installEdgeFields on installEdge {
       createdAt,
       credit
     }
+  }
+}
+
+fragment appInstallEdgeFields on appInstallEdge {
+  node {
+    id,
+    access_token,
+    description,
+    metadata,
+    devicekey,
+    hardware,
+    os,
+    osVersion,
+    region,
+    status,
+    createdAt,
+    user {
+      id,
+      name,
+      email,
+      picture,
+      plan,
+      createdAt,
+      credit
+    },
+    configs
   }
 }
 

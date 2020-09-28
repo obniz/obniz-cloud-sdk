@@ -17,11 +17,13 @@ export type Scalars = {
   Date: any;
 };
 
-/** Root of api.obniz.io graphql api endpoint queries */
+/** Root of api.obniz.com graphql api endpoint queries */
 export type Query = {
    __typename?: 'Query';
-  /** My WebApp Configration on obniz.io regarding accessToken. */
+  /** My WebApp Configration on obniz.com regarding accessToken. */
   webapp?: Maybe<Webapp>;
+  /** My App Configration on obniz.com regarding accessToken. */
+  app?: Maybe<App>;
   /** User information which is authorized for current Access Token. */
   user?: Maybe<User>;
   /** Devices a user has */
@@ -35,7 +37,7 @@ export type Query = {
 };
 
 
-/** Root of api.obniz.io graphql api endpoint queries */
+/** Root of api.obniz.com graphql api endpoint queries */
 export type QueryDevicesArgs = {
   first?: Maybe<Scalars['first']>;
   skip?: Maybe<Scalars['skip']>;
@@ -43,19 +45,19 @@ export type QueryDevicesArgs = {
 };
 
 
-/** Root of api.obniz.io graphql api endpoint queries */
+/** Root of api.obniz.com graphql api endpoint queries */
 export type QueryEventsArgs = {
   first?: Maybe<Scalars['first']>;
   skip?: Maybe<Scalars['skip']>;
 };
 
 
-/** Root of api.obniz.io graphql api endpoint queries */
+/** Root of api.obniz.com graphql api endpoint queries */
 export type QueryOsArgs = {
   hardware: Scalars['String'];
 };
 
-/** WebApp object. This contains webapp information which created on obniz.io as WebApp */
+/** WebApp object. This contains webapp information which created on obniz.com as WebApp */
 export type Webapp = {
    __typename?: 'webapp';
   /** Unique Identifier of webapp */
@@ -66,14 +68,14 @@ export type Webapp = {
   short_body: Scalars['String'];
   /** Type of WebApp. */
   type: Scalars['String'];
-  /** Current Status on obniz.io WebApp Store */
+  /** Current Status on obniz.com Explore App */
   store_status: Scalars['String'];
   /** Query Installed Apps for WebApp. */
   installs?: Maybe<InstallConnection>;
 };
 
 
-/** WebApp object. This contains webapp information which created on obniz.io as WebApp */
+/** WebApp object. This contains webapp information which created on obniz.com as WebApp */
 export type WebappInstallsArgs = {
   first?: Maybe<Scalars['first']>;
   skip?: Maybe<Scalars['skip']>;
@@ -134,7 +136,7 @@ export type User = {
   email?: Maybe<Scalars['String']>;
   /** url for user icon */
   picture?: Maybe<Scalars['String']>;
-  /** User Plan on obniz.io */
+  /** User Plan on obniz.com */
   plan: Scalars['String'];
   /** Credit Point user has */
   credit: Scalars['String'];
@@ -143,27 +145,51 @@ export type User = {
 };
 
 
-/** Connection of Device */
-export type DeviceConnection = {
-   __typename?: 'deviceConnection';
+/** App object. This contains app information which created on obniz.com as App */
+export type App = {
+   __typename?: 'app';
+  /** Unique Identifier of app */
+  id: Scalars['ID'];
+  /** English Title of app */
+  title: Scalars['String'];
+  /** English Description */
+  short_body: Scalars['String'];
+  /** Type of app. */
+  type: Scalars['String'];
+  /** Current Status on obniz.com app on explore */
+  store_status: Scalars['String'];
+  /** Query Installs for an App. */
+  installs?: Maybe<AppInstallConnection>;
+};
+
+
+/** App object. This contains app information which created on obniz.com as App */
+export type AppInstallsArgs = {
+  first?: Maybe<Scalars['first']>;
+  skip?: Maybe<Scalars['skip']>;
+};
+
+/** Connection of Install */
+export type AppInstallConnection = {
+   __typename?: 'appInstallConnection';
   /** Total Count of device edges */
   totalCount: Scalars['Int'];
   /** Page Information */
   pageInfo: PageInfo;
   /** Edges */
-  edges: Array<Maybe<DeviceEdge>>;
+  edges: Array<Maybe<AppInstallEdge>>;
 };
 
-/** Device Edge */
-export type DeviceEdge = {
-   __typename?: 'deviceEdge';
+/** Install Edge */
+export type AppInstallEdge = {
+   __typename?: 'appInstallEdge';
   /** Cursor */
-  node?: Maybe<Device>;
+  node?: Maybe<Installed_Device>;
 };
 
 /** Device information */
-export type Device = {
-   __typename?: 'device';
+export type Installed_Device = {
+   __typename?: 'installed_device';
   /** Unique Identifier like "0000-0000" */
   id: Scalars['ID'];
   /** Access Token */
@@ -171,9 +197,15 @@ export type Device = {
   /**
    * Description
    * 
-   *       User Defined Metadata. Useful for labeling device location or attached machine.
+   *       Same value are exist on metadata.description
    */
   description: Scalars['String'];
+  /**
+   * User Defined Metadata JSON string
+   * 
+   *       Useful for labeling device location or attached machine.
+   */
+  metadata: Scalars['String'];
   /**
    * DeviceKey
    * 
@@ -230,6 +262,109 @@ export type Device = {
   status: Scalars['String'];
   /** Installed time */
   createdAt: Scalars['Date'];
+  /** User information which is authorized for current Access Token. */
+  user?: Maybe<User>;
+  /** JSON Representation of Installed app configration */
+  configs: Scalars['String'];
+};
+
+/** Connection of Device */
+export type DeviceConnection = {
+   __typename?: 'deviceConnection';
+  /** Total Count of device edges */
+  totalCount: Scalars['Int'];
+  /** Page Information */
+  pageInfo: PageInfo;
+  /** Edges */
+  edges: Array<Maybe<DeviceEdge>>;
+};
+
+/** Device Edge */
+export type DeviceEdge = {
+   __typename?: 'deviceEdge';
+  /** Cursor */
+  node?: Maybe<Device>;
+};
+
+/** Device information */
+export type Device = {
+   __typename?: 'device';
+  /** Unique Identifier like "0000-0000" */
+  id: Scalars['ID'];
+  /** Access Token */
+  access_token?: Maybe<Scalars['String']>;
+  /**
+   * Description
+   * 
+   *       Same value are exist on metadata.description
+   */
+  description: Scalars['String'];
+  /**
+   * User Defined Metadata JSON string
+   * 
+   *       Useful for labeling device location or attached machine.
+   */
+  metadata: Scalars['String'];
+  /**
+   * DeviceKey
+   * 
+   *       String representation of DeviceKey which installed or to be installed on the device.
+   */
+  devicekey?: Maybe<Scalars['String']>;
+  /**
+   * Hardware Identifier
+   * 
+   *       'obnizb1': obniz Board
+   * 
+   *       'obnizb2': obniz Board 1Y
+   * 
+   *       'm5stickc': M5StickC
+   * 
+   *       'esp32w': obnizOS for ESP32
+   * 
+   *       'esp32p': obnizOS for ESP32 on ESP32-PICO
+   * 
+   *       'encored': obniz BLE/Wi-Fi Gateway
+   */
+  hardware: Scalars['String'];
+  /**
+   * OS Identifier
+   * 
+   *       'obnizb1': obniz Board
+   * 
+   *       'obnizb2': obniz Board 1Y
+   * 
+   *       'm5stickc': M5StickC
+   * 
+   *       'esp32w': obnizOS for ESP32
+   * 
+   *       'encored': obniz BLE/Wi-Fi Gateway
+   */
+  os: Scalars['String'];
+  /** Last time recognized os version like '1.0.0' */
+  osVersion: Scalars['String'];
+  /**
+   * Server Region
+   * 
+   *       'jp': Japan(East Asia)
+   * 
+   *       'us': United States of America(West-America)
+   */
+  region: Scalars['String'];
+  /**
+   * Status
+   * 
+   *       'active': activated
+   * 
+   *       'inactive': inactivated
+   */
+  status: Scalars['String'];
+  /** Installed time */
+  createdAt: Scalars['Date'];
+  /** User information which is authorized for current Access Token. */
+  user?: Maybe<User>;
+  /** JSON Representation of Installed app configration */
+  configs: Scalars['String'];
 };
 
 /** Connection of Event */
@@ -307,7 +442,7 @@ export type Os = {
   partition_url: Scalars['String'];
 };
 
-/** Root of api.obniz.io graphql api endpoint mutations */
+/** Root of api.obniz.com graphql api endpoint mutations */
 export type Mutation = {
    __typename?: 'Mutation';
   /** Create New Event */
@@ -323,31 +458,31 @@ export type Mutation = {
 };
 
 
-/** Root of api.obniz.io graphql api endpoint mutations */
+/** Root of api.obniz.com graphql api endpoint mutations */
 export type MutationCreateEventArgs = {
   event: EventCreateInput;
 };
 
 
-/** Root of api.obniz.io graphql api endpoint mutations */
+/** Root of api.obniz.com graphql api endpoint mutations */
 export type MutationUpdateEventArgs = {
   event: EventUpdateInput;
 };
 
 
-/** Root of api.obniz.io graphql api endpoint mutations */
+/** Root of api.obniz.com graphql api endpoint mutations */
 export type MutationDeleteEventArgs = {
   id: Scalars['ID'];
 };
 
 
-/** Root of api.obniz.io graphql api endpoint mutations */
+/** Root of api.obniz.com graphql api endpoint mutations */
 export type MutationCreateDeviceArgs = {
   device: DeviceCreateInput;
 };
 
 
-/** Root of api.obniz.io graphql api endpoint mutations */
+/** Root of api.obniz.com graphql api endpoint mutations */
 export type MutationUpdateDeviceArgs = {
   device: DeviceUpdateInput;
 };
@@ -443,11 +578,18 @@ export type DeviceUpdateInput = {
    */
   region?: Maybe<Scalars['String']>;
   /**
-   * Description
+   * Use Defined Description
    * 
-   *       User Defined Metadata. Useful for labeling device location or attached machine.
+   *       Same value are exist on metadata.description
    */
   description?: Maybe<Scalars['String']>;
+  /**
+   * User Defined Metadata key-value JSON string
+   * 
+   *       Only key:string and value:string is accepted 
+   *       Useful for labeling device location or attached machine.
+   */
+  metadata?: Maybe<Scalars['String']>;
   /**
    * Status
    * 
@@ -478,6 +620,31 @@ export type WebappQuery = (
       ), edges: Array<Maybe<(
         { __typename?: 'installEdge' }
         & InstallEdgeFieldsFragment
+      )>> }
+    )> }
+  )> }
+);
+
+export type AppQueryVariables = {
+  first?: Maybe<Scalars['first']>;
+  skip?: Maybe<Scalars['skip']>;
+};
+
+
+export type AppQuery = (
+  { __typename?: 'Query' }
+  & { app?: Maybe<(
+    { __typename?: 'app' }
+    & Pick<App, 'id' | 'title' | 'short_body' | 'type' | 'store_status'>
+    & { installs?: Maybe<(
+      { __typename?: 'appInstallConnection' }
+      & Pick<AppInstallConnection, 'totalCount'>
+      & { pageInfo: (
+        { __typename?: 'pageInfo' }
+        & PageInfoFieldsFragment
+      ), edges: Array<Maybe<(
+        { __typename?: 'appInstallEdge' }
+        & AppInstallEdgeFieldsFragment
       )>> }
     )> }
   )> }
@@ -553,6 +720,18 @@ export type InstallEdgeFieldsFragment = (
   )> }
 );
 
+export type AppInstallEdgeFieldsFragment = (
+  { __typename?: 'appInstallEdge' }
+  & { node?: Maybe<(
+    { __typename?: 'installed_device' }
+    & Pick<Installed_Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+    & { user?: Maybe<(
+      { __typename?: 'user' }
+      & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'createdAt' | 'credit'>
+    )> }
+  )> }
+);
+
 export type DeviceEdgeFieldsFragment = (
   { __typename?: 'deviceEdge' }
   & { node?: Maybe<(
@@ -591,6 +770,33 @@ export const InstallEdgeFieldsFragmentDoc = gql`
       createdAt
       credit
     }
+  }
+}
+    `;
+export const AppInstallEdgeFieldsFragmentDoc = gql`
+    fragment appInstallEdgeFields on appInstallEdge {
+  node {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      createdAt
+      credit
+    }
+    configs
   }
 }
     `;
@@ -643,6 +849,27 @@ export const WebappDocument = gql`
 }
     ${PageInfoFieldsFragmentDoc}
 ${InstallEdgeFieldsFragmentDoc}`;
+export const AppDocument = gql`
+    query app($first: first, $skip: skip) {
+  app {
+    id
+    title
+    short_body
+    type
+    store_status
+    installs(first: $first, skip: $skip) {
+      totalCount
+      pageInfo {
+        ...pageInfoFields
+      }
+      edges {
+        ...appInstallEdgeFields
+      }
+    }
+  }
+}
+    ${PageInfoFieldsFragmentDoc}
+${AppInstallEdgeFieldsFragmentDoc}`;
 export const UserDocument = gql`
     query user {
   user {
@@ -693,6 +920,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
   return {
     webapp(variables?: WebappQueryVariables): Promise<WebappQuery> {
       return withWrapper(() => client.request<WebappQuery>(print(WebappDocument), variables));
+    },
+    app(variables?: AppQueryVariables): Promise<AppQuery> {
+      return withWrapper(() => client.request<AppQuery>(print(AppDocument), variables));
     },
     user(variables?: UserQueryVariables): Promise<UserQuery> {
       return withWrapper(() => client.request<UserQuery>(print(UserDocument), variables));

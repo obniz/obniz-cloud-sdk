@@ -30,6 +30,33 @@ exports.InstallEdgeFieldsFragmentDoc = graphql_tag_1.default `
   }
 }
     `;
+exports.AppInstallEdgeFieldsFragmentDoc = graphql_tag_1.default `
+    fragment appInstallEdgeFields on appInstallEdge {
+  node {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      createdAt
+      credit
+    }
+    configs
+  }
+}
+    `;
 exports.DeviceEdgeFieldsFragmentDoc = graphql_tag_1.default `
     fragment deviceEdgeFields on deviceEdge {
   node {
@@ -79,6 +106,27 @@ exports.WebappDocument = graphql_tag_1.default `
 }
     ${exports.PageInfoFieldsFragmentDoc}
 ${exports.InstallEdgeFieldsFragmentDoc}`;
+exports.AppDocument = graphql_tag_1.default `
+    query app($first: first, $skip: skip) {
+  app {
+    id
+    title
+    short_body
+    type
+    store_status
+    installs(first: $first, skip: $skip) {
+      totalCount
+      pageInfo {
+        ...pageInfoFields
+      }
+      edges {
+        ...appInstallEdgeFields
+      }
+    }
+  }
+}
+    ${exports.PageInfoFieldsFragmentDoc}
+${exports.AppInstallEdgeFieldsFragmentDoc}`;
 exports.UserDocument = graphql_tag_1.default `
     query user {
   user {
@@ -125,6 +173,9 @@ function getSdk(client, withWrapper = defaultWrapper) {
     return {
         webapp(variables) {
             return withWrapper(() => client.request(graphql_1.print(exports.WebappDocument), variables));
+        },
+        app(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.AppDocument), variables));
         },
         user(variables) {
             return withWrapper(() => client.request(graphql_1.print(exports.UserDocument), variables));
