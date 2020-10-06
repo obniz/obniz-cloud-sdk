@@ -30,7 +30,7 @@ getApp("apptoken_XXXXX")
 
 ```javascript
 // for javascript
-const getSdk = require('./index').getSdk
+const getSdk = require('obniz-cloud-sdk').getSdk
 
 async function getApp(token) {
     const sdk = getSdk(token);
