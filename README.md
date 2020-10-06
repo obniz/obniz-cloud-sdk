@@ -6,6 +6,15 @@
 
 を利用するためのSDKです。
 
+
+## install
+
+```shell
+npm i obniz-cloud-sdk
+```
+
+## Usage
+
 ```TypeScript
 // Type Script
 import { getSdk } from 'obniz-cloud-sdk';
