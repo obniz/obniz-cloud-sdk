@@ -8,22 +8,26 @@
 
 ```TypeScript
 // Type Script
-import { get } from 'obniz-cloud-sdk';
+import { getSdk } from 'obniz-cloud-sdk';
 
 async function getApp(token: string) {
     const sdk = getSDK(token);
     const app = await sdk.app();
     console.log(app);
 }
+
+getApp("apptoken_XXXXX")
 ```
 
 ```javascript
 // for javascript
-const getSDK = require('./index').get
+const getSdk = require('./index').getSdk
 
 async function getApp(token) {
-    const sdk = getSDK(token);
+    const sdk = getSdk(token);
     const app = await sdk.app();
     console.log(app);
 }
+
+getApp("apptoken_XXXXX")
 ```

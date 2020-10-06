@@ -1,14 +1,24 @@
 {
   "name": "obniz-cloud-sdk",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "start": "node dist/src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "codegen": "graphql-codegen --config codegen.yml"
   },
-  "author": "",
+  "keywords": [
+    "obniz"
+  ],
+  "bugs": {
+    "url": "https://forum.obniz.com"
+  },
+  "repository": "obniz/obniz-cloud-sdk",
+  "author": "yukisato <yuki@yuki-sato.com>",
+  "homepage": "https://obniz.com/",
+  "private": false,
   "license": "ISC",
   "dependencies": {
     "@graphql-codegen/typescript": "^1.13.5",
