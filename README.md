@@ -1,31 +1,29 @@
 # obniz-cloud-sdk
 
-## 開発手順
+[About obniz GraphQL API](https://obniz.com/doc/reference/cloud/cloudapi)
 
-[GraphQL Codegen](https://github.com/dotansimha/graphql-code-generator)を用いてGraphQL queryからSDKを生成しています。  
-そのため、SDKの機能追加・編集にあたっては`query.graphql`を編集します。  
+[api.obniz.com](https://api.obniz.io/v1/graphql)
 
-以下のコマンドで`query.graphql`をもとに`sdk.ts`が生成されます。
-```bash
-npm run codegen
-```
-
-さらに、`tsc`コマンドでコンパイルすることで`sdk.js`が生成されます。
-
-## 使用例
+を利用するためのSDKです。
 
 ```TypeScript
-import { GraphQLClient } from 'graphql-request';
-import { getSdk } from './sdk';
+// Type Script
+import { get } from 'obniz-cloud-sdk';
 
-async function getWebApp(token: string) {
-    const uri = "https://api.obniz.io/v1/graphql";
-    const client = new GraphQLClient(uri, {
-        headers: {
-            authorization: `Bearer ${token}`
-        }
-    });
-    const sdk = getSdk(client);
-    const webapp = await sdk.webapp();
+async function getApp(token: string) {
+    const sdk = getSDK(token);
+    const app = await sdk.app();
+    console.log(app);
+}
+```
+
+```javascript
+// for javascript
+const getSDK = require('./index').get
+
+async function getApp(token) {
+    const sdk = getSDK(token);
+    const app = await sdk.app();
+    console.log(app);
 }
 ```
