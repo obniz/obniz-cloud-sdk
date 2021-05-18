@@ -42,6 +42,12 @@ export type QueryDevicesArgs = {
   first?: Maybe<Scalars['first']>;
   skip?: Maybe<Scalars['skip']>;
   id?: Maybe<Scalars['String']>;
+  hw?: Maybe<Scalars['String']>;
+  app?: Maybe<Scalars['Int']>;
+  status?: Maybe<Scalars['String']>;
+  created?: Maybe<Scalars['String']>;
+  sort?: Maybe<Scalars['String']>;
+  order?: Maybe<Scalars['String']>;
 };
 
 
@@ -564,6 +570,12 @@ export type DeviceCreateInput = {
    *       User Defined Metadata. Useful for labeling device location or attached machine.
    */
   description?: Maybe<Scalars['String']>;
+  /**
+   * Description
+   * 
+   *       Option for manufacturer
+   */
+  serialdata?: Maybe<Scalars['String']>;
 };
 
 export type DeviceUpdateInput = {
