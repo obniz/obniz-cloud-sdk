@@ -13,6 +13,7 @@ jobs:
 
     env:
       TZ: Asia/Tokyo
+      APP_TOKEN: ${{secrets.APP_TOKEN}}
 
     steps:
       - uses: actions/checkout@v2
