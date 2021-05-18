@@ -6,7 +6,7 @@
   "types": "index.d.ts",
   "scripts": {
     "start": "node dist/src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --require ts-node/register --watch-extensions ts --exit --recursive 'test/**/*.ts' ",
     "codegen": "graphql-codegen --config codegen.yml"
   },
   "keywords": [
@@ -30,9 +30,16 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.13.5",
+    "@graphql-codegen/introspection": "1.13.5",
     "@graphql-codegen/typescript": "1.13.5",
     "@graphql-codegen/typescript-document-nodes": "1.13.5",
-    "@graphql-codegen/introspection": "1.13.5",
+    "@types/chai": "^4.2.18",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^15.3.0",
+    "chai": "^4.3.4",
+    "mocha": "^8.4.0",
+    "sinon": "^10.0.0",
+    "ts-node": "^9.1.1",
     "typescript": "^3.8.3"
   }
 }
