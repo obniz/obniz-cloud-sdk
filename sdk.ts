@@ -34,6 +34,8 @@ export type Query = {
   hardwares: Array<Maybe<Hardware>>;
   /** obnizOS versions on obniz Cloud for queried hardware */
   os: Array<Maybe<Os>>;
+  /** Query Webhook history. */
+  webhookLogs?: Maybe<Webhook_Logs>;
 };
 
 
@@ -61,6 +63,13 @@ export type QueryEventsArgs = {
 /** Root of api.obniz.com graphql api endpoint queries */
 export type QueryOsArgs = {
   hardware: Scalars['String'];
+};
+
+
+/** Root of api.obniz.com graphql api endpoint queries */
+export type QueryWebhookLogsArgs = {
+  first?: Maybe<Scalars['first']>;
+  skip?: Maybe<Scalars['skip']>;
 };
 
 /** WebApp object. This contains webapp information which created on obniz.com as WebApp */
@@ -448,6 +457,44 @@ export type Os = {
   partition_url: Scalars['String'];
 };
 
+/** Connection of Device */
+export type Webhook_Logs = {
+   __typename?: 'webhook_logs';
+  /** Total Count of device edges */
+  totalCount: Scalars['Int'];
+  /** Page Information */
+  pageInfo: PageInfo;
+  /** Logs */
+  logs: Array<Maybe<Webhook>>;
+};
+
+/** Webhook object. This contains information that was sent by the webhook in the past. */
+export type Webhook = {
+   __typename?: 'webhook';
+  /** Unique Identifier of webhook for webapp */
+  id: Scalars['Int'];
+  /** The date and time the webhook was sent. */
+  createdAt: Scalars['String'];
+  /** Type of webhook, */
+  type: Scalars['String'];
+  app: Webhook_App;
+  payload: Webhook_Payload;
+};
+
+export type Webhook_App = {
+   __typename?: 'webhook_app';
+  /** Unique Identifier of webapp */
+  id: Scalars['ID'];
+};
+
+/** Contains any of the following objects. */
+export type Webhook_Payload = {
+   __typename?: 'webhook_payload';
+  /** User information which is authorized for current Access Token. */
+  user?: Maybe<User>;
+  device?: Maybe<Device>;
+};
+
 /** Root of api.obniz.com graphql api endpoint mutations */
 export type Mutation = {
    __typename?: 'Mutation';
@@ -459,8 +506,12 @@ export type Mutation = {
   deleteEvent: Scalars['ID'];
   /** Create New Device */
   createDevice?: Maybe<Device>;
+  /** Registration New Device */
+  registrationDevice?: Maybe<Device>;
   /** Update Device */
   updateDevice?: Maybe<Device>;
+  /** Install App To Device */
+  installApp?: Maybe<Device>;
 };
 
 
@@ -489,8 +540,20 @@ export type MutationCreateDeviceArgs = {
 
 
 /** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationRegistrationDeviceArgs = {
+  device: DeviceRegistrationInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
 export type MutationUpdateDeviceArgs = {
   device: DeviceUpdateInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationInstallAppArgs = {
+  install: AppInstallInput;
 };
 
 export type EventCreateInput = {
@@ -578,6 +641,11 @@ export type DeviceCreateInput = {
   serialdata?: Maybe<Scalars['String']>;
 };
 
+export type DeviceRegistrationInput = {
+  /** It can be obtained from the QR Code on the device. */
+  registrationUrl: Scalars['String'];
+};
+
 export type DeviceUpdateInput = {
   /** obnizID */
   id: Scalars['ID'];
@@ -610,6 +678,27 @@ export type DeviceUpdateInput = {
    *       'inactive': inactivated
    */
   status?: Maybe<Scalars['String']>;
+};
+
+export type AppInstallInput = {
+  obniz?: Maybe<AppInstallInputDevice>;
+  app?: Maybe<AppInstallInputApp>;
+};
+
+export type AppInstallInputDevice = {
+  /** obnizID */
+  id: Scalars['String'];
+};
+
+export type AppInstallInputApp = {
+  /** appID */
+  id: Scalars['ID'];
+  config: Array<AppConfigInput>;
+};
+
+export type AppConfigInput = {
+  key: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type WebappQueryVariables = {
