@@ -72,6 +72,57 @@ query events($first: first, $skip: skip) {
   }
 }
 
+query changeLogs($first: first, $skip: skip) {
+  changeLogs(first: $first, skip: $skip) {
+    totalCount
+    pageInfo {
+      ...pageInfoFields
+    }
+    logs {
+      id
+      createdAt
+      type
+      app {
+        id
+      }
+      payload {
+        user {
+          id
+          name
+          email
+          picture
+          plan
+          credit
+          createdAt
+        }
+        device {
+          id
+          access_token
+          description
+          metadata
+          devicekey
+          hardware
+          os
+          osVersion
+          region
+          status
+          createdAt
+          user {
+            id
+            name
+            email
+            picture
+            plan
+            credit
+            createdAt
+          }
+          configs
+        }
+      }
+    }
+  }
+}
+
 mutation registrationDevice($device: deviceRegistrationInput!) {
   registrationDevice(device: $device) {
     id

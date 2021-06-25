@@ -855,6 +855,44 @@ export type EventsQuery = (
   )> }
 );
 
+export type ChangeLogsQueryVariables = {
+  first?: Maybe<Scalars['first']>;
+  skip?: Maybe<Scalars['skip']>;
+};
+
+
+export type ChangeLogsQuery = (
+  { __typename?: 'Query' }
+  & { changeLogs?: Maybe<(
+    { __typename?: 'webhook_logs' }
+    & Pick<Webhook_Logs, 'totalCount'>
+    & { pageInfo: (
+      { __typename?: 'pageInfo' }
+      & PageInfoFieldsFragment
+    ), logs: Array<Maybe<(
+      { __typename?: 'webhook' }
+      & Pick<Webhook, 'id' | 'createdAt' | 'type'>
+      & { app: (
+        { __typename?: 'webhook_app' }
+        & Pick<Webhook_App, 'id'>
+      ), payload: (
+        { __typename?: 'webhook_payload' }
+        & { user?: Maybe<(
+          { __typename?: 'user' }
+          & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
+        )>, device?: Maybe<(
+          { __typename?: 'device' }
+          & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+          & { user?: Maybe<(
+            { __typename?: 'user' }
+            & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
+          )> }
+        )> }
+      ) }
+    )>> }
+  )> }
+);
+
 export type RegistrationDeviceMutationVariables = {
   device: DeviceRegistrationInput;
 };
@@ -1128,6 +1166,58 @@ export const EventsDocument = gql`
 }
     ${PageInfoFieldsFragmentDoc}
 ${EventEdgeFieldsFragmentDoc}`;
+export const ChangeLogsDocument = gql`
+    query changeLogs($first: first, $skip: skip) {
+  changeLogs(first: $first, skip: $skip) {
+    totalCount
+    pageInfo {
+      ...pageInfoFields
+    }
+    logs {
+      id
+      createdAt
+      type
+      app {
+        id
+      }
+      payload {
+        user {
+          id
+          name
+          email
+          picture
+          plan
+          credit
+          createdAt
+        }
+        device {
+          id
+          access_token
+          description
+          metadata
+          devicekey
+          hardware
+          os
+          osVersion
+          region
+          status
+          createdAt
+          user {
+            id
+            name
+            email
+            picture
+            plan
+            credit
+            createdAt
+          }
+          configs
+        }
+      }
+    }
+  }
+}
+    ${PageInfoFieldsFragmentDoc}`;
 export const RegistrationDeviceDocument = gql`
     mutation registrationDevice($device: deviceRegistrationInput!) {
   registrationDevice(device: $device) {
@@ -1239,6 +1329,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     events(variables?: EventsQueryVariables): Promise<EventsQuery> {
       return withWrapper(() => client.request<EventsQuery>(print(EventsDocument), variables));
+    },
+    changeLogs(variables?: ChangeLogsQueryVariables): Promise<ChangeLogsQuery> {
+      return withWrapper(() => client.request<ChangeLogsQuery>(print(ChangeLogsDocument), variables));
     },
     registrationDevice(variables: RegistrationDeviceMutationVariables): Promise<RegistrationDeviceMutation> {
       return withWrapper(() => client.request<RegistrationDeviceMutation>(print(RegistrationDeviceDocument), variables));
