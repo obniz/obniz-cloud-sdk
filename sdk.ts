@@ -881,6 +881,19 @@ export type InstallAppMutation = (
   )> }
 );
 
+export type UninstallAppMutationVariables = {
+  uninstallApp: AppUninstallInput;
+};
+
+
+export type UninstallAppMutation = (
+  { __typename?: 'Mutation' }
+  & { uninstallApp?: Maybe<(
+    { __typename?: 'device' }
+    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+  )> }
+);
+
 export type PageInfoFieldsFragment = (
   { __typename?: 'pageInfo' }
   & Pick<PageInfo, 'hasPreviousPage' | 'hasNextPage'>
@@ -1125,6 +1138,24 @@ export const InstallAppDocument = gql`
   }
 }
     `;
+export const UninstallAppDocument = gql`
+    mutation uninstallApp($uninstallApp: appUninstallInput!) {
+  uninstallApp(uninstall: $uninstallApp) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 
@@ -1152,6 +1183,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     installApp(variables: InstallAppMutationVariables): Promise<InstallAppMutation> {
       return withWrapper(() => client.request<InstallAppMutation>(print(InstallAppDocument), variables));
+    },
+    uninstallApp(variables: UninstallAppMutationVariables): Promise<UninstallAppMutation> {
+      return withWrapper(() => client.request<UninstallAppMutation>(print(UninstallAppDocument), variables));
     }
   };
 }
