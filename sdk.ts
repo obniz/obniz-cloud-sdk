@@ -907,6 +907,19 @@ export type GenerateDeviceAccessTokenMutation = (
   )> }
 );
 
+export type DeleteDeviceAccessTokenMutationVariables = {
+  deleteDeviceAccessToken: DeviceDeleteAccessTokenInput;
+};
+
+
+export type DeleteDeviceAccessTokenMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteDeviceAccessToken?: Maybe<(
+    { __typename?: 'device' }
+    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+  )> }
+);
+
 export type PageInfoFieldsFragment = (
   { __typename?: 'pageInfo' }
   & Pick<PageInfo, 'hasPreviousPage' | 'hasNextPage'>
@@ -1187,6 +1200,24 @@ export const GenerateDeviceAccessTokenDocument = gql`
   }
 }
     `;
+export const DeleteDeviceAccessTokenDocument = gql`
+    mutation deleteDeviceAccessToken($deleteDeviceAccessToken: DeviceDeleteAccessTokenInput!) {
+  deleteDeviceAccessToken(device: $deleteDeviceAccessToken) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 
@@ -1220,6 +1251,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     generateDeviceAccessToken(variables: GenerateDeviceAccessTokenMutationVariables): Promise<GenerateDeviceAccessTokenMutation> {
       return withWrapper(() => client.request<GenerateDeviceAccessTokenMutation>(print(GenerateDeviceAccessTokenDocument), variables));
+    },
+    deleteDeviceAccessToken(variables: DeleteDeviceAccessTokenMutationVariables): Promise<DeleteDeviceAccessTokenMutation> {
+      return withWrapper(() => client.request<DeleteDeviceAccessTokenMutation>(print(DeleteDeviceAccessTokenDocument), variables));
     }
   };
 }

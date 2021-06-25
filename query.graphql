@@ -140,6 +140,23 @@ mutation generateDeviceAccessToken($generateDeviceAccessToken: DeviceGenerateAcc
   }
 }
 
+mutation deleteDeviceAccessToken($deleteDeviceAccessToken: DeviceDeleteAccessTokenInput!) {
+  deleteDeviceAccessToken(device: $deleteDeviceAccessToken) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+
 fragment pageInfoFields on pageInfo {
   hasPreviousPage,
   hasNextPage
