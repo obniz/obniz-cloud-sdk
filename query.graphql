@@ -89,6 +89,23 @@ mutation registrationDevice($device: deviceRegistrationInput!) {
   }
 }
 
+mutation installApp($install: appInstallInput!) {
+  installApp(install: $install) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+
 fragment pageInfoFields on pageInfo {
   hasPreviousPage,
   hasNextPage

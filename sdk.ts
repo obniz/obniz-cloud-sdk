@@ -868,6 +868,19 @@ export type RegistrationDeviceMutation = (
   )> }
 );
 
+export type InstallAppMutationVariables = {
+  install: AppInstallInput;
+};
+
+
+export type InstallAppMutation = (
+  { __typename?: 'Mutation' }
+  & { installApp?: Maybe<(
+    { __typename?: 'device' }
+    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+  )> }
+);
+
 export type PageInfoFieldsFragment = (
   { __typename?: 'pageInfo' }
   & Pick<PageInfo, 'hasPreviousPage' | 'hasNextPage'>
@@ -1094,6 +1107,24 @@ export const RegistrationDeviceDocument = gql`
   }
 }
     `;
+export const InstallAppDocument = gql`
+    mutation installApp($install: appInstallInput!) {
+  installApp(install: $install) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 
@@ -1118,6 +1149,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     registrationDevice(variables: RegistrationDeviceMutationVariables): Promise<RegistrationDeviceMutation> {
       return withWrapper(() => client.request<RegistrationDeviceMutation>(print(RegistrationDeviceDocument), variables));
+    },
+    installApp(variables: InstallAppMutationVariables): Promise<InstallAppMutation> {
+      return withWrapper(() => client.request<InstallAppMutation>(print(InstallAppDocument), variables));
     }
   };
 }
