@@ -72,6 +72,23 @@ query events($first: first, $skip: skip) {
   }
 }
 
+mutation registrationDevice($device: deviceRegistrationInput!) {
+  registrationDevice(device: $device) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+
 fragment pageInfoFields on pageInfo {
   hasPreviousPage,
   hasNextPage
