@@ -123,6 +123,23 @@ mutation uninstallApp($uninstallApp: appUninstallInput!) {
   }
 }
 
+mutation generateDeviceAccessToken($generateDeviceAccessToken: DeviceGenerateAccessTokenInput!) {
+  generateDeviceAccessToken(device: $generateDeviceAccessToken) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+
 fragment pageInfoFields on pageInfo {
   hasPreviousPage,
   hasNextPage

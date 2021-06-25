@@ -894,6 +894,19 @@ export type UninstallAppMutation = (
   )> }
 );
 
+export type GenerateDeviceAccessTokenMutationVariables = {
+  generateDeviceAccessToken: DeviceGenerateAccessTokenInput;
+};
+
+
+export type GenerateDeviceAccessTokenMutation = (
+  { __typename?: 'Mutation' }
+  & { generateDeviceAccessToken?: Maybe<(
+    { __typename?: 'device' }
+    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+  )> }
+);
+
 export type PageInfoFieldsFragment = (
   { __typename?: 'pageInfo' }
   & Pick<PageInfo, 'hasPreviousPage' | 'hasNextPage'>
@@ -1156,6 +1169,24 @@ export const UninstallAppDocument = gql`
   }
 }
     `;
+export const GenerateDeviceAccessTokenDocument = gql`
+    mutation generateDeviceAccessToken($generateDeviceAccessToken: DeviceGenerateAccessTokenInput!) {
+  generateDeviceAccessToken(device: $generateDeviceAccessToken) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 
@@ -1186,6 +1217,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     uninstallApp(variables: UninstallAppMutationVariables): Promise<UninstallAppMutation> {
       return withWrapper(() => client.request<UninstallAppMutation>(print(UninstallAppDocument), variables));
+    },
+    generateDeviceAccessToken(variables: GenerateDeviceAccessTokenMutationVariables): Promise<GenerateDeviceAccessTokenMutation> {
+      return withWrapper(() => client.request<GenerateDeviceAccessTokenMutation>(print(GenerateDeviceAccessTokenDocument), variables));
     }
   };
 }
