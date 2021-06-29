@@ -34,8 +34,8 @@ export type Query = {
   hardwares: Array<Maybe<Hardware>>;
   /** obnizOS versions on obniz Cloud for queried hardware */
   os: Array<Maybe<Os>>;
-  /** Query Webhook history. */
-  changeLogs?: Maybe<Webhook_Logs>;
+  /** Query App event history. */
+  appEvents?: Maybe<App_Events>;
 };
 
 
@@ -67,7 +67,7 @@ export type QueryOsArgs = {
 
 
 /** Root of api.obniz.com graphql api endpoint queries */
-export type QueryChangeLogsArgs = {
+export type QueryAppEventsArgs = {
   first?: Maybe<Scalars['first']>;
   skip?: Maybe<Scalars['skip']>;
 };
@@ -458,39 +458,38 @@ export type Os = {
 };
 
 /** Connection of Device */
-export type Webhook_Logs = {
-   __typename?: 'webhook_logs';
+export type App_Events = {
+   __typename?: 'app_events';
   /** Total Count of device edges */
   totalCount: Scalars['Int'];
   /** Page Information */
   pageInfo: PageInfo;
-  /** Logs */
-  logs: Array<Maybe<Webhook>>;
+  /** Events */
+  events: Array<Maybe<App_Event>>;
 };
 
-/** Webhook object. This contains information that was sent by the webhook in the past. */
-export type Webhook = {
-   __typename?: 'webhook';
+/** This contains information that was sent by the webhook in the past. */
+export type App_Event = {
+   __typename?: 'app_event';
   /** Unique Identifier of webhook for webapp */
   id: Scalars['Int'];
   /** The date and time the webhook was sent. */
   createdAt: Scalars['String'];
-  /** Type of webhook, */
+  /** Type of event, */
   type: Scalars['String'];
-  app: Webhook_App;
-  payload: Webhook_Payload;
+  app: App_Event_App;
+  payload: App_Event_Payload;
 };
 
-export type Webhook_App = {
-   __typename?: 'webhook_app';
+export type App_Event_App = {
+   __typename?: 'app_event_app';
   /** Unique Identifier of webapp */
   id: Scalars['ID'];
 };
 
 /** Contains any of the following objects. */
-export type Webhook_Payload = {
-   __typename?: 'webhook_payload';
-  /** User information which is authorized for current Access Token. */
+export type App_Event_Payload = {
+   __typename?: 'app_event_payload';
   user?: Maybe<User>;
   device?: Maybe<Device>;
 };
@@ -507,13 +506,15 @@ export type Mutation = {
   /** Create New Device */
   createDevice?: Maybe<Device>;
   /** Registration New Device */
-  registrationDevice?: Maybe<Device>;
+  registrateDevice?: Maybe<Device>;
   /** Update Device */
   updateDevice?: Maybe<Device>;
   /** Generate Device Access Token */
   generateDeviceAccessToken?: Maybe<Device>;
   /** Delete Device Access Token */
   deleteDeviceAccessToken?: Maybe<Device>;
+  /** Edit Settings For Installed App */
+  updateDeviceSettingsForInstalledApp?: Maybe<Device>;
   /** Install App To Device */
   installApp?: Maybe<Device>;
   /** Install App To Device */
@@ -546,8 +547,8 @@ export type MutationCreateDeviceArgs = {
 
 
 /** Root of api.obniz.com graphql api endpoint mutations */
-export type MutationRegistrationDeviceArgs = {
-  device: DeviceRegistrationInput;
+export type MutationRegistrateDeviceArgs = {
+  device: DeviceRegistrateInput;
 };
 
 
@@ -566,6 +567,12 @@ export type MutationGenerateDeviceAccessTokenArgs = {
 /** Root of api.obniz.com graphql api endpoint mutations */
 export type MutationDeleteDeviceAccessTokenArgs = {
   device: DeviceDeleteAccessTokenInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationUpdateDeviceSettingsForInstalledAppArgs = {
+  edit: DeviceInstalledAppSettingsInput;
 };
 
 
@@ -665,9 +672,9 @@ export type DeviceCreateInput = {
   serialdata?: Maybe<Scalars['String']>;
 };
 
-export type DeviceRegistrationInput = {
+export type DeviceRegistrateInput = {
   /** It can be obtained from the QR Code on the device. */
-  registrationUrl: Scalars['String'];
+  registrateUrl: Scalars['String'];
 };
 
 export type DeviceUpdateInput = {
@@ -722,6 +729,25 @@ export type DeviceDeleteAccessTokenInputDevice = {
   id: Scalars['String'];
 };
 
+export type DeviceInstalledAppSettingsInput = {
+  obniz?: Maybe<DeviceInstalledAppSettingsInputDevice>;
+  app?: Maybe<DeviceInstalledAppSettingsInputApp>;
+};
+
+export type DeviceInstalledAppSettingsInputDevice = {
+  /** obnizID */
+  id: Scalars['ID'];
+};
+
+export type DeviceInstalledAppSettingsInputApp = {
+  config: Array<AppConfigInput>;
+};
+
+export type AppConfigInput = {
+  key: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type AppInstallInput = {
   obniz?: Maybe<AppInstallInputDevice>;
   app?: Maybe<AppInstallInputApp>;
@@ -736,11 +762,6 @@ export type AppInstallInputApp = {
   /** appID */
   id: Scalars['ID'];
   config: Array<AppConfigInput>;
-};
-
-export type AppConfigInput = {
-  key: Scalars['String'];
-  value: Scalars['String'];
 };
 
 export type AppUninstallInput = {
@@ -855,28 +876,28 @@ export type EventsQuery = (
   )> }
 );
 
-export type ChangeLogsQueryVariables = {
+export type AppEventsQueryVariables = {
   first?: Maybe<Scalars['first']>;
   skip?: Maybe<Scalars['skip']>;
 };
 
 
-export type ChangeLogsQuery = (
+export type AppEventsQuery = (
   { __typename?: 'Query' }
-  & { changeLogs?: Maybe<(
-    { __typename?: 'webhook_logs' }
-    & Pick<Webhook_Logs, 'totalCount'>
+  & { appEvents?: Maybe<(
+    { __typename?: 'app_events' }
+    & Pick<App_Events, 'totalCount'>
     & { pageInfo: (
       { __typename?: 'pageInfo' }
       & PageInfoFieldsFragment
-    ), logs: Array<Maybe<(
-      { __typename?: 'webhook' }
-      & Pick<Webhook, 'id' | 'createdAt' | 'type'>
+    ), events: Array<Maybe<(
+      { __typename?: 'app_event' }
+      & Pick<App_Event, 'id' | 'createdAt' | 'type'>
       & { app: (
-        { __typename?: 'webhook_app' }
-        & Pick<Webhook_App, 'id'>
+        { __typename?: 'app_event_app' }
+        & Pick<App_Event_App, 'id'>
       ), payload: (
-        { __typename?: 'webhook_payload' }
+        { __typename?: 'app_event_payload' }
         & { user?: Maybe<(
           { __typename?: 'user' }
           & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
@@ -893,14 +914,14 @@ export type ChangeLogsQuery = (
   )> }
 );
 
-export type RegistrationDeviceMutationVariables = {
-  device: DeviceRegistrationInput;
+export type RegistrateDeviceMutationVariables = {
+  device: DeviceRegistrateInput;
 };
 
 
-export type RegistrationDeviceMutation = (
+export type RegistrateDeviceMutation = (
   { __typename?: 'Mutation' }
-  & { registrationDevice?: Maybe<(
+  & { registrateDevice?: Maybe<(
     { __typename?: 'device' }
     & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
   )> }
@@ -1166,14 +1187,14 @@ export const EventsDocument = gql`
 }
     ${PageInfoFieldsFragmentDoc}
 ${EventEdgeFieldsFragmentDoc}`;
-export const ChangeLogsDocument = gql`
-    query changeLogs($first: first, $skip: skip) {
-  changeLogs(first: $first, skip: $skip) {
+export const AppEventsDocument = gql`
+    query appEvents($first: first, $skip: skip) {
+  appEvents(first: $first, skip: $skip) {
     totalCount
     pageInfo {
       ...pageInfoFields
     }
-    logs {
+    events {
       id
       createdAt
       type
@@ -1218,9 +1239,9 @@ export const ChangeLogsDocument = gql`
   }
 }
     ${PageInfoFieldsFragmentDoc}`;
-export const RegistrationDeviceDocument = gql`
-    mutation registrationDevice($device: deviceRegistrationInput!) {
-  registrationDevice(device: $device) {
+export const RegistrateDeviceDocument = gql`
+    mutation registrateDevice($device: deviceRegistrateInput!) {
+  registrateDevice(device: $device) {
     id
     access_token
     description
@@ -1330,11 +1351,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     events(variables?: EventsQueryVariables): Promise<EventsQuery> {
       return withWrapper(() => client.request<EventsQuery>(print(EventsDocument), variables));
     },
-    changeLogs(variables?: ChangeLogsQueryVariables): Promise<ChangeLogsQuery> {
-      return withWrapper(() => client.request<ChangeLogsQuery>(print(ChangeLogsDocument), variables));
+    appEvents(variables?: AppEventsQueryVariables): Promise<AppEventsQuery> {
+      return withWrapper(() => client.request<AppEventsQuery>(print(AppEventsDocument), variables));
     },
-    registrationDevice(variables: RegistrationDeviceMutationVariables): Promise<RegistrationDeviceMutation> {
-      return withWrapper(() => client.request<RegistrationDeviceMutation>(print(RegistrationDeviceDocument), variables));
+    registrateDevice(variables: RegistrateDeviceMutationVariables): Promise<RegistrateDeviceMutation> {
+      return withWrapper(() => client.request<RegistrateDeviceMutation>(print(RegistrateDeviceDocument), variables));
     },
     installApp(variables: InstallAppMutationVariables): Promise<InstallAppMutation> {
       return withWrapper(() => client.request<InstallAppMutation>(print(InstallAppDocument), variables));

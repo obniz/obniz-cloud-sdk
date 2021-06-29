@@ -72,13 +72,13 @@ query events($first: first, $skip: skip) {
   }
 }
 
-query changeLogs($first: first, $skip: skip) {
-  changeLogs(first: $first, skip: $skip) {
+query appEvents($first: first, $skip: skip) {
+  appEvents(first: $first, skip: $skip) {
     totalCount
     pageInfo {
       ...pageInfoFields
     }
-    logs {
+    events {
       id
       createdAt
       type
@@ -123,8 +123,8 @@ query changeLogs($first: first, $skip: skip) {
   }
 }
 
-mutation registrationDevice($device: deviceRegistrationInput!) {
-  registrationDevice(device: $device) {
+mutation registrateDevice($device: deviceRegistrateInput!) {
+  registrateDevice(device: $device) {
     id
     access_token
     description
