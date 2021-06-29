@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSdk = exports.EventsDocument = exports.DevicesDocument = exports.UserDocument = exports.AppDocument = exports.WebappDocument = exports.EventEdgeFieldsFragmentDoc = exports.DeviceEdgeFieldsFragmentDoc = exports.AppInstallEdgeFieldsFragmentDoc = exports.InstallEdgeFieldsFragmentDoc = exports.PageInfoFieldsFragmentDoc = void 0;
+exports.getSdk = exports.DeleteDeviceAccessTokenDocument = exports.GenerateDeviceAccessTokenDocument = exports.UninstallAppDocument = exports.UpdateDeviceSettingsForInstalledAppDocument = exports.InstallAppDocument = exports.RegistrateDeviceDocument = exports.AppEventsDocument = exports.EventsDocument = exports.DevicesDocument = exports.UserDocument = exports.AppDocument = exports.WebappDocument = exports.EventEdgeFieldsFragmentDoc = exports.DeviceEdgeFieldsFragmentDoc = exports.AppInstallEdgeFieldsFragmentDoc = exports.InstallEdgeFieldsFragmentDoc = exports.PageInfoFieldsFragmentDoc = void 0;
 const graphql_1 = require("graphql");
 const graphql_tag_1 = __importDefault(require("graphql-tag"));
 exports.PageInfoFieldsFragmentDoc = graphql_tag_1.default `
@@ -169,6 +169,175 @@ exports.EventsDocument = graphql_tag_1.default `
 }
     ${exports.PageInfoFieldsFragmentDoc}
 ${exports.EventEdgeFieldsFragmentDoc}`;
+exports.AppEventsDocument = graphql_tag_1.default `
+    query appEvents($first: first, $skip: skip) {
+  appEvents(first: $first, skip: $skip) {
+    totalCount
+    pageInfo {
+      ...pageInfoFields
+    }
+    events {
+      id
+      createdAt
+      type
+      app {
+        id
+      }
+      payload {
+        user {
+          id
+          name
+          email
+          picture
+          plan
+          credit
+          createdAt
+        }
+        device {
+          id
+          access_token
+          description
+          metadata
+          devicekey
+          hardware
+          os
+          osVersion
+          region
+          status
+          createdAt
+          user {
+            id
+            name
+            email
+            picture
+            plan
+            credit
+            createdAt
+          }
+          configs
+        }
+      }
+    }
+  }
+}
+    ${exports.PageInfoFieldsFragmentDoc}`;
+exports.RegistrateDeviceDocument = graphql_tag_1.default `
+    mutation registrateDevice($device: deviceRegistrateInput!) {
+  registrateDevice(device: $device) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+    `;
+exports.InstallAppDocument = graphql_tag_1.default `
+    mutation installApp($install: appInstallInput!) {
+  installApp(install: $install) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+    `;
+exports.UpdateDeviceSettingsForInstalledAppDocument = graphql_tag_1.default `
+    mutation updateDeviceSettingsForInstalledApp($updateDeviceSettingsForInstalledApp: deviceInstalledAppSettingsInput!) {
+  updateDeviceSettingsForInstalledApp(edit: $updateDeviceSettingsForInstalledApp) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+    `;
+exports.UninstallAppDocument = graphql_tag_1.default `
+    mutation uninstallApp($uninstallApp: appUninstallInput!) {
+  uninstallApp(uninstall: $uninstallApp) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+    `;
+exports.GenerateDeviceAccessTokenDocument = graphql_tag_1.default `
+    mutation generateDeviceAccessToken($generateDeviceAccessToken: DeviceGenerateAccessTokenInput!) {
+  generateDeviceAccessToken(device: $generateDeviceAccessToken) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+    `;
+exports.DeleteDeviceAccessTokenDocument = graphql_tag_1.default `
+    mutation deleteDeviceAccessToken($deleteDeviceAccessToken: DeviceDeleteAccessTokenInput!) {
+  deleteDeviceAccessToken(device: $deleteDeviceAccessToken) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+    `;
 const defaultWrapper = sdkFunction => sdkFunction();
 function getSdk(client, withWrapper = defaultWrapper) {
     return {
@@ -186,6 +355,27 @@ function getSdk(client, withWrapper = defaultWrapper) {
         },
         events(variables) {
             return withWrapper(() => client.request(graphql_1.print(exports.EventsDocument), variables));
+        },
+        appEvents(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.AppEventsDocument), variables));
+        },
+        registrateDevice(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.RegistrateDeviceDocument), variables));
+        },
+        installApp(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.InstallAppDocument), variables));
+        },
+        updateDeviceSettingsForInstalledApp(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.UpdateDeviceSettingsForInstalledAppDocument), variables));
+        },
+        uninstallApp(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.UninstallAppDocument), variables));
+        },
+        generateDeviceAccessToken(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.GenerateDeviceAccessTokenDocument), variables));
+        },
+        deleteDeviceAccessToken(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.DeleteDeviceAccessTokenDocument), variables));
         }
     };
 }
