@@ -35,7 +35,7 @@ export type Query = {
   /** obnizOS versions on obniz Cloud for queried hardware */
   os: Array<Maybe<Os>>;
   /** Query App event history. */
-  appEvents?: Maybe<App_Events>;
+  appEvents?: Maybe<AppEvents>;
 };
 
 
@@ -458,38 +458,38 @@ export type Os = {
 };
 
 /** Connection of Device */
-export type App_Events = {
-   __typename?: 'app_events';
+export type AppEvents = {
+   __typename?: 'appEvents';
   /** Total Count of device edges */
   totalCount: Scalars['Int'];
   /** Page Information */
   pageInfo: PageInfo;
   /** Events */
-  events: Array<Maybe<App_Event>>;
+  events: Array<Maybe<AppEvent>>;
 };
 
 /** This contains information that was sent by the webhook in the past. */
-export type App_Event = {
-   __typename?: 'app_event';
+export type AppEvent = {
+   __typename?: 'appEvent';
   /** Unique Identifier of webhook for webapp */
   id: Scalars['Int'];
   /** The date and time the webhook was sent. */
   createdAt: Scalars['String'];
   /** Type of event, */
   type: Scalars['String'];
-  app: App_Event_App;
-  payload: App_Event_Payload;
+  app: AppEventApp;
+  payload: AppEventPayload;
 };
 
-export type App_Event_App = {
-   __typename?: 'app_event_app';
+export type AppEventApp = {
+   __typename?: 'appEventApp';
   /** Unique Identifier of webapp */
   id: Scalars['ID'];
 };
 
 /** Contains any of the following objects. */
-export type App_Event_Payload = {
-   __typename?: 'app_event_payload';
+export type AppEventPayload = {
+   __typename?: 'appEventPayload';
   user?: Maybe<User>;
   device?: Maybe<Device>;
 };
@@ -885,19 +885,19 @@ export type AppEventsQueryVariables = {
 export type AppEventsQuery = (
   { __typename?: 'Query' }
   & { appEvents?: Maybe<(
-    { __typename?: 'app_events' }
-    & Pick<App_Events, 'totalCount'>
+    { __typename?: 'appEvents' }
+    & Pick<AppEvents, 'totalCount'>
     & { pageInfo: (
       { __typename?: 'pageInfo' }
       & PageInfoFieldsFragment
     ), events: Array<Maybe<(
-      { __typename?: 'app_event' }
-      & Pick<App_Event, 'id' | 'createdAt' | 'type'>
+      { __typename?: 'appEvent' }
+      & Pick<AppEvent, 'id' | 'createdAt' | 'type'>
       & { app: (
-        { __typename?: 'app_event_app' }
-        & Pick<App_Event_App, 'id'>
+        { __typename?: 'appEventApp' }
+        & Pick<AppEventApp, 'id'>
       ), payload: (
-        { __typename?: 'app_event_payload' }
+        { __typename?: 'appEventPayload' }
         & { user?: Maybe<(
           { __typename?: 'user' }
           & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
