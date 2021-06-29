@@ -1,4 +1,7 @@
-export declare function getSdk(token: string): {
+export interface SdkOption {
+    baseUrl?: string;
+}
+export declare function getSdk(token: string, options?: SdkOption): {
     webapp(variables?: import("./sdk").WebappQueryVariables | undefined): Promise<import("./sdk").WebappQuery>;
     app(variables?: import("./sdk").AppQueryVariables | undefined): Promise<import("./sdk").AppQuery>;
     user(variables?: import("./sdk").UserQueryVariables | undefined): Promise<import("./sdk").UserQuery>;
