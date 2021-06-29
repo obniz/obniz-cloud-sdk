@@ -157,6 +157,32 @@ mutation installApp($install: appInstallInput!) {
   }
 }
 
+mutation updateDeviceSettingsForInstalledApp($updateDeviceSettingsForInstalledApp: deviceInstalledAppSettingsInput!) {
+  updateDeviceSettingsForInstalledApp(edit: $updateDeviceSettingsForInstalledApp) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+
 mutation uninstallApp($uninstallApp: appUninstallInput!) {
   uninstallApp(uninstall: $uninstallApp) {
     id
