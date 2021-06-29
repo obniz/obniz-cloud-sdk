@@ -940,6 +940,23 @@ export type InstallAppMutation = (
   )> }
 );
 
+export type UpdateDeviceSettingsForInstalledAppMutationVariables = {
+  updateDeviceSettingsForInstalledApp: DeviceInstalledAppSettingsInput;
+};
+
+
+export type UpdateDeviceSettingsForInstalledAppMutation = (
+  { __typename?: 'Mutation' }
+  & { updateDeviceSettingsForInstalledApp?: Maybe<(
+    { __typename?: 'device' }
+    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+    & { user?: Maybe<(
+      { __typename?: 'user' }
+      & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
+    )> }
+  )> }
+);
+
 export type UninstallAppMutationVariables = {
   uninstallApp: AppUninstallInput;
 };
@@ -1275,6 +1292,33 @@ export const InstallAppDocument = gql`
   }
 }
     `;
+export const UpdateDeviceSettingsForInstalledAppDocument = gql`
+    mutation updateDeviceSettingsForInstalledApp($updateDeviceSettingsForInstalledApp: deviceInstalledAppSettingsInput!) {
+  updateDeviceSettingsForInstalledApp(edit: $updateDeviceSettingsForInstalledApp) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+    `;
 export const UninstallAppDocument = gql`
     mutation uninstallApp($uninstallApp: appUninstallInput!) {
   uninstallApp(uninstall: $uninstallApp) {
@@ -1359,6 +1403,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     installApp(variables: InstallAppMutationVariables): Promise<InstallAppMutation> {
       return withWrapper(() => client.request<InstallAppMutation>(print(InstallAppDocument), variables));
+    },
+    updateDeviceSettingsForInstalledApp(variables: UpdateDeviceSettingsForInstalledAppMutationVariables): Promise<UpdateDeviceSettingsForInstalledAppMutation> {
+      return withWrapper(() => client.request<UpdateDeviceSettingsForInstalledAppMutation>(print(UpdateDeviceSettingsForInstalledAppDocument), variables));
     },
     uninstallApp(variables: UninstallAppMutationVariables): Promise<UninstallAppMutation> {
       return withWrapper(() => client.request<UninstallAppMutation>(print(UninstallAppDocument), variables));
