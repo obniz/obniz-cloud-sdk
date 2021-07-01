@@ -72,6 +72,168 @@ query events($first: first, $skip: skip) {
   }
 }
 
+query appEvents($first: first, $skip: skip) {
+  appEvents(first: $first, skip: $skip) {
+    totalCount
+    pageInfo {
+      ...pageInfoFields
+    }
+    events {
+      id
+      createdAt
+      type
+      app {
+        id
+      }
+      payload {
+        user {
+          id
+          name
+          email
+          picture
+          plan
+          credit
+          createdAt
+        }
+        device {
+          id
+          access_token
+          description
+          metadata
+          devicekey
+          hardware
+          os
+          osVersion
+          region
+          status
+          createdAt
+          user {
+            id
+            name
+            email
+            picture
+            plan
+            credit
+            createdAt
+          }
+          configs
+        }
+      }
+    }
+  }
+}
+
+mutation registrateDevice($device: deviceRegistrateInput!) {
+  registrateDevice(device: $device) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+
+mutation installApp($install: appInstallInput!) {
+  installApp(install: $install) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+
+mutation updateDeviceSettingsForInstalledApp($updateDeviceSettingsForInstalledApp: deviceInstalledAppSettingsInput!) {
+  updateDeviceSettingsForInstalledApp(edit: $updateDeviceSettingsForInstalledApp) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+
+mutation uninstallApp($uninstallApp: appUninstallInput!) {
+  uninstallApp(uninstall: $uninstallApp) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+
+mutation generateDeviceAccessToken($generateDeviceAccessToken: DeviceGenerateAccessTokenInput!) {
+  generateDeviceAccessToken(device: $generateDeviceAccessToken) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+
+mutation deleteDeviceAccessToken($deleteDeviceAccessToken: DeviceDeleteAccessTokenInput!) {
+  deleteDeviceAccessToken(device: $deleteDeviceAccessToken) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+
 fragment pageInfoFields on pageInfo {
   hasPreviousPage,
   hasNextPage

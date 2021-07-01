@@ -34,6 +34,8 @@ export type Query = {
   hardwares: Array<Maybe<Hardware>>;
   /** obnizOS versions on obniz Cloud for queried hardware */
   os: Array<Maybe<Os>>;
+  /** Query App event history. */
+  appEvents?: Maybe<AppEvents>;
 };
 
 
@@ -61,6 +63,13 @@ export type QueryEventsArgs = {
 /** Root of api.obniz.com graphql api endpoint queries */
 export type QueryOsArgs = {
   hardware: Scalars['String'];
+};
+
+
+/** Root of api.obniz.com graphql api endpoint queries */
+export type QueryAppEventsArgs = {
+  first?: Maybe<Scalars['first']>;
+  skip?: Maybe<Scalars['skip']>;
 };
 
 /** WebApp object. This contains webapp information which created on obniz.com as WebApp */
@@ -448,6 +457,43 @@ export type Os = {
   partition_url: Scalars['String'];
 };
 
+/** Connection of Device */
+export type AppEvents = {
+   __typename?: 'appEvents';
+  /** Total Count of device edges */
+  totalCount: Scalars['Int'];
+  /** Page Information */
+  pageInfo: PageInfo;
+  /** Events */
+  events: Array<Maybe<AppEvent>>;
+};
+
+/** This contains information that was sent by the webhook in the past. */
+export type AppEvent = {
+   __typename?: 'appEvent';
+  /** Unique Identifier of webhook for webapp */
+  id: Scalars['Int'];
+  /** The date and time the webhook was sent. */
+  createdAt: Scalars['String'];
+  /** Type of event, */
+  type: Scalars['String'];
+  app: AppEventApp;
+  payload: AppEventPayload;
+};
+
+export type AppEventApp = {
+   __typename?: 'appEventApp';
+  /** Unique Identifier of webapp */
+  id: Scalars['ID'];
+};
+
+/** Contains any of the following objects. */
+export type AppEventPayload = {
+   __typename?: 'appEventPayload';
+  user?: Maybe<User>;
+  device?: Maybe<Device>;
+};
+
 /** Root of api.obniz.com graphql api endpoint mutations */
 export type Mutation = {
    __typename?: 'Mutation';
@@ -459,8 +505,20 @@ export type Mutation = {
   deleteEvent: Scalars['ID'];
   /** Create New Device */
   createDevice?: Maybe<Device>;
+  /** Registration New Device */
+  registrateDevice?: Maybe<Device>;
   /** Update Device */
   updateDevice?: Maybe<Device>;
+  /** Generate Device Access Token */
+  generateDeviceAccessToken?: Maybe<Device>;
+  /** Delete Device Access Token */
+  deleteDeviceAccessToken?: Maybe<Device>;
+  /** Edit Settings For Installed App */
+  updateDeviceSettingsForInstalledApp?: Maybe<Device>;
+  /** Install App To Device */
+  installApp?: Maybe<Device>;
+  /** Install App To Device */
+  uninstallApp?: Maybe<Device>;
 };
 
 
@@ -489,8 +547,44 @@ export type MutationCreateDeviceArgs = {
 
 
 /** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationRegistrateDeviceArgs = {
+  device: DeviceRegistrateInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
 export type MutationUpdateDeviceArgs = {
   device: DeviceUpdateInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationGenerateDeviceAccessTokenArgs = {
+  device: DeviceGenerateAccessTokenInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationDeleteDeviceAccessTokenArgs = {
+  device: DeviceDeleteAccessTokenInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationUpdateDeviceSettingsForInstalledAppArgs = {
+  edit: DeviceInstalledAppSettingsInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationInstallAppArgs = {
+  install: AppInstallInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationUninstallAppArgs = {
+  uninstall: AppUninstallInput;
 };
 
 export type EventCreateInput = {
@@ -578,6 +672,11 @@ export type DeviceCreateInput = {
   serialdata?: Maybe<Scalars['String']>;
 };
 
+export type DeviceRegistrateInput = {
+  /** It can be obtained from the QR Code on the device. */
+  registrateUrl: Scalars['String'];
+};
+
 export type DeviceUpdateInput = {
   /** obnizID */
   id: Scalars['ID'];
@@ -610,6 +709,68 @@ export type DeviceUpdateInput = {
    *       'inactive': inactivated
    */
   status?: Maybe<Scalars['String']>;
+};
+
+export type DeviceGenerateAccessTokenInput = {
+  obniz?: Maybe<DeviceGenerateAccessTokenInputDevice>;
+};
+
+export type DeviceGenerateAccessTokenInputDevice = {
+  /** obnizID */
+  id: Scalars['String'];
+};
+
+export type DeviceDeleteAccessTokenInput = {
+  obniz?: Maybe<DeviceDeleteAccessTokenInputDevice>;
+};
+
+export type DeviceDeleteAccessTokenInputDevice = {
+  /** obnizID */
+  id: Scalars['String'];
+};
+
+export type DeviceInstalledAppSettingsInput = {
+  obniz?: Maybe<DeviceInstalledAppSettingsInputDevice>;
+  app?: Maybe<DeviceInstalledAppSettingsInputApp>;
+};
+
+export type DeviceInstalledAppSettingsInputDevice = {
+  /** obnizID */
+  id: Scalars['ID'];
+};
+
+export type DeviceInstalledAppSettingsInputApp = {
+  config: Array<AppConfigInput>;
+};
+
+export type AppConfigInput = {
+  key: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type AppInstallInput = {
+  obniz?: Maybe<AppInstallInputDevice>;
+  app?: Maybe<AppInstallInputApp>;
+};
+
+export type AppInstallInputDevice = {
+  /** obnizID */
+  id: Scalars['ID'];
+};
+
+export type AppInstallInputApp = {
+  /** appID */
+  id: Scalars['ID'];
+  config: Array<AppConfigInput>;
+};
+
+export type AppUninstallInput = {
+  obniz?: Maybe<AppUninstallInputDevice>;
+};
+
+export type AppUninstallInputDevice = {
+  /** obnizID */
+  id: Scalars['String'];
 };
 
 export type WebappQueryVariables = {
@@ -712,6 +873,126 @@ export type EventsQuery = (
       { __typename?: 'eventEdge' }
       & EventEdgeFieldsFragment
     )>> }
+  )> }
+);
+
+export type AppEventsQueryVariables = {
+  first?: Maybe<Scalars['first']>;
+  skip?: Maybe<Scalars['skip']>;
+};
+
+
+export type AppEventsQuery = (
+  { __typename?: 'Query' }
+  & { appEvents?: Maybe<(
+    { __typename?: 'appEvents' }
+    & Pick<AppEvents, 'totalCount'>
+    & { pageInfo: (
+      { __typename?: 'pageInfo' }
+      & PageInfoFieldsFragment
+    ), events: Array<Maybe<(
+      { __typename?: 'appEvent' }
+      & Pick<AppEvent, 'id' | 'createdAt' | 'type'>
+      & { app: (
+        { __typename?: 'appEventApp' }
+        & Pick<AppEventApp, 'id'>
+      ), payload: (
+        { __typename?: 'appEventPayload' }
+        & { user?: Maybe<(
+          { __typename?: 'user' }
+          & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
+        )>, device?: Maybe<(
+          { __typename?: 'device' }
+          & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+          & { user?: Maybe<(
+            { __typename?: 'user' }
+            & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
+          )> }
+        )> }
+      ) }
+    )>> }
+  )> }
+);
+
+export type RegistrateDeviceMutationVariables = {
+  device: DeviceRegistrateInput;
+};
+
+
+export type RegistrateDeviceMutation = (
+  { __typename?: 'Mutation' }
+  & { registrateDevice?: Maybe<(
+    { __typename?: 'device' }
+    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+  )> }
+);
+
+export type InstallAppMutationVariables = {
+  install: AppInstallInput;
+};
+
+
+export type InstallAppMutation = (
+  { __typename?: 'Mutation' }
+  & { installApp?: Maybe<(
+    { __typename?: 'device' }
+    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+  )> }
+);
+
+export type UpdateDeviceSettingsForInstalledAppMutationVariables = {
+  updateDeviceSettingsForInstalledApp: DeviceInstalledAppSettingsInput;
+};
+
+
+export type UpdateDeviceSettingsForInstalledAppMutation = (
+  { __typename?: 'Mutation' }
+  & { updateDeviceSettingsForInstalledApp?: Maybe<(
+    { __typename?: 'device' }
+    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+    & { user?: Maybe<(
+      { __typename?: 'user' }
+      & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
+    )> }
+  )> }
+);
+
+export type UninstallAppMutationVariables = {
+  uninstallApp: AppUninstallInput;
+};
+
+
+export type UninstallAppMutation = (
+  { __typename?: 'Mutation' }
+  & { uninstallApp?: Maybe<(
+    { __typename?: 'device' }
+    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+  )> }
+);
+
+export type GenerateDeviceAccessTokenMutationVariables = {
+  generateDeviceAccessToken: DeviceGenerateAccessTokenInput;
+};
+
+
+export type GenerateDeviceAccessTokenMutation = (
+  { __typename?: 'Mutation' }
+  & { generateDeviceAccessToken?: Maybe<(
+    { __typename?: 'device' }
+    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+  )> }
+);
+
+export type DeleteDeviceAccessTokenMutationVariables = {
+  deleteDeviceAccessToken: DeviceDeleteAccessTokenInput;
+};
+
+
+export type DeleteDeviceAccessTokenMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteDeviceAccessToken?: Maybe<(
+    { __typename?: 'device' }
+    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
   )> }
 );
 
@@ -923,6 +1204,175 @@ export const EventsDocument = gql`
 }
     ${PageInfoFieldsFragmentDoc}
 ${EventEdgeFieldsFragmentDoc}`;
+export const AppEventsDocument = gql`
+    query appEvents($first: first, $skip: skip) {
+  appEvents(first: $first, skip: $skip) {
+    totalCount
+    pageInfo {
+      ...pageInfoFields
+    }
+    events {
+      id
+      createdAt
+      type
+      app {
+        id
+      }
+      payload {
+        user {
+          id
+          name
+          email
+          picture
+          plan
+          credit
+          createdAt
+        }
+        device {
+          id
+          access_token
+          description
+          metadata
+          devicekey
+          hardware
+          os
+          osVersion
+          region
+          status
+          createdAt
+          user {
+            id
+            name
+            email
+            picture
+            plan
+            credit
+            createdAt
+          }
+          configs
+        }
+      }
+    }
+  }
+}
+    ${PageInfoFieldsFragmentDoc}`;
+export const RegistrateDeviceDocument = gql`
+    mutation registrateDevice($device: deviceRegistrateInput!) {
+  registrateDevice(device: $device) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+    `;
+export const InstallAppDocument = gql`
+    mutation installApp($install: appInstallInput!) {
+  installApp(install: $install) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+    `;
+export const UpdateDeviceSettingsForInstalledAppDocument = gql`
+    mutation updateDeviceSettingsForInstalledApp($updateDeviceSettingsForInstalledApp: deviceInstalledAppSettingsInput!) {
+  updateDeviceSettingsForInstalledApp(edit: $updateDeviceSettingsForInstalledApp) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+    `;
+export const UninstallAppDocument = gql`
+    mutation uninstallApp($uninstallApp: appUninstallInput!) {
+  uninstallApp(uninstall: $uninstallApp) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+    `;
+export const GenerateDeviceAccessTokenDocument = gql`
+    mutation generateDeviceAccessToken($generateDeviceAccessToken: DeviceGenerateAccessTokenInput!) {
+  generateDeviceAccessToken(device: $generateDeviceAccessToken) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+    `;
+export const DeleteDeviceAccessTokenDocument = gql`
+    mutation deleteDeviceAccessToken($deleteDeviceAccessToken: DeviceDeleteAccessTokenInput!) {
+  deleteDeviceAccessToken(device: $deleteDeviceAccessToken) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    configs
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 
@@ -944,6 +1394,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     events(variables?: EventsQueryVariables): Promise<EventsQuery> {
       return withWrapper(() => client.request<EventsQuery>(print(EventsDocument), variables));
+    },
+    appEvents(variables?: AppEventsQueryVariables): Promise<AppEventsQuery> {
+      return withWrapper(() => client.request<AppEventsQuery>(print(AppEventsDocument), variables));
+    },
+    registrateDevice(variables: RegistrateDeviceMutationVariables): Promise<RegistrateDeviceMutation> {
+      return withWrapper(() => client.request<RegistrateDeviceMutation>(print(RegistrateDeviceDocument), variables));
+    },
+    installApp(variables: InstallAppMutationVariables): Promise<InstallAppMutation> {
+      return withWrapper(() => client.request<InstallAppMutation>(print(InstallAppDocument), variables));
+    },
+    updateDeviceSettingsForInstalledApp(variables: UpdateDeviceSettingsForInstalledAppMutationVariables): Promise<UpdateDeviceSettingsForInstalledAppMutation> {
+      return withWrapper(() => client.request<UpdateDeviceSettingsForInstalledAppMutation>(print(UpdateDeviceSettingsForInstalledAppDocument), variables));
+    },
+    uninstallApp(variables: UninstallAppMutationVariables): Promise<UninstallAppMutation> {
+      return withWrapper(() => client.request<UninstallAppMutation>(print(UninstallAppDocument), variables));
+    },
+    generateDeviceAccessToken(variables: GenerateDeviceAccessTokenMutationVariables): Promise<GenerateDeviceAccessTokenMutation> {
+      return withWrapper(() => client.request<GenerateDeviceAccessTokenMutation>(print(GenerateDeviceAccessTokenDocument), variables));
+    },
+    deleteDeviceAccessToken(variables: DeleteDeviceAccessTokenMutationVariables): Promise<DeleteDeviceAccessTokenMutation> {
+      return withWrapper(() => client.request<DeleteDeviceAccessTokenMutation>(print(DeleteDeviceAccessTokenDocument), variables));
     }
   };
 }
