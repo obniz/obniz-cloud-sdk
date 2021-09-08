@@ -1,6 +1,6 @@
 overwrite: true
-schema: "https://api_stg.obniz.io/v1/graphql"
-documents: "./*.graphql"
+schema: 'https://api_stg.obniz.io/v1/graphql'
+documents: './*.graphql'
 generates:
   sdk.ts:
     plugins:

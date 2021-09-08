@@ -1,10 +1,10 @@
-
 ## 開発手順
 
-[GraphQL Codegen](https://github.com/dotansimha/graphql-code-generator)を用いてGraphQL queryからSDKを生成しています。  
-そのため、SDKの機能追加・編集にあたっては`query.graphql`を編集します。  
+[GraphQL Codegen](https://github.com/dotansimha/graphql-code-generator)を用いて GraphQL query から SDK を生成しています。  
+そのため、SDK の機能追加・編集にあたっては`query.graphql`を編集します。
 
 以下のコマンドで`query.graphql`をもとに`sdk.ts`が生成されます。
+
 ```bash
 npm run codegen
 ```

@@ -1,15 +1,15 @@
-query webapp($first: first, $skip: skip){
-  webapp{
-    id,
-    title,
-    short_body,
-    type,
-    store_status,
+query webapp($first: first, $skip: skip) {
+  webapp {
+    id
+    title
+    short_body
+    type
+    store_status
     installs(first: $first, skip: $skip) {
-      totalCount,
+      totalCount
       pageInfo {
         ...pageInfoFields
-      },
+      }
       edges {
         ...installEdgeFields
       }
@@ -19,16 +19,16 @@ query webapp($first: first, $skip: skip){
 
 query app($first: first, $skip: skip) {
   app {
-    id,
-    title,
-    short_body,
-    type,
-    store_status,
+    id
+    title
+    short_body
+    type
+    store_status
     installs(first: $first, skip: $skip) {
-      totalCount,
+      totalCount
       pageInfo {
         ...pageInfoFields
-      },
+      }
       edges {
         ...appInstallEdgeFields
       }
@@ -38,22 +38,22 @@ query app($first: first, $skip: skip) {
 
 query user {
   user {
-    id,
-    name,
-    email,
-    picture,
-    plan,
-    credit,
+    id
+    name
+    email
+    picture
+    plan
+    credit
     createdAt
   }
 }
 
 query devices($first: first, $skip: skip) {
   devices(first: $first, skip: $skip) {
-    totalCount,
+    totalCount
     pageInfo {
       ...pageInfoFields
-    },
+    }
     edges {
       ...deviceEdgeFields
     }
@@ -62,10 +62,10 @@ query devices($first: first, $skip: skip) {
 
 query events($first: first, $skip: skip) {
   events(first: $first, skip: $skip) {
-    totalCount,
+    totalCount
     pageInfo {
       ...pageInfoFields
-    },
+    }
     edges {
       ...eventEdgeFields
     }
@@ -157,8 +157,12 @@ mutation installApp($install: appInstallInput!) {
   }
 }
 
-mutation updateDeviceSettingsForInstalledApp($updateDeviceSettingsForInstalledApp: deviceInstalledAppSettingsInput!) {
-  updateDeviceSettingsForInstalledApp(edit: $updateDeviceSettingsForInstalledApp) {
+mutation updateDeviceSettingsForInstalledApp(
+  $updateDeviceSettingsForInstalledApp: deviceInstalledAppSettingsInput!
+) {
+  updateDeviceSettingsForInstalledApp(
+    edit: $updateDeviceSettingsForInstalledApp
+  ) {
     id
     access_token
     description
@@ -200,7 +204,9 @@ mutation uninstallApp($uninstallApp: appUninstallInput!) {
   }
 }
 
-mutation generateDeviceAccessToken($generateDeviceAccessToken: DeviceGenerateAccessTokenInput!) {
+mutation generateDeviceAccessToken(
+  $generateDeviceAccessToken: DeviceGenerateAccessTokenInput!
+) {
   generateDeviceAccessToken(device: $generateDeviceAccessToken) {
     id
     access_token
@@ -217,7 +223,9 @@ mutation generateDeviceAccessToken($generateDeviceAccessToken: DeviceGenerateAcc
   }
 }
 
-mutation deleteDeviceAccessToken($deleteDeviceAccessToken: DeviceDeleteAccessTokenInput!) {
+mutation deleteDeviceAccessToken(
+  $deleteDeviceAccessToken: DeviceDeleteAccessTokenInput!
+) {
   deleteDeviceAccessToken(device: $deleteDeviceAccessToken) {
     id
     access_token
@@ -235,23 +243,23 @@ mutation deleteDeviceAccessToken($deleteDeviceAccessToken: DeviceDeleteAccessTok
 }
 
 fragment pageInfoFields on pageInfo {
-  hasPreviousPage,
+  hasPreviousPage
   hasNextPage
 }
 
 fragment installEdgeFields on installEdge {
   node {
-    id,
-    configs,
-    createdAt,
-    updatedAt,
+    id
+    configs
+    createdAt
+    updatedAt
     user {
-      id,
-      name,
-      email,
-      picture,
-      plan,
-      createdAt,
+      id
+      name
+      email
+      picture
+      plan
+      createdAt
       credit
     }
   }
@@ -259,52 +267,52 @@ fragment installEdgeFields on installEdge {
 
 fragment appInstallEdgeFields on appInstallEdge {
   node {
-    id,
-    access_token,
-    description,
-    metadata,
-    devicekey,
-    hardware,
-    os,
-    osVersion,
-    region,
-    status,
-    createdAt,
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
     user {
-      id,
-      name,
-      email,
-      picture,
-      plan,
-      createdAt,
+      id
+      name
+      email
+      picture
+      plan
+      createdAt
       credit
-    },
+    }
     configs
   }
 }
 
 fragment deviceEdgeFields on deviceEdge {
   node {
-    id,
-    access_token,
-    description,
-    devicekey,
-    hardware,
-    os,
-    osVersion,
-    region,
-    status,
+    id
+    access_token
+    description
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
     createdAt
   }
 }
 
 fragment eventEdgeFields on eventEdge {
   node {
-    id,
-    name,
-    trigger,
-    action,
-    webhookUri,
+    id
+    name
+    trigger
+    action
+    webhookUri
     createdAt
   }
 }
