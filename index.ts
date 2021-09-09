@@ -6,7 +6,7 @@ export interface SdkOption{
 }
 
 export function getSdk(token: string, options:SdkOption = {}) {
-    const url = options.baseUrl || "https://api.obniz.io/v1/graphql";
+    const url = options.baseUrl || "https://api.obniz.com/v1/graphql";
     const client = new GraphQLClient(url, {
         headers: {
             authorization: `Bearer ${token}`
