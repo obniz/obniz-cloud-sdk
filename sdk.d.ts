@@ -13,6 +13,8 @@ export declare type Scalars = {
     skip: any;
     /** ISO-8601 Format DateTime */
     Date: any;
+    /** The `Upload` scalar type represents a file upload. */
+    Upload: any;
 };
 /** Root of api.obniz.com graphql api endpoint queries */
 export declare type Query = {
@@ -33,6 +35,11 @@ export declare type Query = {
     os: Array<Maybe<Os>>;
     /** Query App event history. */
     appEvents?: Maybe<AppEvents>;
+    operations?: Maybe<OperationsConnection>;
+    operationSettings?: Maybe<OperationSettingsConnection>;
+    operationResults?: Maybe<OperationResultsConnection>;
+    /** Token permission. */
+    token?: Maybe<Token>;
 };
 /** Root of api.obniz.com graphql api endpoint queries */
 export declare type QueryDevicesArgs = {
@@ -43,6 +50,7 @@ export declare type QueryDevicesArgs = {
     app?: Maybe<Scalars['Int']>;
     status?: Maybe<Scalars['String']>;
     created?: Maybe<Scalars['String']>;
+    serialCode?: Maybe<Scalars['String']>;
     sort?: Maybe<Scalars['String']>;
     order?: Maybe<Scalars['String']>;
 };
@@ -59,6 +67,23 @@ export declare type QueryOsArgs = {
 export declare type QueryAppEventsArgs = {
     first?: Maybe<Scalars['first']>;
     skip?: Maybe<Scalars['skip']>;
+};
+/** Root of api.obniz.com graphql api endpoint queries */
+export declare type QueryOperationsArgs = {
+    id?: Maybe<Scalars['Int']>;
+    facilityName?: Maybe<Scalars['String']>;
+};
+/** Root of api.obniz.com graphql api endpoint queries */
+export declare type QueryOperationSettingsArgs = {
+    first?: Maybe<Scalars['first']>;
+    operationId?: Maybe<Scalars['ID']>;
+    status?: Maybe<Scalars['Int']>;
+};
+/** Root of api.obniz.com graphql api endpoint queries */
+export declare type QueryOperationResultsArgs = {
+    first?: Maybe<Scalars['first']>;
+    operationId?: Maybe<Scalars['ID']>;
+    operationSettingId?: Maybe<Scalars['ID']>;
 };
 /** WebApp object. This contains webapp information which created on obniz.com as WebApp */
 export declare type Webapp = {
@@ -453,6 +478,154 @@ export declare type AppEventPayload = {
     user?: Maybe<User>;
     device?: Maybe<Device>;
 };
+/** Connection of operations. */
+export declare type OperationsConnection = {
+    __typename?: 'operationsConnection';
+    /** Edges. */
+    edges: Array<Maybe<OperationEdge>>;
+};
+/** operation edge */
+export declare type OperationEdge = {
+    __typename?: 'operationEdge';
+    /** Cursor. */
+    node?: Maybe<Operation>;
+    /** Facility name. */
+    facilityName?: Maybe<Scalars['String']>;
+    /** The amount of devices that are going to be set. */
+    amountExpectedDevices?: Maybe<Scalars['Int']>;
+    /** The amount of devices that have already been set. */
+    amountOperatedDevices?: Maybe<Scalars['Int']>;
+    /** The amount of reports including both error and information. */
+    amountReport?: Maybe<Scalars['Int']>;
+    /** Indicates whether or not error occurred and its error level if any. NoPrombelm Error. */
+    errorLevelReport?: Maybe<Scalars['String']>;
+};
+/** operation. */
+export declare type Operation = {
+    __typename?: 'operation';
+    /** Unique identifier. */
+    id: Scalars['ID'];
+    /** Name of operation. */
+    name: Scalars['String'];
+    /** Facility ID which the operation targets at. */
+    facilityId: Scalars['Int'];
+    /** Criteria of completion. 0: written, 1: online. */
+    completionLevel: Scalars['Int'];
+    /** Evidence picture of completion is required if this param is true. */
+    needPicEvidence: Scalars['Boolean'];
+    /** Need to specify the exact device location if this param is true. */
+    needLocationNote: Scalars['Boolean'];
+    /** Time when the operation will be carried out. */
+    dueDate?: Maybe<Scalars['Date']>;
+    /** Token that is going to be inclued in the operation URL on Android APP. */
+    operationKey: Scalars['String'];
+    /** Time when the facility created at */
+    createdAt: Scalars['Date'];
+};
+/** Connection of operation settings */
+export declare type OperationSettingsConnection = {
+    __typename?: 'operationSettingsConnection';
+    /** Total count of operation settings edges */
+    totalCount: Scalars['Int'];
+    /** Edges. */
+    edges: Array<Maybe<OperationSettingEdge>>;
+};
+/** Operation setting edge. */
+export declare type OperationSettingEdge = {
+    __typename?: 'operationSettingEdge';
+    /** Cursor. */
+    node?: Maybe<OperationSetting>;
+    /** Operation result of the specific setting ID if any. */
+    operationResult?: Maybe<OperationResultForOperationSetting>;
+};
+/** Operation setting */
+export declare type OperationSetting = {
+    __typename?: 'operationSetting';
+    /** Unique identifier. */
+    id: Scalars['ID'];
+    /** Operation ID */
+    operationId: Scalars['ID'];
+    /** Indication ID. */
+    indicationId: Scalars['String'];
+    /** String representation of network config. Please see https://obniz.com/ja/doc/reference/obnizos-for-esp32/settings/setting-json */
+    networkConfigs: Scalars['String'];
+    /** App ID. This field will be null when app is not selected. */
+    appId?: Maybe<Scalars['Int']>;
+    /** String representation of app config object. Will be empty object when no app is selected. */
+    appConfigs: Scalars['String'];
+    /** When no description is set, this field will be an empty string. */
+    description: Scalars['String'];
+    /** 0: not operated yet, 1: in progress, 2: finished */
+    status: Scalars['Int'];
+};
+/** Operation result. */
+export declare type OperationResultForOperationSetting = {
+    __typename?: 'operationResultForOperationSetting';
+    /** Obniz Id. */
+    obnizId?: Maybe<Scalars['Int']>;
+    /** Time when operation setting has been written. */
+    successfullyWrittenAt?: Maybe<Scalars['Date']>;
+    /** Time when a device became online. */
+    becomeOnlineAt?: Maybe<Scalars['Date']>;
+    /** Url of evidence picture. */
+    picUrl?: Maybe<Scalars['String']>;
+    /** Note about where a device has been set. */
+    locationNote?: Maybe<Scalars['String']>;
+    /** Error code of operation failure. */
+    typeError?: Maybe<Scalars['Int']>;
+};
+/** Connection of operation results. */
+export declare type OperationResultsConnection = {
+    __typename?: 'operationResultsConnection';
+    /** Total count of operation results edges */
+    totalCount: Scalars['Int'];
+    /** Edges. */
+    edges: Array<Maybe<OperationResultEdge>>;
+};
+/** Operation result edge. */
+export declare type OperationResultEdge = {
+    __typename?: 'operationResultEdge';
+    /** Cursor */
+    node?: Maybe<OperationResult>;
+};
+/** Operation result. */
+export declare type OperationResult = {
+    __typename?: 'operationResult';
+    /** Unique identifier. */
+    id: Scalars['ID'];
+    /** Operation Setting Id. */
+    operationSettingId: Scalars['ID'];
+    /** Indication Id. */
+    indicationId: Scalars['String'];
+    /** Obniz Id. */
+    obnizId?: Maybe<Scalars['Int']>;
+    /** Time when operation setting has been written. */
+    successfullyWrittenAt?: Maybe<Scalars['Date']>;
+    /** Time when a device became online. */
+    becomeOnlineAt?: Maybe<Scalars['Date']>;
+    /** Url of evidence picture. */
+    picUrl?: Maybe<Scalars['String']>;
+    /** Note about where a device has been set. */
+    locationNote?: Maybe<Scalars['String']>;
+    /** Error code of operation failure. */
+    typeError?: Maybe<Scalars['Int']>;
+};
+/** Token object. This contains token information */
+export declare type Token = {
+    __typename?: 'token';
+    /** Token type. app_token / oauth / api_key */
+    type: Scalars['String'];
+    /** user permission. none / read / full  */
+    user: Scalars['String'];
+    /** device permission. none / read / full  */
+    device: Scalars['String'];
+    /** event permission. none / read / full  */
+    event: Scalars['String'];
+    /** facility permission. none / read / full  */
+    facility: Scalars['String'];
+    /** device_control permission. none / read / full  */
+    device_control: Scalars['String'];
+};
 /** Root of api.obniz.com graphql api endpoint mutations */
 export declare type Mutation = {
     __typename?: 'Mutation';
@@ -478,6 +651,9 @@ export declare type Mutation = {
     installApp?: Maybe<Device>;
     /** Install App To Device */
     uninstallApp?: Maybe<Device>;
+    updateStatusOperationSetting?: Maybe<UpdateStatusOperationSettingResult>;
+    createOperationResult?: Maybe<OperationResult>;
+    removeOperationResult?: Maybe<RemoveOperationResultResponse>;
 };
 /** Root of api.obniz.com graphql api endpoint mutations */
 export declare type MutationCreateEventArgs = {
@@ -522,6 +698,18 @@ export declare type MutationInstallAppArgs = {
 /** Root of api.obniz.com graphql api endpoint mutations */
 export declare type MutationUninstallAppArgs = {
     uninstall: AppUninstallInput;
+};
+/** Root of api.obniz.com graphql api endpoint mutations */
+export declare type MutationUpdateStatusOperationSettingArgs = {
+    operationSettingId: Scalars['ID'];
+};
+/** Root of api.obniz.com graphql api endpoint mutations */
+export declare type MutationCreateOperationResultArgs = {
+    operationResult: CreateOperationResultInput;
+};
+/** Root of api.obniz.com graphql api endpoint mutations */
+export declare type MutationRemoveOperationResultArgs = {
+    operationSettingId: Scalars['ID'];
 };
 export declare type EventCreateInput = {
     /** The Event name */
@@ -691,6 +879,43 @@ export declare type AppUninstallInputDevice = {
     /** obnizID */
     id: Scalars['String'];
 };
+export declare type UpdateStatusOperationSettingResult = {
+    __typename?: 'updateStatusOperationSettingResult';
+    updated: Scalars['Boolean'];
+};
+export declare type CreateOperationResultInput = {
+    /** Operation setting ID. */
+    operationSettingId: Scalars['ID'];
+    /** Obniz ID. Format can be both xxxx-xxxx and xxxxxxxx. */
+    obnizId?: Maybe<Scalars['String']>;
+    /** Time when a device setting is written onto an obniz. */
+    successfullyWrittenAt?: Maybe<Scalars['Date']>;
+    /** Time when an obniz became online. */
+    becomeOnlineAt?: Maybe<Scalars['Date']>;
+    /** Binary data of operation picture. */
+    picBinary?: Maybe<Scalars['Upload']>;
+    /** Location note. */
+    locationNote?: Maybe<Scalars['String']>;
+    /**
+     * Type of operation error. Possibities:
+     *
+     *             - No error -> 0
+     *             - Gateway not found -> 1
+     *             - Found multi gateway -> 2
+     *             - Cannot connect to gateway -> 3
+     *             - Gateway cannot connect the wifi -> 4
+     *
+     *             - Invalid ssid or password -> 5
+     *             - Cannot resolve dns -> 6
+     *             - Cannot go out to the internet -> 7
+     *             - Cannot communicate with gateway -> 8
+     */
+    typeError: Scalars['Int'];
+};
+export declare type RemoveOperationResultResponse = {
+    __typename?: 'removeOperationResultResponse';
+    removed?: Maybe<Scalars['Boolean']>;
+};
 export declare type WebappQueryVariables = {
     first?: Maybe<Scalars['first']>;
     skip?: Maybe<Scalars['skip']>;
@@ -746,6 +971,14 @@ export declare type UserQuery = ({
 export declare type DevicesQueryVariables = {
     first?: Maybe<Scalars['first']>;
     skip?: Maybe<Scalars['skip']>;
+    id?: Maybe<Scalars['String']>;
+    hw?: Maybe<Scalars['String']>;
+    app?: Maybe<Scalars['Int']>;
+    status?: Maybe<Scalars['String']>;
+    created?: Maybe<Scalars['String']>;
+    serialCode?: Maybe<Scalars['String']>;
+    sort?: Maybe<Scalars['String']>;
+    order?: Maybe<Scalars['String']>;
 };
 export declare type DevicesQuery = ({
     __typename?: 'Query';
@@ -778,6 +1011,24 @@ export declare type EventsQuery = ({
             __typename?: 'eventEdge';
         } & EventEdgeFieldsFragment)>>;
     })>;
+});
+export declare type HardwaresQueryVariables = {};
+export declare type HardwaresQuery = ({
+    __typename?: 'Query';
+} & {
+    hardwares: Array<Maybe<({
+        __typename?: 'hardware';
+    } & Pick<Hardware, 'hardware' | 'os'>)>>;
+});
+export declare type OsQueryVariables = {
+    hardware: Scalars['String'];
+};
+export declare type OsQuery = ({
+    __typename?: 'Query';
+} & {
+    os: Array<Maybe<({
+        __typename?: 'os';
+    } & Pick<Os, 'version' | 'app_url' | 'bootloader_url' | 'partition_url'>)>>;
 });
 export declare type AppEventsQueryVariables = {
     first?: Maybe<Scalars['first']>;
@@ -815,6 +1066,116 @@ export declare type AppEventsQuery = ({
         })>>;
     })>;
 });
+export declare type OperationsQueryVariables = {
+    id?: Maybe<Scalars['Int']>;
+    facilityName?: Maybe<Scalars['String']>;
+};
+export declare type OperationsQuery = ({
+    __typename?: 'Query';
+} & {
+    operations?: Maybe<({
+        __typename?: 'operationsConnection';
+    } & {
+        edges: Array<Maybe<({
+            __typename?: 'operationEdge';
+        } & Pick<OperationEdge, 'facilityName' | 'amountExpectedDevices' | 'amountOperatedDevices' | 'amountReport' | 'errorLevelReport'> & {
+            node?: Maybe<({
+                __typename?: 'operation';
+            } & Pick<Operation, 'id' | 'name' | 'facilityId' | 'completionLevel' | 'needPicEvidence' | 'needLocationNote' | 'dueDate' | 'operationKey' | 'createdAt'>)>;
+        })>>;
+    })>;
+});
+export declare type OperationSettingsQueryVariables = {
+    first?: Maybe<Scalars['first']>;
+    operationId?: Maybe<Scalars['ID']>;
+    status?: Maybe<Scalars['Int']>;
+};
+export declare type OperationSettingsQuery = ({
+    __typename?: 'Query';
+} & {
+    operationSettings?: Maybe<({
+        __typename?: 'operationSettingsConnection';
+    } & Pick<OperationSettingsConnection, 'totalCount'> & {
+        edges: Array<Maybe<({
+            __typename?: 'operationSettingEdge';
+        } & {
+            node?: Maybe<({
+                __typename?: 'operationSetting';
+            } & Pick<OperationSetting, 'id' | 'operationId' | 'indicationId' | 'networkConfigs' | 'appId' | 'appConfigs' | 'description' | 'status'>)>;
+            operationResult?: Maybe<({
+                __typename?: 'operationResultForOperationSetting';
+            } & Pick<OperationResultForOperationSetting, 'obnizId' | 'successfullyWrittenAt' | 'becomeOnlineAt' | 'picUrl' | 'locationNote' | 'typeError'>)>;
+        })>>;
+    })>;
+});
+export declare type OperationResultsQueryVariables = {
+    first?: Maybe<Scalars['first']>;
+    operationId?: Maybe<Scalars['ID']>;
+    operationSettingId?: Maybe<Scalars['ID']>;
+};
+export declare type OperationResultsQuery = ({
+    __typename?: 'Query';
+} & {
+    operationResults?: Maybe<({
+        __typename?: 'operationResultsConnection';
+    } & Pick<OperationResultsConnection, 'totalCount'> & {
+        edges: Array<Maybe<({
+            __typename?: 'operationResultEdge';
+        } & {
+            node?: Maybe<({
+                __typename?: 'operationResult';
+            } & Pick<OperationResult, 'id' | 'operationSettingId' | 'indicationId' | 'obnizId' | 'successfullyWrittenAt' | 'becomeOnlineAt' | 'picUrl' | 'locationNote' | 'typeError'>)>;
+        })>>;
+    })>;
+});
+export declare type TokenQueryVariables = {};
+export declare type TokenQuery = ({
+    __typename?: 'Query';
+} & {
+    token?: Maybe<({
+        __typename?: 'token';
+    } & Pick<Token, 'type' | 'user' | 'device' | 'event' | 'facility' | 'device_control'>)>;
+});
+export declare type CreateEventMutationVariables = {
+    event: EventCreateInput;
+};
+export declare type CreateEventMutation = ({
+    __typename?: 'Mutation';
+} & {
+    createEvent?: Maybe<({
+        __typename?: 'event';
+    } & Pick<Event, 'id' | 'name' | 'trigger' | 'action' | 'webhookUri' | 'createdAt'>)>;
+});
+export declare type UpdateEventMutationVariables = {
+    event: EventUpdateInput;
+};
+export declare type UpdateEventMutation = ({
+    __typename?: 'Mutation';
+} & {
+    updateEvent?: Maybe<({
+        __typename?: 'event';
+    } & Pick<Event, 'id' | 'name' | 'trigger' | 'action' | 'webhookUri' | 'createdAt'>)>;
+});
+export declare type DeleteEventMutationVariables = {
+    id: Scalars['ID'];
+};
+export declare type DeleteEventMutation = ({
+    __typename?: 'Mutation';
+} & Pick<Mutation, 'deleteEvent'>);
+export declare type CreateDeviceMutationVariables = {
+    device: DeviceCreateInput;
+};
+export declare type CreateDeviceMutation = ({
+    __typename?: 'Mutation';
+} & {
+    createDevice?: Maybe<({
+        __typename?: 'device';
+    } & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'> & {
+        user?: Maybe<({
+            __typename?: 'user';
+        } & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>)>;
+    })>;
+});
 export declare type RegistrateDeviceMutationVariables = {
     device: DeviceRegistrateInput;
 };
@@ -823,7 +1184,25 @@ export declare type RegistrateDeviceMutation = ({
 } & {
     registrateDevice?: Maybe<({
         __typename?: 'device';
-    } & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>)>;
+    } & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'> & {
+        user?: Maybe<({
+            __typename?: 'user';
+        } & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>)>;
+    })>;
+});
+export declare type UpdateDeviceMutationVariables = {
+    device: DeviceUpdateInput;
+};
+export declare type UpdateDeviceMutation = ({
+    __typename?: 'Mutation';
+} & {
+    updateDevice?: Maybe<({
+        __typename?: 'device';
+    } & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'> & {
+        user?: Maybe<({
+            __typename?: 'user';
+        } & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>)>;
+    })>;
 });
 export declare type InstallAppMutationVariables = {
     install: AppInstallInput;
@@ -833,7 +1212,11 @@ export declare type InstallAppMutation = ({
 } & {
     installApp?: Maybe<({
         __typename?: 'device';
-    } & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>)>;
+    } & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'> & {
+        user?: Maybe<({
+            __typename?: 'user';
+        } & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>)>;
+    })>;
 });
 export declare type UpdateDeviceSettingsForInstalledAppMutationVariables = {
     updateDeviceSettingsForInstalledApp: DeviceInstalledAppSettingsInput;
@@ -857,7 +1240,11 @@ export declare type UninstallAppMutation = ({
 } & {
     uninstallApp?: Maybe<({
         __typename?: 'device';
-    } & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>)>;
+    } & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'> & {
+        user?: Maybe<({
+            __typename?: 'user';
+        } & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>)>;
+    })>;
 });
 export declare type GenerateDeviceAccessTokenMutationVariables = {
     generateDeviceAccessToken: DeviceGenerateAccessTokenInput;
@@ -867,7 +1254,11 @@ export declare type GenerateDeviceAccessTokenMutation = ({
 } & {
     generateDeviceAccessToken?: Maybe<({
         __typename?: 'device';
-    } & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>)>;
+    } & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'> & {
+        user?: Maybe<({
+            __typename?: 'user';
+        } & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>)>;
+    })>;
 });
 export declare type DeleteDeviceAccessTokenMutationVariables = {
     deleteDeviceAccessToken: DeviceDeleteAccessTokenInput;
@@ -877,7 +1268,41 @@ export declare type DeleteDeviceAccessTokenMutation = ({
 } & {
     deleteDeviceAccessToken?: Maybe<({
         __typename?: 'device';
-    } & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>)>;
+    } & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'> & {
+        user?: Maybe<({
+            __typename?: 'user';
+        } & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>)>;
+    })>;
+});
+export declare type UpdateStatusOperationSettingMutationVariables = {
+    operationSettingId: Scalars['ID'];
+};
+export declare type UpdateStatusOperationSettingMutation = ({
+    __typename?: 'Mutation';
+} & {
+    updateStatusOperationSetting?: Maybe<({
+        __typename?: 'updateStatusOperationSettingResult';
+    } & Pick<UpdateStatusOperationSettingResult, 'updated'>)>;
+});
+export declare type CreateOperationResultMutationVariables = {
+    operationResult: CreateOperationResultInput;
+};
+export declare type CreateOperationResultMutation = ({
+    __typename?: 'Mutation';
+} & {
+    createOperationResult?: Maybe<({
+        __typename?: 'operationResult';
+    } & Pick<OperationResult, 'id' | 'operationSettingId' | 'indicationId' | 'obnizId' | 'successfullyWrittenAt' | 'becomeOnlineAt' | 'picUrl' | 'locationNote' | 'typeError'>)>;
+});
+export declare type RemoveOperationResultMutationVariables = {
+    operationSettingId: Scalars['ID'];
+};
+export declare type RemoveOperationResultMutation = ({
+    __typename?: 'Mutation';
+} & {
+    removeOperationResult?: Maybe<({
+        __typename?: 'removeOperationResultResponse';
+    } & Pick<RemoveOperationResultResponse, 'removed'>)>;
 });
 export declare type PageInfoFieldsFragment = ({
     __typename?: 'pageInfo';
@@ -928,13 +1353,27 @@ export declare const AppDocument: import("graphql").DocumentNode;
 export declare const UserDocument: import("graphql").DocumentNode;
 export declare const DevicesDocument: import("graphql").DocumentNode;
 export declare const EventsDocument: import("graphql").DocumentNode;
+export declare const HardwaresDocument: import("graphql").DocumentNode;
+export declare const OsDocument: import("graphql").DocumentNode;
 export declare const AppEventsDocument: import("graphql").DocumentNode;
+export declare const OperationsDocument: import("graphql").DocumentNode;
+export declare const OperationSettingsDocument: import("graphql").DocumentNode;
+export declare const OperationResultsDocument: import("graphql").DocumentNode;
+export declare const TokenDocument: import("graphql").DocumentNode;
+export declare const CreateEventDocument: import("graphql").DocumentNode;
+export declare const UpdateEventDocument: import("graphql").DocumentNode;
+export declare const DeleteEventDocument: import("graphql").DocumentNode;
+export declare const CreateDeviceDocument: import("graphql").DocumentNode;
 export declare const RegistrateDeviceDocument: import("graphql").DocumentNode;
+export declare const UpdateDeviceDocument: import("graphql").DocumentNode;
 export declare const InstallAppDocument: import("graphql").DocumentNode;
 export declare const UpdateDeviceSettingsForInstalledAppDocument: import("graphql").DocumentNode;
 export declare const UninstallAppDocument: import("graphql").DocumentNode;
 export declare const GenerateDeviceAccessTokenDocument: import("graphql").DocumentNode;
 export declare const DeleteDeviceAccessTokenDocument: import("graphql").DocumentNode;
+export declare const UpdateStatusOperationSettingDocument: import("graphql").DocumentNode;
+export declare const CreateOperationResultDocument: import("graphql").DocumentNode;
+export declare const RemoveOperationResultDocument: import("graphql").DocumentNode;
 export declare type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 export declare function getSdk(client: GraphQLClient, withWrapper?: SdkFunctionWrapper): {
     webapp(variables?: WebappQueryVariables | undefined): Promise<WebappQuery>;
@@ -942,12 +1381,26 @@ export declare function getSdk(client: GraphQLClient, withWrapper?: SdkFunctionW
     user(variables?: UserQueryVariables | undefined): Promise<UserQuery>;
     devices(variables?: DevicesQueryVariables | undefined): Promise<DevicesQuery>;
     events(variables?: EventsQueryVariables | undefined): Promise<EventsQuery>;
+    hardwares(variables?: HardwaresQueryVariables | undefined): Promise<HardwaresQuery>;
+    os(variables: OsQueryVariables): Promise<OsQuery>;
     appEvents(variables?: AppEventsQueryVariables | undefined): Promise<AppEventsQuery>;
+    operations(variables?: OperationsQueryVariables | undefined): Promise<OperationsQuery>;
+    operationSettings(variables?: OperationSettingsQueryVariables | undefined): Promise<OperationSettingsQuery>;
+    operationResults(variables?: OperationResultsQueryVariables | undefined): Promise<OperationResultsQuery>;
+    token(variables?: TokenQueryVariables | undefined): Promise<TokenQuery>;
+    createEvent(variables: CreateEventMutationVariables): Promise<CreateEventMutation>;
+    updateEvent(variables: UpdateEventMutationVariables): Promise<UpdateEventMutation>;
+    deleteEvent(variables: DeleteEventMutationVariables): Promise<DeleteEventMutation>;
+    createDevice(variables: CreateDeviceMutationVariables): Promise<CreateDeviceMutation>;
     registrateDevice(variables: RegistrateDeviceMutationVariables): Promise<RegistrateDeviceMutation>;
+    updateDevice(variables: UpdateDeviceMutationVariables): Promise<UpdateDeviceMutation>;
     installApp(variables: InstallAppMutationVariables): Promise<InstallAppMutation>;
     updateDeviceSettingsForInstalledApp(variables: UpdateDeviceSettingsForInstalledAppMutationVariables): Promise<UpdateDeviceSettingsForInstalledAppMutation>;
     uninstallApp(variables: UninstallAppMutationVariables): Promise<UninstallAppMutation>;
     generateDeviceAccessToken(variables: GenerateDeviceAccessTokenMutationVariables): Promise<GenerateDeviceAccessTokenMutation>;
     deleteDeviceAccessToken(variables: DeleteDeviceAccessTokenMutationVariables): Promise<DeleteDeviceAccessTokenMutation>;
+    updateStatusOperationSetting(variables: UpdateStatusOperationSettingMutationVariables): Promise<UpdateStatusOperationSettingMutation>;
+    createOperationResult(variables: CreateOperationResultMutationVariables): Promise<CreateOperationResultMutation>;
+    removeOperationResult(variables: RemoveOperationResultMutationVariables): Promise<RemoveOperationResultMutation>;
 };
 export declare type Sdk = ReturnType<typeof getSdk>;
