@@ -4,8 +4,7 @@
 
 [api.obniz.com](https://api.obniz.io/v1/graphql)
 
-を利用するためのSDKです。
-
+を利用するための SDK です。
 
 ## install
 
@@ -30,13 +29,13 @@ getApp("apptoken_XXXXX")
 
 ```javascript
 // for javascript
-const getSdk = require('obniz-cloud-sdk').getSdk
+const getSdk = require('obniz-cloud-sdk').getSdk;
 
 async function getApp(token) {
-    const sdk = getSdk(token);
-    const app = await sdk.app();
-    console.log(app);
+  const sdk = getSdk(token);
+  const app = await sdk.app();
+  console.log(app);
 }
 
-getApp("apptoken_XXXXX")
+getApp('apptoken_XXXXX');
 ```
