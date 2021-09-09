@@ -48,8 +48,30 @@ query user {
   }
 }
 
-query devices($first: first, $skip: skip) {
-  devices(first: $first, skip: $skip) {
+query devices(
+  $first: first
+  $skip: skip
+  $id: String
+  $hw: String
+  $app: Int
+  $status: String
+  $created: String
+  $serialCode: String
+  $sort: String
+  $order: String
+) {
+  devices(
+    first: $first
+    skip: $skip
+    id: $id
+    hw: $hw
+    app: $app
+    status: $status
+    created: $created
+    serialCode: $serialCode
+    sort: $sort
+    order: $order
+  ) {
     totalCount
     pageInfo {
       ...pageInfoFields
@@ -69,6 +91,22 @@ query events($first: first, $skip: skip) {
     edges {
       ...eventEdgeFields
     }
+  }
+}
+
+query hardwares {
+  hardwares {
+    hardware
+    os
+  }
+}
+
+query os($hardware: String!) {
+  os(hardware: $hardware) {
+    version
+    app_url
+    bootloader_url
+    partition_url
   }
 }
 
@@ -123,6 +161,145 @@ query appEvents($first: first, $skip: skip) {
   }
 }
 
+query operations($id: Int, $facilityName: String) {
+  operations(id: $id, facilityName: $facilityName) {
+    edges {
+      node {
+        id
+        name
+        facilityId
+        completionLevel
+        needPicEvidence
+        needLocationNote
+        dueDate
+        operationKey
+        createdAt
+      }
+      facilityName
+      amountExpectedDevices
+      amountOperatedDevices
+      amountReport
+      errorLevelReport
+    }
+  }
+}
+
+query operationSettings($first: first, $operationId: ID, $status: Int) {
+  operationSettings(first: $first, operationId: $operationId, status: $status) {
+    totalCount
+    edges {
+      node {
+        id
+        operationId
+        indicationId
+        networkConfigs
+        appId
+        appConfigs
+        description
+        status
+      }
+      operationResult {
+        obnizId
+        successfullyWrittenAt
+        becomeOnlineAt
+        picUrl
+        locationNote
+        typeError
+      }
+    }
+  }
+}
+
+query operationResults(
+  $first: first
+  $operationId: ID
+  $operationSettingId: ID
+) {
+  operationResults(
+    first: $first
+    operationId: $operationId
+    operationSettingId: $operationSettingId
+  ) {
+    totalCount
+    edges {
+      node {
+        id
+        operationSettingId
+        indicationId
+        obnizId
+        successfullyWrittenAt
+        becomeOnlineAt
+        picUrl
+        locationNote
+        typeError
+      }
+    }
+  }
+}
+
+query token {
+  token {
+    type
+    user
+    device
+    event
+    facility
+    device_control
+  }
+}
+
+mutation createEvent($event: eventCreateInput!) {
+  createEvent(event: $event) {
+    id
+    name
+    trigger
+    action
+    webhookUri
+    createdAt
+  }
+}
+
+mutation updateEvent($event: eventUpdateInput!) {
+  updateEvent(event: $event) {
+    id
+    name
+    trigger
+    action
+    webhookUri
+    createdAt
+  }
+}
+
+mutation deleteEvent($id: ID!) {
+  deleteEvent(id: $id)
+}
+
+mutation createDevice($device: deviceCreateInput!) {
+  createDevice(device: $device) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+
 mutation registrateDevice($device: deviceRegistrateInput!) {
   registrateDevice(device: $device) {
     id
@@ -136,6 +313,41 @@ mutation registrateDevice($device: deviceRegistrateInput!) {
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+
+mutation updateDevice($device: deviceUpdateInput!) {
+  updateDevice(device: $device) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
@@ -153,6 +365,15 @@ mutation installApp($install: appInstallInput!) {
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
@@ -200,6 +421,15 @@ mutation uninstallApp($uninstallApp: appUninstallInput!) {
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
@@ -219,6 +449,15 @@ mutation generateDeviceAccessToken(
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
@@ -238,7 +477,42 @@ mutation deleteDeviceAccessToken(
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
+  }
+}
+
+mutation updateStatusOperationSetting($operationSettingId: ID!) {
+  updateStatusOperationSetting(operationSettingId: $operationSettingId) {
+    updated
+  }
+}
+
+mutation createOperationResult($operationResult: createOperationResultInput!) {
+  createOperationResult(operationResult: $operationResult) {
+    id
+    operationSettingId
+    indicationId
+    obnizId
+    successfullyWrittenAt
+    becomeOnlineAt
+    picUrl
+    locationNote
+    typeError
+  }
+}
+
+mutation removeOperationResult($operationSettingId: ID!) {
+  removeOperationResult(operationSettingId: $operationSettingId) {
+    removed
   }
 }
 

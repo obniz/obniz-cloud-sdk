@@ -15,6 +15,8 @@ export type Scalars = {
   skip: any;
   /** ISO-8601 Format DateTime */
   Date: any;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 /** Root of api.obniz.com graphql api endpoint queries */
@@ -36,6 +38,11 @@ export type Query = {
   os: Array<Maybe<Os>>;
   /** Query App event history. */
   appEvents?: Maybe<AppEvents>;
+  operations?: Maybe<OperationsConnection>;
+  operationSettings?: Maybe<OperationSettingsConnection>;
+  operationResults?: Maybe<OperationResultsConnection>;
+  /** Token permission. */
+  token?: Maybe<Token>;
 };
 
 
@@ -48,6 +55,7 @@ export type QueryDevicesArgs = {
   app?: Maybe<Scalars['Int']>;
   status?: Maybe<Scalars['String']>;
   created?: Maybe<Scalars['String']>;
+  serialCode?: Maybe<Scalars['String']>;
   sort?: Maybe<Scalars['String']>;
   order?: Maybe<Scalars['String']>;
 };
@@ -70,6 +78,29 @@ export type QueryOsArgs = {
 export type QueryAppEventsArgs = {
   first?: Maybe<Scalars['first']>;
   skip?: Maybe<Scalars['skip']>;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint queries */
+export type QueryOperationsArgs = {
+  id?: Maybe<Scalars['Int']>;
+  facilityName?: Maybe<Scalars['String']>;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint queries */
+export type QueryOperationSettingsArgs = {
+  first?: Maybe<Scalars['first']>;
+  operationId?: Maybe<Scalars['ID']>;
+  status?: Maybe<Scalars['Int']>;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint queries */
+export type QueryOperationResultsArgs = {
+  first?: Maybe<Scalars['first']>;
+  operationId?: Maybe<Scalars['ID']>;
+  operationSettingId?: Maybe<Scalars['ID']>;
 };
 
 /** WebApp object. This contains webapp information which created on obniz.com as WebApp */
@@ -494,6 +525,165 @@ export type AppEventPayload = {
   device?: Maybe<Device>;
 };
 
+/** Connection of operations. */
+export type OperationsConnection = {
+   __typename?: 'operationsConnection';
+  /** Edges. */
+  edges: Array<Maybe<OperationEdge>>;
+};
+
+/** operation edge */
+export type OperationEdge = {
+   __typename?: 'operationEdge';
+  /** Cursor. */
+  node?: Maybe<Operation>;
+  /** Facility name. */
+  facilityName?: Maybe<Scalars['String']>;
+  /** The amount of devices that are going to be set. */
+  amountExpectedDevices?: Maybe<Scalars['Int']>;
+  /** The amount of devices that have already been set. */
+  amountOperatedDevices?: Maybe<Scalars['Int']>;
+  /** The amount of reports including both error and information. */
+  amountReport?: Maybe<Scalars['Int']>;
+  /** Indicates whether or not error occurred and its error level if any. NoPrombelm Error. */
+  errorLevelReport?: Maybe<Scalars['String']>;
+};
+
+/** operation. */
+export type Operation = {
+   __typename?: 'operation';
+  /** Unique identifier. */
+  id: Scalars['ID'];
+  /** Name of operation. */
+  name: Scalars['String'];
+  /** Facility ID which the operation targets at. */
+  facilityId: Scalars['Int'];
+  /** Criteria of completion. 0: written, 1: online. */
+  completionLevel: Scalars['Int'];
+  /** Evidence picture of completion is required if this param is true. */
+  needPicEvidence: Scalars['Boolean'];
+  /** Need to specify the exact device location if this param is true. */
+  needLocationNote: Scalars['Boolean'];
+  /** Time when the operation will be carried out. */
+  dueDate?: Maybe<Scalars['Date']>;
+  /** Token that is going to be inclued in the operation URL on Android APP. */
+  operationKey: Scalars['String'];
+  /** Time when the facility created at */
+  createdAt: Scalars['Date'];
+};
+
+/** Connection of operation settings */
+export type OperationSettingsConnection = {
+   __typename?: 'operationSettingsConnection';
+  /** Total count of operation settings edges */
+  totalCount: Scalars['Int'];
+  /** Edges. */
+  edges: Array<Maybe<OperationSettingEdge>>;
+};
+
+/** Operation setting edge. */
+export type OperationSettingEdge = {
+   __typename?: 'operationSettingEdge';
+  /** Cursor. */
+  node?: Maybe<OperationSetting>;
+  /** Operation result of the specific setting ID if any. */
+  operationResult?: Maybe<OperationResultForOperationSetting>;
+};
+
+/** Operation setting */
+export type OperationSetting = {
+   __typename?: 'operationSetting';
+  /** Unique identifier. */
+  id: Scalars['ID'];
+  /** Operation ID */
+  operationId: Scalars['ID'];
+  /** Indication ID. */
+  indicationId: Scalars['String'];
+  /** String representation of network config. Please see https://obniz.com/ja/doc/reference/obnizos-for-esp32/settings/setting-json */
+  networkConfigs: Scalars['String'];
+  /** App ID. This field will be null when app is not selected. */
+  appId?: Maybe<Scalars['Int']>;
+  /** String representation of app config object. Will be empty object when no app is selected. */
+  appConfigs: Scalars['String'];
+  /** When no description is set, this field will be an empty string. */
+  description: Scalars['String'];
+  /** 0: not operated yet, 1: in progress, 2: finished */
+  status: Scalars['Int'];
+};
+
+/** Operation result. */
+export type OperationResultForOperationSetting = {
+   __typename?: 'operationResultForOperationSetting';
+  /** Obniz Id. */
+  obnizId?: Maybe<Scalars['Int']>;
+  /** Time when operation setting has been written. */
+  successfullyWrittenAt?: Maybe<Scalars['Date']>;
+  /** Time when a device became online. */
+  becomeOnlineAt?: Maybe<Scalars['Date']>;
+  /** Url of evidence picture. */
+  picUrl?: Maybe<Scalars['String']>;
+  /** Note about where a device has been set. */
+  locationNote?: Maybe<Scalars['String']>;
+  /** Error code of operation failure. */
+  typeError?: Maybe<Scalars['Int']>;
+};
+
+/** Connection of operation results. */
+export type OperationResultsConnection = {
+   __typename?: 'operationResultsConnection';
+  /** Total count of operation results edges */
+  totalCount: Scalars['Int'];
+  /** Edges. */
+  edges: Array<Maybe<OperationResultEdge>>;
+};
+
+/** Operation result edge. */
+export type OperationResultEdge = {
+   __typename?: 'operationResultEdge';
+  /** Cursor */
+  node?: Maybe<OperationResult>;
+};
+
+/** Operation result. */
+export type OperationResult = {
+   __typename?: 'operationResult';
+  /** Unique identifier. */
+  id: Scalars['ID'];
+  /** Operation Setting Id. */
+  operationSettingId: Scalars['ID'];
+  /** Indication Id. */
+  indicationId: Scalars['String'];
+  /** Obniz Id. */
+  obnizId?: Maybe<Scalars['Int']>;
+  /** Time when operation setting has been written. */
+  successfullyWrittenAt?: Maybe<Scalars['Date']>;
+  /** Time when a device became online. */
+  becomeOnlineAt?: Maybe<Scalars['Date']>;
+  /** Url of evidence picture. */
+  picUrl?: Maybe<Scalars['String']>;
+  /** Note about where a device has been set. */
+  locationNote?: Maybe<Scalars['String']>;
+  /** Error code of operation failure. */
+  typeError?: Maybe<Scalars['Int']>;
+};
+
+/** Token object. This contains token information */
+export type Token = {
+   __typename?: 'token';
+  /** Token type. app_token / oauth / api_key */
+  type: Scalars['String'];
+  /** user permission. none / read / full  */
+  user: Scalars['String'];
+  /** device permission. none / read / full  */
+  device: Scalars['String'];
+  /** event permission. none / read / full  */
+  event: Scalars['String'];
+  /** facility permission. none / read / full  */
+  facility: Scalars['String'];
+  /** device_control permission. none / read / full  */
+  device_control: Scalars['String'];
+};
+
 /** Root of api.obniz.com graphql api endpoint mutations */
 export type Mutation = {
    __typename?: 'Mutation';
@@ -519,6 +709,9 @@ export type Mutation = {
   installApp?: Maybe<Device>;
   /** Install App To Device */
   uninstallApp?: Maybe<Device>;
+  updateStatusOperationSetting?: Maybe<UpdateStatusOperationSettingResult>;
+  createOperationResult?: Maybe<OperationResult>;
+  removeOperationResult?: Maybe<RemoveOperationResultResponse>;
 };
 
 
@@ -585,6 +778,24 @@ export type MutationInstallAppArgs = {
 /** Root of api.obniz.com graphql api endpoint mutations */
 export type MutationUninstallAppArgs = {
   uninstall: AppUninstallInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationUpdateStatusOperationSettingArgs = {
+  operationSettingId: Scalars['ID'];
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationCreateOperationResultArgs = {
+  operationResult: CreateOperationResultInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationRemoveOperationResultArgs = {
+  operationSettingId: Scalars['ID'];
 };
 
 export type EventCreateInput = {
@@ -773,6 +984,47 @@ export type AppUninstallInputDevice = {
   id: Scalars['String'];
 };
 
+export type UpdateStatusOperationSettingResult = {
+   __typename?: 'updateStatusOperationSettingResult';
+  updated: Scalars['Boolean'];
+};
+
+export type CreateOperationResultInput = {
+  /** Operation setting ID. */
+  operationSettingId: Scalars['ID'];
+  /** Obniz ID. Format can be both xxxx-xxxx and xxxxxxxx. */
+  obnizId?: Maybe<Scalars['String']>;
+  /** Time when a device setting is written onto an obniz. */
+  successfullyWrittenAt?: Maybe<Scalars['Date']>;
+  /** Time when an obniz became online. */
+  becomeOnlineAt?: Maybe<Scalars['Date']>;
+  /** Binary data of operation picture. */
+  picBinary?: Maybe<Scalars['Upload']>;
+  /** Location note. */
+  locationNote?: Maybe<Scalars['String']>;
+  /**
+   * Type of operation error. Possibities:
+   * 
+   *             - No error -> 0
+   *             - Gateway not found -> 1
+   *             - Found multi gateway -> 2
+   *             - Cannot connect to gateway -> 3
+   *             - Gateway cannot connect the wifi -> 4
+   * 
+   *             - Invalid ssid or password -> 5
+   *             - Cannot resolve dns -> 6
+   *             - Cannot go out to the internet -> 7
+   *             - Cannot communicate with gateway -> 8
+   */
+  typeError: Scalars['Int'];
+};
+
+
+export type RemoveOperationResultResponse = {
+   __typename?: 'removeOperationResultResponse';
+  removed?: Maybe<Scalars['Boolean']>;
+};
+
 export type WebappQueryVariables = {
   first?: Maybe<Scalars['first']>;
   skip?: Maybe<Scalars['skip']>;
@@ -837,6 +1089,14 @@ export type UserQuery = (
 export type DevicesQueryVariables = {
   first?: Maybe<Scalars['first']>;
   skip?: Maybe<Scalars['skip']>;
+  id?: Maybe<Scalars['String']>;
+  hw?: Maybe<Scalars['String']>;
+  app?: Maybe<Scalars['Int']>;
+  status?: Maybe<Scalars['String']>;
+  created?: Maybe<Scalars['String']>;
+  serialCode?: Maybe<Scalars['String']>;
+  sort?: Maybe<Scalars['String']>;
+  order?: Maybe<Scalars['String']>;
 };
 
 
@@ -874,6 +1134,30 @@ export type EventsQuery = (
       & EventEdgeFieldsFragment
     )>> }
   )> }
+);
+
+export type HardwaresQueryVariables = {};
+
+
+export type HardwaresQuery = (
+  { __typename?: 'Query' }
+  & { hardwares: Array<Maybe<(
+    { __typename?: 'hardware' }
+    & Pick<Hardware, 'hardware' | 'os'>
+  )>> }
+);
+
+export type OsQueryVariables = {
+  hardware: Scalars['String'];
+};
+
+
+export type OsQuery = (
+  { __typename?: 'Query' }
+  & { os: Array<Maybe<(
+    { __typename?: 'os' }
+    & Pick<Os, 'version' | 'app_url' | 'bootloader_url' | 'partition_url'>
+  )>> }
 );
 
 export type AppEventsQueryVariables = {
@@ -914,6 +1198,138 @@ export type AppEventsQuery = (
   )> }
 );
 
+export type OperationsQueryVariables = {
+  id?: Maybe<Scalars['Int']>;
+  facilityName?: Maybe<Scalars['String']>;
+};
+
+
+export type OperationsQuery = (
+  { __typename?: 'Query' }
+  & { operations?: Maybe<(
+    { __typename?: 'operationsConnection' }
+    & { edges: Array<Maybe<(
+      { __typename?: 'operationEdge' }
+      & Pick<OperationEdge, 'facilityName' | 'amountExpectedDevices' | 'amountOperatedDevices' | 'amountReport' | 'errorLevelReport'>
+      & { node?: Maybe<(
+        { __typename?: 'operation' }
+        & Pick<Operation, 'id' | 'name' | 'facilityId' | 'completionLevel' | 'needPicEvidence' | 'needLocationNote' | 'dueDate' | 'operationKey' | 'createdAt'>
+      )> }
+    )>> }
+  )> }
+);
+
+export type OperationSettingsQueryVariables = {
+  first?: Maybe<Scalars['first']>;
+  operationId?: Maybe<Scalars['ID']>;
+  status?: Maybe<Scalars['Int']>;
+};
+
+
+export type OperationSettingsQuery = (
+  { __typename?: 'Query' }
+  & { operationSettings?: Maybe<(
+    { __typename?: 'operationSettingsConnection' }
+    & Pick<OperationSettingsConnection, 'totalCount'>
+    & { edges: Array<Maybe<(
+      { __typename?: 'operationSettingEdge' }
+      & { node?: Maybe<(
+        { __typename?: 'operationSetting' }
+        & Pick<OperationSetting, 'id' | 'operationId' | 'indicationId' | 'networkConfigs' | 'appId' | 'appConfigs' | 'description' | 'status'>
+      )>, operationResult?: Maybe<(
+        { __typename?: 'operationResultForOperationSetting' }
+        & Pick<OperationResultForOperationSetting, 'obnizId' | 'successfullyWrittenAt' | 'becomeOnlineAt' | 'picUrl' | 'locationNote' | 'typeError'>
+      )> }
+    )>> }
+  )> }
+);
+
+export type OperationResultsQueryVariables = {
+  first?: Maybe<Scalars['first']>;
+  operationId?: Maybe<Scalars['ID']>;
+  operationSettingId?: Maybe<Scalars['ID']>;
+};
+
+
+export type OperationResultsQuery = (
+  { __typename?: 'Query' }
+  & { operationResults?: Maybe<(
+    { __typename?: 'operationResultsConnection' }
+    & Pick<OperationResultsConnection, 'totalCount'>
+    & { edges: Array<Maybe<(
+      { __typename?: 'operationResultEdge' }
+      & { node?: Maybe<(
+        { __typename?: 'operationResult' }
+        & Pick<OperationResult, 'id' | 'operationSettingId' | 'indicationId' | 'obnizId' | 'successfullyWrittenAt' | 'becomeOnlineAt' | 'picUrl' | 'locationNote' | 'typeError'>
+      )> }
+    )>> }
+  )> }
+);
+
+export type TokenQueryVariables = {};
+
+
+export type TokenQuery = (
+  { __typename?: 'Query' }
+  & { token?: Maybe<(
+    { __typename?: 'token' }
+    & Pick<Token, 'type' | 'user' | 'device' | 'event' | 'facility' | 'device_control'>
+  )> }
+);
+
+export type CreateEventMutationVariables = {
+  event: EventCreateInput;
+};
+
+
+export type CreateEventMutation = (
+  { __typename?: 'Mutation' }
+  & { createEvent?: Maybe<(
+    { __typename?: 'event' }
+    & Pick<Event, 'id' | 'name' | 'trigger' | 'action' | 'webhookUri' | 'createdAt'>
+  )> }
+);
+
+export type UpdateEventMutationVariables = {
+  event: EventUpdateInput;
+};
+
+
+export type UpdateEventMutation = (
+  { __typename?: 'Mutation' }
+  & { updateEvent?: Maybe<(
+    { __typename?: 'event' }
+    & Pick<Event, 'id' | 'name' | 'trigger' | 'action' | 'webhookUri' | 'createdAt'>
+  )> }
+);
+
+export type DeleteEventMutationVariables = {
+  id: Scalars['ID'];
+};
+
+
+export type DeleteEventMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteEvent'>
+);
+
+export type CreateDeviceMutationVariables = {
+  device: DeviceCreateInput;
+};
+
+
+export type CreateDeviceMutation = (
+  { __typename?: 'Mutation' }
+  & { createDevice?: Maybe<(
+    { __typename?: 'device' }
+    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+    & { user?: Maybe<(
+      { __typename?: 'user' }
+      & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
+    )> }
+  )> }
+);
+
 export type RegistrateDeviceMutationVariables = {
   device: DeviceRegistrateInput;
 };
@@ -924,6 +1340,27 @@ export type RegistrateDeviceMutation = (
   & { registrateDevice?: Maybe<(
     { __typename?: 'device' }
     & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+    & { user?: Maybe<(
+      { __typename?: 'user' }
+      & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
+    )> }
+  )> }
+);
+
+export type UpdateDeviceMutationVariables = {
+  device: DeviceUpdateInput;
+};
+
+
+export type UpdateDeviceMutation = (
+  { __typename?: 'Mutation' }
+  & { updateDevice?: Maybe<(
+    { __typename?: 'device' }
+    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+    & { user?: Maybe<(
+      { __typename?: 'user' }
+      & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
+    )> }
   )> }
 );
 
@@ -937,6 +1374,10 @@ export type InstallAppMutation = (
   & { installApp?: Maybe<(
     { __typename?: 'device' }
     & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+    & { user?: Maybe<(
+      { __typename?: 'user' }
+      & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
+    )> }
   )> }
 );
 
@@ -967,6 +1408,10 @@ export type UninstallAppMutation = (
   & { uninstallApp?: Maybe<(
     { __typename?: 'device' }
     & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+    & { user?: Maybe<(
+      { __typename?: 'user' }
+      & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
+    )> }
   )> }
 );
 
@@ -980,6 +1425,10 @@ export type GenerateDeviceAccessTokenMutation = (
   & { generateDeviceAccessToken?: Maybe<(
     { __typename?: 'device' }
     & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+    & { user?: Maybe<(
+      { __typename?: 'user' }
+      & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
+    )> }
   )> }
 );
 
@@ -993,6 +1442,49 @@ export type DeleteDeviceAccessTokenMutation = (
   & { deleteDeviceAccessToken?: Maybe<(
     { __typename?: 'device' }
     & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
+    & { user?: Maybe<(
+      { __typename?: 'user' }
+      & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
+    )> }
+  )> }
+);
+
+export type UpdateStatusOperationSettingMutationVariables = {
+  operationSettingId: Scalars['ID'];
+};
+
+
+export type UpdateStatusOperationSettingMutation = (
+  { __typename?: 'Mutation' }
+  & { updateStatusOperationSetting?: Maybe<(
+    { __typename?: 'updateStatusOperationSettingResult' }
+    & Pick<UpdateStatusOperationSettingResult, 'updated'>
+  )> }
+);
+
+export type CreateOperationResultMutationVariables = {
+  operationResult: CreateOperationResultInput;
+};
+
+
+export type CreateOperationResultMutation = (
+  { __typename?: 'Mutation' }
+  & { createOperationResult?: Maybe<(
+    { __typename?: 'operationResult' }
+    & Pick<OperationResult, 'id' | 'operationSettingId' | 'indicationId' | 'obnizId' | 'successfullyWrittenAt' | 'becomeOnlineAt' | 'picUrl' | 'locationNote' | 'typeError'>
+  )> }
+);
+
+export type RemoveOperationResultMutationVariables = {
+  operationSettingId: Scalars['ID'];
+};
+
+
+export type RemoveOperationResultMutation = (
+  { __typename?: 'Mutation' }
+  & { removeOperationResult?: Maybe<(
+    { __typename?: 'removeOperationResultResponse' }
+    & Pick<RemoveOperationResultResponse, 'removed'>
   )> }
 );
 
@@ -1177,8 +1669,8 @@ export const UserDocument = gql`
 }
     `;
 export const DevicesDocument = gql`
-    query devices($first: first, $skip: skip) {
-  devices(first: $first, skip: $skip) {
+    query devices($first: first, $skip: skip, $id: String, $hw: String, $app: Int, $status: String, $created: String, $serialCode: String, $sort: String, $order: String) {
+  devices(first: $first, skip: $skip, id: $id, hw: $hw, app: $app, status: $status, created: $created, serialCode: $serialCode, sort: $sort, order: $order) {
     totalCount
     pageInfo {
       ...pageInfoFields
@@ -1204,6 +1696,24 @@ export const EventsDocument = gql`
 }
     ${PageInfoFieldsFragmentDoc}
 ${EventEdgeFieldsFragmentDoc}`;
+export const HardwaresDocument = gql`
+    query hardwares {
+  hardwares {
+    hardware
+    os
+  }
+}
+    `;
+export const OsDocument = gql`
+    query os($hardware: String!) {
+  os(hardware: $hardware) {
+    version
+    app_url
+    bootloader_url
+    partition_url
+  }
+}
+    `;
 export const AppEventsDocument = gql`
     query appEvents($first: first, $skip: skip) {
   appEvents(first: $first, skip: $skip) {
@@ -1256,6 +1766,145 @@ export const AppEventsDocument = gql`
   }
 }
     ${PageInfoFieldsFragmentDoc}`;
+export const OperationsDocument = gql`
+    query operations($id: Int, $facilityName: String) {
+  operations(id: $id, facilityName: $facilityName) {
+    edges {
+      node {
+        id
+        name
+        facilityId
+        completionLevel
+        needPicEvidence
+        needLocationNote
+        dueDate
+        operationKey
+        createdAt
+      }
+      facilityName
+      amountExpectedDevices
+      amountOperatedDevices
+      amountReport
+      errorLevelReport
+    }
+  }
+}
+    `;
+export const OperationSettingsDocument = gql`
+    query operationSettings($first: first, $operationId: ID, $status: Int) {
+  operationSettings(first: $first, operationId: $operationId, status: $status) {
+    totalCount
+    edges {
+      node {
+        id
+        operationId
+        indicationId
+        networkConfigs
+        appId
+        appConfigs
+        description
+        status
+      }
+      operationResult {
+        obnizId
+        successfullyWrittenAt
+        becomeOnlineAt
+        picUrl
+        locationNote
+        typeError
+      }
+    }
+  }
+}
+    `;
+export const OperationResultsDocument = gql`
+    query operationResults($first: first, $operationId: ID, $operationSettingId: ID) {
+  operationResults(first: $first, operationId: $operationId, operationSettingId: $operationSettingId) {
+    totalCount
+    edges {
+      node {
+        id
+        operationSettingId
+        indicationId
+        obnizId
+        successfullyWrittenAt
+        becomeOnlineAt
+        picUrl
+        locationNote
+        typeError
+      }
+    }
+  }
+}
+    `;
+export const TokenDocument = gql`
+    query token {
+  token {
+    type
+    user
+    device
+    event
+    facility
+    device_control
+  }
+}
+    `;
+export const CreateEventDocument = gql`
+    mutation createEvent($event: eventCreateInput!) {
+  createEvent(event: $event) {
+    id
+    name
+    trigger
+    action
+    webhookUri
+    createdAt
+  }
+}
+    `;
+export const UpdateEventDocument = gql`
+    mutation updateEvent($event: eventUpdateInput!) {
+  updateEvent(event: $event) {
+    id
+    name
+    trigger
+    action
+    webhookUri
+    createdAt
+  }
+}
+    `;
+export const DeleteEventDocument = gql`
+    mutation deleteEvent($id: ID!) {
+  deleteEvent(id: $id)
+}
+    `;
+export const CreateDeviceDocument = gql`
+    mutation createDevice($device: deviceCreateInput!) {
+  createDevice(device: $device) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+    `;
 export const RegistrateDeviceDocument = gql`
     mutation registrateDevice($device: deviceRegistrateInput!) {
   registrateDevice(device: $device) {
@@ -1270,6 +1919,42 @@ export const RegistrateDeviceDocument = gql`
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+    `;
+export const UpdateDeviceDocument = gql`
+    mutation updateDevice($device: deviceUpdateInput!) {
+  updateDevice(device: $device) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
@@ -1288,6 +1973,15 @@ export const InstallAppDocument = gql`
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
@@ -1333,6 +2027,15 @@ export const UninstallAppDocument = gql`
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
@@ -1351,6 +2054,15 @@ export const GenerateDeviceAccessTokenDocument = gql`
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
@@ -1369,7 +2081,45 @@ export const DeleteDeviceAccessTokenDocument = gql`
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
+  }
+}
+    `;
+export const UpdateStatusOperationSettingDocument = gql`
+    mutation updateStatusOperationSetting($operationSettingId: ID!) {
+  updateStatusOperationSetting(operationSettingId: $operationSettingId) {
+    updated
+  }
+}
+    `;
+export const CreateOperationResultDocument = gql`
+    mutation createOperationResult($operationResult: createOperationResultInput!) {
+  createOperationResult(operationResult: $operationResult) {
+    id
+    operationSettingId
+    indicationId
+    obnizId
+    successfullyWrittenAt
+    becomeOnlineAt
+    picUrl
+    locationNote
+    typeError
+  }
+}
+    `;
+export const RemoveOperationResultDocument = gql`
+    mutation removeOperationResult($operationSettingId: ID!) {
+  removeOperationResult(operationSettingId: $operationSettingId) {
+    removed
   }
 }
     `;
@@ -1395,11 +2145,44 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     events(variables?: EventsQueryVariables): Promise<EventsQuery> {
       return withWrapper(() => client.request<EventsQuery>(print(EventsDocument), variables));
     },
+    hardwares(variables?: HardwaresQueryVariables): Promise<HardwaresQuery> {
+      return withWrapper(() => client.request<HardwaresQuery>(print(HardwaresDocument), variables));
+    },
+    os(variables: OsQueryVariables): Promise<OsQuery> {
+      return withWrapper(() => client.request<OsQuery>(print(OsDocument), variables));
+    },
     appEvents(variables?: AppEventsQueryVariables): Promise<AppEventsQuery> {
       return withWrapper(() => client.request<AppEventsQuery>(print(AppEventsDocument), variables));
     },
+    operations(variables?: OperationsQueryVariables): Promise<OperationsQuery> {
+      return withWrapper(() => client.request<OperationsQuery>(print(OperationsDocument), variables));
+    },
+    operationSettings(variables?: OperationSettingsQueryVariables): Promise<OperationSettingsQuery> {
+      return withWrapper(() => client.request<OperationSettingsQuery>(print(OperationSettingsDocument), variables));
+    },
+    operationResults(variables?: OperationResultsQueryVariables): Promise<OperationResultsQuery> {
+      return withWrapper(() => client.request<OperationResultsQuery>(print(OperationResultsDocument), variables));
+    },
+    token(variables?: TokenQueryVariables): Promise<TokenQuery> {
+      return withWrapper(() => client.request<TokenQuery>(print(TokenDocument), variables));
+    },
+    createEvent(variables: CreateEventMutationVariables): Promise<CreateEventMutation> {
+      return withWrapper(() => client.request<CreateEventMutation>(print(CreateEventDocument), variables));
+    },
+    updateEvent(variables: UpdateEventMutationVariables): Promise<UpdateEventMutation> {
+      return withWrapper(() => client.request<UpdateEventMutation>(print(UpdateEventDocument), variables));
+    },
+    deleteEvent(variables: DeleteEventMutationVariables): Promise<DeleteEventMutation> {
+      return withWrapper(() => client.request<DeleteEventMutation>(print(DeleteEventDocument), variables));
+    },
+    createDevice(variables: CreateDeviceMutationVariables): Promise<CreateDeviceMutation> {
+      return withWrapper(() => client.request<CreateDeviceMutation>(print(CreateDeviceDocument), variables));
+    },
     registrateDevice(variables: RegistrateDeviceMutationVariables): Promise<RegistrateDeviceMutation> {
       return withWrapper(() => client.request<RegistrateDeviceMutation>(print(RegistrateDeviceDocument), variables));
+    },
+    updateDevice(variables: UpdateDeviceMutationVariables): Promise<UpdateDeviceMutation> {
+      return withWrapper(() => client.request<UpdateDeviceMutation>(print(UpdateDeviceDocument), variables));
     },
     installApp(variables: InstallAppMutationVariables): Promise<InstallAppMutation> {
       return withWrapper(() => client.request<InstallAppMutation>(print(InstallAppDocument), variables));
@@ -1415,6 +2198,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     deleteDeviceAccessToken(variables: DeleteDeviceAccessTokenMutationVariables): Promise<DeleteDeviceAccessTokenMutation> {
       return withWrapper(() => client.request<DeleteDeviceAccessTokenMutation>(print(DeleteDeviceAccessTokenDocument), variables));
+    },
+    updateStatusOperationSetting(variables: UpdateStatusOperationSettingMutationVariables): Promise<UpdateStatusOperationSettingMutation> {
+      return withWrapper(() => client.request<UpdateStatusOperationSettingMutation>(print(UpdateStatusOperationSettingDocument), variables));
+    },
+    createOperationResult(variables: CreateOperationResultMutationVariables): Promise<CreateOperationResultMutation> {
+      return withWrapper(() => client.request<CreateOperationResultMutation>(print(CreateOperationResultDocument), variables));
+    },
+    removeOperationResult(variables: RemoveOperationResultMutationVariables): Promise<RemoveOperationResultMutation> {
+      return withWrapper(() => client.request<RemoveOperationResultMutation>(print(RemoveOperationResultDocument), variables));
     }
   };
 }

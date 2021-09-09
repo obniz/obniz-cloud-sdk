@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSdk = exports.DeleteDeviceAccessTokenDocument = exports.GenerateDeviceAccessTokenDocument = exports.UninstallAppDocument = exports.UpdateDeviceSettingsForInstalledAppDocument = exports.InstallAppDocument = exports.RegistrateDeviceDocument = exports.AppEventsDocument = exports.EventsDocument = exports.DevicesDocument = exports.UserDocument = exports.AppDocument = exports.WebappDocument = exports.EventEdgeFieldsFragmentDoc = exports.DeviceEdgeFieldsFragmentDoc = exports.AppInstallEdgeFieldsFragmentDoc = exports.InstallEdgeFieldsFragmentDoc = exports.PageInfoFieldsFragmentDoc = void 0;
+exports.getSdk = exports.RemoveOperationResultDocument = exports.CreateOperationResultDocument = exports.UpdateStatusOperationSettingDocument = exports.DeleteDeviceAccessTokenDocument = exports.GenerateDeviceAccessTokenDocument = exports.UninstallAppDocument = exports.UpdateDeviceSettingsForInstalledAppDocument = exports.InstallAppDocument = exports.UpdateDeviceDocument = exports.RegistrateDeviceDocument = exports.CreateDeviceDocument = exports.DeleteEventDocument = exports.UpdateEventDocument = exports.CreateEventDocument = exports.TokenDocument = exports.OperationResultsDocument = exports.OperationSettingsDocument = exports.OperationsDocument = exports.AppEventsDocument = exports.OsDocument = exports.HardwaresDocument = exports.EventsDocument = exports.DevicesDocument = exports.UserDocument = exports.AppDocument = exports.WebappDocument = exports.EventEdgeFieldsFragmentDoc = exports.DeviceEdgeFieldsFragmentDoc = exports.AppInstallEdgeFieldsFragmentDoc = exports.InstallEdgeFieldsFragmentDoc = exports.PageInfoFieldsFragmentDoc = void 0;
 const graphql_1 = require("graphql");
 const graphql_tag_1 = __importDefault(require("graphql-tag"));
 exports.PageInfoFieldsFragmentDoc = graphql_tag_1.default `
@@ -142,8 +142,8 @@ exports.UserDocument = graphql_tag_1.default `
 }
     `;
 exports.DevicesDocument = graphql_tag_1.default `
-    query devices($first: first, $skip: skip) {
-  devices(first: $first, skip: $skip) {
+    query devices($first: first, $skip: skip, $id: String, $hw: String, $app: Int, $status: String, $created: String, $serialCode: String, $sort: String, $order: String) {
+  devices(first: $first, skip: $skip, id: $id, hw: $hw, app: $app, status: $status, created: $created, serialCode: $serialCode, sort: $sort, order: $order) {
     totalCount
     pageInfo {
       ...pageInfoFields
@@ -169,6 +169,24 @@ exports.EventsDocument = graphql_tag_1.default `
 }
     ${exports.PageInfoFieldsFragmentDoc}
 ${exports.EventEdgeFieldsFragmentDoc}`;
+exports.HardwaresDocument = graphql_tag_1.default `
+    query hardwares {
+  hardwares {
+    hardware
+    os
+  }
+}
+    `;
+exports.OsDocument = graphql_tag_1.default `
+    query os($hardware: String!) {
+  os(hardware: $hardware) {
+    version
+    app_url
+    bootloader_url
+    partition_url
+  }
+}
+    `;
 exports.AppEventsDocument = graphql_tag_1.default `
     query appEvents($first: first, $skip: skip) {
   appEvents(first: $first, skip: $skip) {
@@ -221,6 +239,145 @@ exports.AppEventsDocument = graphql_tag_1.default `
   }
 }
     ${exports.PageInfoFieldsFragmentDoc}`;
+exports.OperationsDocument = graphql_tag_1.default `
+    query operations($id: Int, $facilityName: String) {
+  operations(id: $id, facilityName: $facilityName) {
+    edges {
+      node {
+        id
+        name
+        facilityId
+        completionLevel
+        needPicEvidence
+        needLocationNote
+        dueDate
+        operationKey
+        createdAt
+      }
+      facilityName
+      amountExpectedDevices
+      amountOperatedDevices
+      amountReport
+      errorLevelReport
+    }
+  }
+}
+    `;
+exports.OperationSettingsDocument = graphql_tag_1.default `
+    query operationSettings($first: first, $operationId: ID, $status: Int) {
+  operationSettings(first: $first, operationId: $operationId, status: $status) {
+    totalCount
+    edges {
+      node {
+        id
+        operationId
+        indicationId
+        networkConfigs
+        appId
+        appConfigs
+        description
+        status
+      }
+      operationResult {
+        obnizId
+        successfullyWrittenAt
+        becomeOnlineAt
+        picUrl
+        locationNote
+        typeError
+      }
+    }
+  }
+}
+    `;
+exports.OperationResultsDocument = graphql_tag_1.default `
+    query operationResults($first: first, $operationId: ID, $operationSettingId: ID) {
+  operationResults(first: $first, operationId: $operationId, operationSettingId: $operationSettingId) {
+    totalCount
+    edges {
+      node {
+        id
+        operationSettingId
+        indicationId
+        obnizId
+        successfullyWrittenAt
+        becomeOnlineAt
+        picUrl
+        locationNote
+        typeError
+      }
+    }
+  }
+}
+    `;
+exports.TokenDocument = graphql_tag_1.default `
+    query token {
+  token {
+    type
+    user
+    device
+    event
+    facility
+    device_control
+  }
+}
+    `;
+exports.CreateEventDocument = graphql_tag_1.default `
+    mutation createEvent($event: eventCreateInput!) {
+  createEvent(event: $event) {
+    id
+    name
+    trigger
+    action
+    webhookUri
+    createdAt
+  }
+}
+    `;
+exports.UpdateEventDocument = graphql_tag_1.default `
+    mutation updateEvent($event: eventUpdateInput!) {
+  updateEvent(event: $event) {
+    id
+    name
+    trigger
+    action
+    webhookUri
+    createdAt
+  }
+}
+    `;
+exports.DeleteEventDocument = graphql_tag_1.default `
+    mutation deleteEvent($id: ID!) {
+  deleteEvent(id: $id)
+}
+    `;
+exports.CreateDeviceDocument = graphql_tag_1.default `
+    mutation createDevice($device: deviceCreateInput!) {
+  createDevice(device: $device) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+    `;
 exports.RegistrateDeviceDocument = graphql_tag_1.default `
     mutation registrateDevice($device: deviceRegistrateInput!) {
   registrateDevice(device: $device) {
@@ -235,6 +392,42 @@ exports.RegistrateDeviceDocument = graphql_tag_1.default `
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+    `;
+exports.UpdateDeviceDocument = graphql_tag_1.default `
+    mutation updateDevice($device: deviceUpdateInput!) {
+  updateDevice(device: $device) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
@@ -253,6 +446,15 @@ exports.InstallAppDocument = graphql_tag_1.default `
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
@@ -298,6 +500,15 @@ exports.UninstallAppDocument = graphql_tag_1.default `
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
@@ -316,6 +527,15 @@ exports.GenerateDeviceAccessTokenDocument = graphql_tag_1.default `
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
@@ -334,7 +554,45 @@ exports.DeleteDeviceAccessTokenDocument = graphql_tag_1.default `
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
+  }
+}
+    `;
+exports.UpdateStatusOperationSettingDocument = graphql_tag_1.default `
+    mutation updateStatusOperationSetting($operationSettingId: ID!) {
+  updateStatusOperationSetting(operationSettingId: $operationSettingId) {
+    updated
+  }
+}
+    `;
+exports.CreateOperationResultDocument = graphql_tag_1.default `
+    mutation createOperationResult($operationResult: createOperationResultInput!) {
+  createOperationResult(operationResult: $operationResult) {
+    id
+    operationSettingId
+    indicationId
+    obnizId
+    successfullyWrittenAt
+    becomeOnlineAt
+    picUrl
+    locationNote
+    typeError
+  }
+}
+    `;
+exports.RemoveOperationResultDocument = graphql_tag_1.default `
+    mutation removeOperationResult($operationSettingId: ID!) {
+  removeOperationResult(operationSettingId: $operationSettingId) {
+    removed
   }
 }
     `;
@@ -356,11 +614,44 @@ function getSdk(client, withWrapper = defaultWrapper) {
         events(variables) {
             return withWrapper(() => client.request(graphql_1.print(exports.EventsDocument), variables));
         },
+        hardwares(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.HardwaresDocument), variables));
+        },
+        os(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.OsDocument), variables));
+        },
         appEvents(variables) {
             return withWrapper(() => client.request(graphql_1.print(exports.AppEventsDocument), variables));
         },
+        operations(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.OperationsDocument), variables));
+        },
+        operationSettings(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.OperationSettingsDocument), variables));
+        },
+        operationResults(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.OperationResultsDocument), variables));
+        },
+        token(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.TokenDocument), variables));
+        },
+        createEvent(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.CreateEventDocument), variables));
+        },
+        updateEvent(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.UpdateEventDocument), variables));
+        },
+        deleteEvent(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.DeleteEventDocument), variables));
+        },
+        createDevice(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.CreateDeviceDocument), variables));
+        },
         registrateDevice(variables) {
             return withWrapper(() => client.request(graphql_1.print(exports.RegistrateDeviceDocument), variables));
+        },
+        updateDevice(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.UpdateDeviceDocument), variables));
         },
         installApp(variables) {
             return withWrapper(() => client.request(graphql_1.print(exports.InstallAppDocument), variables));
@@ -376,6 +667,15 @@ function getSdk(client, withWrapper = defaultWrapper) {
         },
         deleteDeviceAccessToken(variables) {
             return withWrapper(() => client.request(graphql_1.print(exports.DeleteDeviceAccessTokenDocument), variables));
+        },
+        updateStatusOperationSetting(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.UpdateStatusOperationSettingDocument), variables));
+        },
+        createOperationResult(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.CreateOperationResultDocument), variables));
+        },
+        removeOperationResult(variables) {
+            return withWrapper(() => client.request(graphql_1.print(exports.RemoveOperationResultDocument), variables));
         }
     };
 }
