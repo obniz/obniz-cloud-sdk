@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSdk = exports.DeleteDeviceAccessTokenDocument = exports.GenerateDeviceAccessTokenDocument = exports.UninstallAppDocument = exports.UpdateDeviceSettingsForInstalledAppDocument = exports.InstallAppDocument = exports.RegistrateDeviceDocument = exports.AppEventsDocument = exports.EventsDocument = exports.DevicesDocument = exports.UserDocument = exports.AppDocument = exports.WebappDocument = exports.EventEdgeFieldsFragmentDoc = exports.DeviceEdgeFieldsFragmentDoc = exports.AppInstallEdgeFieldsFragmentDoc = exports.InstallEdgeFieldsFragmentDoc = exports.PageInfoFieldsFragmentDoc = void 0;
+exports.getSdk = exports.DeleteDeviceAccessTokenDocument = exports.GenerateDeviceAccessTokenDocument = exports.UninstallAppDocument = exports.UpdateDeviceSettingsForInstalledAppDocument = exports.InstallAppDocument = exports.RegistrateDeviceDocument = exports.AppEventsDocument = exports.EventsDocument = exports.DevicesDocument = exports.UserDocument = exports.AppDocument = exports.WebappDocument = exports.EventEdgeFieldsFragmentDoc = exports.DeviceEdgeFieldsFragmentDoc = exports.DeviceLiveInfoFieldsFragmentDoc = exports.ConnectedNetworkFieldsFragmentDoc = exports.WifimeshFieldsFragmentDoc = exports.WifiFieldsFragmentDoc = exports.AppInstallEdgeFieldsFragmentDoc = exports.InstallEdgeFieldsFragmentDoc = exports.PageInfoFieldsFragmentDoc = void 0;
 const graphql_1 = require("graphql");
 const graphql_tag_1 = __importDefault(require("graphql-tag"));
 exports.PageInfoFieldsFragmentDoc = graphql_tag_1.default `
@@ -58,6 +58,45 @@ exports.AppInstallEdgeFieldsFragmentDoc = graphql_tag_1.default `
   }
 }
     `;
+exports.WifiFieldsFragmentDoc = graphql_tag_1.default `
+    fragment wifiFields on wifi {
+  ssid
+  macAddress
+  rssi
+}
+    `;
+exports.WifimeshFieldsFragmentDoc = graphql_tag_1.default `
+    fragment wifimeshFields on wifimesh {
+  meshid
+  parent_obniz_id
+  root_obniz_id
+  layer
+  rssi
+}
+    `;
+exports.ConnectedNetworkFieldsFragmentDoc = graphql_tag_1.default `
+    fragment connectedNetworkFields on connectedNetwork {
+  online_at
+  net
+  local_ip
+  global_ip
+  wifi {
+    ...wifiFields
+  }
+  wifimesh {
+    ...wifimeshFields
+  }
+}
+    ${exports.WifiFieldsFragmentDoc}
+${exports.WifimeshFieldsFragmentDoc}`;
+exports.DeviceLiveInfoFieldsFragmentDoc = graphql_tag_1.default `
+    fragment deviceLiveInfoFields on deviceLiveInfo {
+  isOnline
+  connectedNetwork {
+    ...connectedNetworkFields
+  }
+}
+    ${exports.ConnectedNetworkFieldsFragmentDoc}`;
 exports.DeviceEdgeFieldsFragmentDoc = graphql_tag_1.default `
     fragment deviceEdgeFields on deviceEdge {
   node {
@@ -71,9 +110,13 @@ exports.DeviceEdgeFieldsFragmentDoc = graphql_tag_1.default `
     region
     status
     createdAt
+    pingInterval
+    deviceLiveInfo {
+      ...deviceLiveInfoFields
+    }
   }
 }
-    `;
+    ${exports.DeviceLiveInfoFieldsFragmentDoc}`;
 exports.EventEdgeFieldsFragmentDoc = graphql_tag_1.default `
     fragment eventEdgeFields on eventEdge {
   node {
