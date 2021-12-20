@@ -294,8 +294,46 @@ fragment deviceEdgeFields on deviceEdge {
     osVersion,
     region,
     status,
-    createdAt
+    createdAt,
+    pingInterval,
+    deviceLiveInfo {
+      ...deviceLiveInfoFields,
+    },
   }
+}
+
+fragment deviceLiveInfoFields on deviceLiveInfo {
+  isOnline,
+  connectedNetwork {
+    ...connectedNetworkFields,
+  },
+}
+
+fragment connectedNetworkFields on connectedNetwork {
+  online_at,
+  net,
+  local_ip,
+  global_ip,
+  wifi {
+    ...wifiFields,
+  },
+  wifimesh {
+    ...wifimeshFields,
+  },
+}
+
+fragment wifiFields on wifi {
+  ssid,
+  macAddress,
+  rssi,
+}
+
+fragment wifimeshFields on wifimesh {
+  meshid,
+  parent_obniz_id,
+  root_obniz_id,
+  layer,
+  rssi,
 }
 
 fragment eventEdgeFields on eventEdge {

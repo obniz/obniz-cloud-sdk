@@ -13,6 +13,8 @@ export declare type Scalars = {
     skip: any;
     /** ISO-8601 Format DateTime */
     Date: any;
+    /** The `Upload` scalar type represents a file upload. */
+    Upload: any;
 };
 /** Root of api.obniz.com graphql api endpoint queries */
 export declare type Query = {
@@ -33,6 +35,11 @@ export declare type Query = {
     os: Array<Maybe<Os>>;
     /** Query App event history. */
     appEvents?: Maybe<AppEvents>;
+    operations?: Maybe<OperationsConnection>;
+    operationSettings?: Maybe<OperationSettingsConnection>;
+    operationResults?: Maybe<OperationResultsConnection>;
+    /** Token permission. */
+    token?: Maybe<Token>;
 };
 /** Root of api.obniz.com graphql api endpoint queries */
 export declare type QueryDevicesArgs = {
@@ -43,6 +50,7 @@ export declare type QueryDevicesArgs = {
     app?: Maybe<Scalars['Int']>;
     status?: Maybe<Scalars['String']>;
     created?: Maybe<Scalars['String']>;
+    serialCode?: Maybe<Scalars['String']>;
     sort?: Maybe<Scalars['String']>;
     order?: Maybe<Scalars['String']>;
 };
@@ -59,6 +67,23 @@ export declare type QueryOsArgs = {
 export declare type QueryAppEventsArgs = {
     first?: Maybe<Scalars['first']>;
     skip?: Maybe<Scalars['skip']>;
+};
+/** Root of api.obniz.com graphql api endpoint queries */
+export declare type QueryOperationsArgs = {
+    id?: Maybe<Scalars['Int']>;
+    facilityName?: Maybe<Scalars['String']>;
+};
+/** Root of api.obniz.com graphql api endpoint queries */
+export declare type QueryOperationSettingsArgs = {
+    first?: Maybe<Scalars['first']>;
+    operationId?: Maybe<Scalars['ID']>;
+    status?: Maybe<Scalars['Int']>;
+};
+/** Root of api.obniz.com graphql api endpoint queries */
+export declare type QueryOperationResultsArgs = {
+    first?: Maybe<Scalars['first']>;
+    operationId?: Maybe<Scalars['ID']>;
+    operationSettingId?: Maybe<Scalars['ID']>;
 };
 /** WebApp object. This contains webapp information which created on obniz.com as WebApp */
 export declare type Webapp = {
@@ -247,12 +272,64 @@ export declare type Installed_Device = {
      *       'inactive': inactivated
      */
     status: Scalars['String'];
+    /** Online Check Interval in milli seconds. By default it is null and automatic interval under 1 minutes. */
+    pingInterval?: Maybe<Scalars['Int']>;
     /** Installed time */
     createdAt: Scalars['Date'];
+    /** Device Live Information. */
+    deviceLiveInfo?: Maybe<DeviceLiveInfo>;
     /** User information which is authorized for current Access Token. */
     user?: Maybe<User>;
     /** JSON Representation of Installed app configration */
     configs: Scalars['String'];
+};
+/** Device Live Information. */
+export declare type DeviceLiveInfo = {
+    __typename?: 'deviceLiveInfo';
+    /** Live Information. Device is Online or Offline */
+    isOnline: Scalars['Boolean'];
+    /** Live Information. Connected Wi-Fi and RSSI and other related. */
+    connectedNetwork?: Maybe<ConnectedNetwork>;
+};
+/** Information of currently connected network  */
+export declare type ConnectedNetwork = {
+    __typename?: 'connectedNetwork';
+    /** The time device become online on the cloud */
+    online_at: Scalars['Date'];
+    /** Current connected network type. Defined in setting json. ex) wirelesslan */
+    net: Scalars['String'];
+    /** Local IP If exist. ex) 192.168.0.100 */
+    local_ip?: Maybe<Scalars['String']>;
+    /** Global IP if exist. ex) 201.200.199.198 */
+    global_ip?: Maybe<Scalars['String']>;
+    /** Wi-Fi information if network type is wifi */
+    wifi?: Maybe<Wifi>;
+    /** Wi-Fi Mesh information if network type is wifimesh */
+    wifimesh?: Maybe<Wifimesh>;
+};
+/** Information of currently connected wifi */
+export declare type Wifi = {
+    __typename?: 'wifi';
+    /** Current connected Accespoint SSID. ex) obniz-wifi */
+    ssid?: Maybe<Scalars['String']>;
+    /** Current connected Accespoint MacAddress. ex) 0123456789AB */
+    macAddress?: Maybe<Scalars['String']>;
+    /** Current RSSI for connected Accesspoint. RSSI is mesured only on connection timing. ex ) -40 */
+    rssi?: Maybe<Scalars['Int']>;
+};
+/** Information of currently connected wifimesh */
+export declare type Wifimesh = {
+    __typename?: 'wifimesh';
+    /** MESH ID of Currently joined MESH network. ex) 012345678901 */
+    meshid: Scalars['String'];
+    /** Id of parent node ex) 0000-0000 */
+    parent_obniz_id?: Maybe<Scalars['ID']>;
+    /** Id of root node. Root is only connected to The AccessPoint ex) 0000-0000 */
+    root_obniz_id?: Maybe<Scalars['ID']>;
+    /** Depth of MESH network. layer=1 is root node of a network. ex ) 1 */
+    layer: Scalars['Int'];
+    /** Current RSSI for connected Accesspoint. RSSI is mesured only on connection timing. ex ) -40 */
+    rssi: Scalars['Int'];
 };
 /** Connection of Device */
 export declare type DeviceConnection = {
@@ -343,8 +420,12 @@ export declare type Device = {
      *       'inactive': inactivated
      */
     status: Scalars['String'];
+    /** Online Check Interval in milli seconds. By default it is null and automatic interval under 1 minutes. */
+    pingInterval?: Maybe<Scalars['Int']>;
     /** Installed time */
     createdAt: Scalars['Date'];
+    /** Device Live Information. */
+    deviceLiveInfo?: Maybe<DeviceLiveInfo>;
     /** User information which is authorized for current Access Token. */
     user?: Maybe<User>;
     /** JSON Representation of Installed app configration */
@@ -419,6 +500,8 @@ export declare type Os = {
     bootloader_url: Scalars['String'];
     /** Binary URL for partition table */
     partition_url: Scalars['String'];
+    /** Information of publicity. */
+    isPublic: Scalars['Boolean'];
 };
 /** Connection of Device */
 export declare type AppEvents = {
@@ -453,6 +536,154 @@ export declare type AppEventPayload = {
     user?: Maybe<User>;
     device?: Maybe<Device>;
 };
+/** Connection of operations. */
+export declare type OperationsConnection = {
+    __typename?: 'operationsConnection';
+    /** Edges. */
+    edges: Array<Maybe<OperationEdge>>;
+};
+/** operation edge */
+export declare type OperationEdge = {
+    __typename?: 'operationEdge';
+    /** Cursor. */
+    node?: Maybe<Operation>;
+    /** Facility name. */
+    facilityName?: Maybe<Scalars['String']>;
+    /** The amount of devices that are going to be set. */
+    amountExpectedDevices?: Maybe<Scalars['Int']>;
+    /** The amount of devices that have already been set. */
+    amountOperatedDevices?: Maybe<Scalars['Int']>;
+    /** The amount of reports including both error and information. */
+    amountReport?: Maybe<Scalars['Int']>;
+    /** Indicates whether or not error occurred and its error level if any. NoPrombelm Error. */
+    errorLevelReport?: Maybe<Scalars['String']>;
+};
+/** operation. */
+export declare type Operation = {
+    __typename?: 'operation';
+    /** Unique identifier. */
+    id: Scalars['ID'];
+    /** Name of operation. */
+    name: Scalars['String'];
+    /** Facility ID which the operation targets at. */
+    facilityId: Scalars['Int'];
+    /** Criteria of completion. 0: written, 1: online. */
+    completionLevel: Scalars['Int'];
+    /** Evidence picture of completion is required if this param is true. */
+    needPicEvidence: Scalars['Boolean'];
+    /** Need to specify the exact device location if this param is true. */
+    needLocationNote: Scalars['Boolean'];
+    /** Time when the operation will be carried out. */
+    dueDate?: Maybe<Scalars['Date']>;
+    /** Token that is going to be inclued in the operation URL on Android APP. */
+    operationKey: Scalars['String'];
+    /** Time when the facility created at */
+    createdAt: Scalars['Date'];
+};
+/** Connection of operation settings */
+export declare type OperationSettingsConnection = {
+    __typename?: 'operationSettingsConnection';
+    /** Total count of operation settings edges */
+    totalCount: Scalars['Int'];
+    /** Edges. */
+    edges: Array<Maybe<OperationSettingEdge>>;
+};
+/** Operation setting edge. */
+export declare type OperationSettingEdge = {
+    __typename?: 'operationSettingEdge';
+    /** Cursor. */
+    node?: Maybe<OperationSetting>;
+    /** Operation result of the specific setting ID if any. */
+    operationResult?: Maybe<OperationResultForOperationSetting>;
+};
+/** Operation setting */
+export declare type OperationSetting = {
+    __typename?: 'operationSetting';
+    /** Unique identifier. */
+    id: Scalars['ID'];
+    /** Operation ID */
+    operationId: Scalars['ID'];
+    /** Indication ID. */
+    indicationId: Scalars['String'];
+    /** String representation of network config. Please see https://obniz.com/ja/doc/reference/obnizos-for-esp32/settings/setting-json */
+    networkConfigs: Scalars['String'];
+    /** App ID. This field will be null when app is not selected. */
+    appId?: Maybe<Scalars['Int']>;
+    /** String representation of app config object. Will be empty object when no app is selected. */
+    appConfigs: Scalars['String'];
+    /** When no description is set, this field will be an empty string. */
+    description: Scalars['String'];
+    /** 0: not operated yet, 1: in progress, 2: finished */
+    status: Scalars['Int'];
+};
+/** Operation result. */
+export declare type OperationResultForOperationSetting = {
+    __typename?: 'operationResultForOperationSetting';
+    /** Obniz Id. */
+    obnizId?: Maybe<Scalars['Int']>;
+    /** Time when operation setting has been written. */
+    successfullyWrittenAt?: Maybe<Scalars['Date']>;
+    /** Time when a device became online. */
+    becomeOnlineAt?: Maybe<Scalars['Date']>;
+    /** Url of evidence picture. */
+    picUrl?: Maybe<Scalars['String']>;
+    /** Note about where a device has been set. */
+    locationNote?: Maybe<Scalars['String']>;
+    /** Error code of operation failure. */
+    typeError?: Maybe<Scalars['Int']>;
+};
+/** Connection of operation results. */
+export declare type OperationResultsConnection = {
+    __typename?: 'operationResultsConnection';
+    /** Total count of operation results edges */
+    totalCount: Scalars['Int'];
+    /** Edges. */
+    edges: Array<Maybe<OperationResultEdge>>;
+};
+/** Operation result edge. */
+export declare type OperationResultEdge = {
+    __typename?: 'operationResultEdge';
+    /** Cursor */
+    node?: Maybe<OperationResult>;
+};
+/** Operation result. */
+export declare type OperationResult = {
+    __typename?: 'operationResult';
+    /** Unique identifier. */
+    id: Scalars['ID'];
+    /** Operation Setting Id. */
+    operationSettingId: Scalars['ID'];
+    /** Indication Id. */
+    indicationId: Scalars['String'];
+    /** Obniz Id. */
+    obnizId?: Maybe<Scalars['Int']>;
+    /** Time when operation setting has been written. */
+    successfullyWrittenAt?: Maybe<Scalars['Date']>;
+    /** Time when a device became online. */
+    becomeOnlineAt?: Maybe<Scalars['Date']>;
+    /** Url of evidence picture. */
+    picUrl?: Maybe<Scalars['String']>;
+    /** Note about where a device has been set. */
+    locationNote?: Maybe<Scalars['String']>;
+    /** Error code of operation failure. */
+    typeError?: Maybe<Scalars['Int']>;
+};
+/** Token object. This contains token information */
+export declare type Token = {
+    __typename?: 'token';
+    /** Token type. app_token / oauth / api_key */
+    type: Scalars['String'];
+    /** user permission. none / read / full  */
+    user: Scalars['String'];
+    /** device permission. none / read / full  */
+    device: Scalars['String'];
+    /** event permission. none / read / full  */
+    event: Scalars['String'];
+    /** facility permission. none / read / full  */
+    facility: Scalars['String'];
+    /** device_control permission. none / read / full  */
+    device_control: Scalars['String'];
+};
 /** Root of api.obniz.com graphql api endpoint mutations */
 export declare type Mutation = {
     __typename?: 'Mutation';
@@ -478,6 +709,9 @@ export declare type Mutation = {
     installApp?: Maybe<Device>;
     /** Install App To Device */
     uninstallApp?: Maybe<Device>;
+    updateStatusOperationSetting?: Maybe<UpdateStatusOperationSettingResult>;
+    createOperationResult?: Maybe<OperationResult>;
+    removeOperationResult?: Maybe<RemoveOperationResultResponse>;
 };
 /** Root of api.obniz.com graphql api endpoint mutations */
 export declare type MutationCreateEventArgs = {
@@ -522,6 +756,18 @@ export declare type MutationInstallAppArgs = {
 /** Root of api.obniz.com graphql api endpoint mutations */
 export declare type MutationUninstallAppArgs = {
     uninstall: AppUninstallInput;
+};
+/** Root of api.obniz.com graphql api endpoint mutations */
+export declare type MutationUpdateStatusOperationSettingArgs = {
+    operationSettingId: Scalars['ID'];
+};
+/** Root of api.obniz.com graphql api endpoint mutations */
+export declare type MutationCreateOperationResultArgs = {
+    operationResult: CreateOperationResultInput;
+};
+/** Root of api.obniz.com graphql api endpoint mutations */
+export declare type MutationRemoveOperationResultArgs = {
+    operationSettingId: Scalars['ID'];
 };
 export declare type EventCreateInput = {
     /** The Event name */
@@ -641,6 +887,8 @@ export declare type DeviceUpdateInput = {
      *       'inactive': inactivated
      */
     status?: Maybe<Scalars['String']>;
+    /** Online Check Interval in milli seconds. By default it is null and automatic interval under 1 minutes. */
+    pingInterval?: Maybe<Scalars['Int']>;
 };
 export declare type DeviceGenerateAccessTokenInput = {
     obniz?: Maybe<DeviceGenerateAccessTokenInputDevice>;
@@ -672,8 +920,8 @@ export declare type AppConfigInput = {
     value: Scalars['String'];
 };
 export declare type AppInstallInput = {
-    obniz?: Maybe<AppInstallInputDevice>;
-    app?: Maybe<AppInstallInputApp>;
+    obniz: AppInstallInputDevice;
+    app: AppInstallInputApp;
 };
 export declare type AppInstallInputDevice = {
     /** obnizID */
@@ -690,6 +938,43 @@ export declare type AppUninstallInput = {
 export declare type AppUninstallInputDevice = {
     /** obnizID */
     id: Scalars['String'];
+};
+export declare type UpdateStatusOperationSettingResult = {
+    __typename?: 'updateStatusOperationSettingResult';
+    updated: Scalars['Boolean'];
+};
+export declare type CreateOperationResultInput = {
+    /** Operation setting ID. */
+    operationSettingId: Scalars['ID'];
+    /** Obniz ID. Format can be both xxxx-xxxx and xxxxxxxx. */
+    obnizId?: Maybe<Scalars['String']>;
+    /** Time when a device setting is written onto an obniz. */
+    successfullyWrittenAt?: Maybe<Scalars['Date']>;
+    /** Time when an obniz became online. */
+    becomeOnlineAt?: Maybe<Scalars['Date']>;
+    /** Binary data of operation picture. */
+    picBinary?: Maybe<Scalars['Upload']>;
+    /** Location note. */
+    locationNote?: Maybe<Scalars['String']>;
+    /**
+     * Type of operation error. Possibities:
+     *
+     *             - No error -> 0
+     *             - Gateway not found -> 1
+     *             - Found multi gateway -> 2
+     *             - Cannot connect to gateway -> 3
+     *             - Gateway cannot connect the wifi -> 4
+     *
+     *             - Invalid ssid or password -> 5
+     *             - Cannot resolve dns -> 6
+     *             - Cannot go out to the internet -> 7
+     *             - Cannot communicate with gateway -> 8
+     */
+    typeError: Scalars['Int'];
+};
+export declare type RemoveOperationResultResponse = {
+    __typename?: 'removeOperationResultResponse';
+    removed?: Maybe<Scalars['Boolean']>;
 };
 export declare type WebappQueryVariables = {
     first?: Maybe<Scalars['first']>;
@@ -909,8 +1194,35 @@ export declare type DeviceEdgeFieldsFragment = ({
 } & {
     node?: Maybe<({
         __typename?: 'device';
-    } & Pick<Device, 'id' | 'access_token' | 'description' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt'>)>;
+    } & Pick<Device, 'id' | 'access_token' | 'description' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'pingInterval'> & {
+        deviceLiveInfo?: Maybe<({
+            __typename?: 'deviceLiveInfo';
+        } & DeviceLiveInfoFieldsFragment)>;
+    })>;
 });
+export declare type DeviceLiveInfoFieldsFragment = ({
+    __typename?: 'deviceLiveInfo';
+} & Pick<DeviceLiveInfo, 'isOnline'> & {
+    connectedNetwork?: Maybe<({
+        __typename?: 'connectedNetwork';
+    } & ConnectedNetworkFieldsFragment)>;
+});
+export declare type ConnectedNetworkFieldsFragment = ({
+    __typename?: 'connectedNetwork';
+} & Pick<ConnectedNetwork, 'online_at' | 'net' | 'local_ip' | 'global_ip'> & {
+    wifi?: Maybe<({
+        __typename?: 'wifi';
+    } & WifiFieldsFragment)>;
+    wifimesh?: Maybe<({
+        __typename?: 'wifimesh';
+    } & WifimeshFieldsFragment)>;
+});
+export declare type WifiFieldsFragment = ({
+    __typename?: 'wifi';
+} & Pick<Wifi, 'ssid' | 'macAddress' | 'rssi'>);
+export declare type WifimeshFieldsFragment = ({
+    __typename?: 'wifimesh';
+} & Pick<Wifimesh, 'meshid' | 'parent_obniz_id' | 'root_obniz_id' | 'layer' | 'rssi'>);
 export declare type EventEdgeFieldsFragment = ({
     __typename?: 'eventEdge';
 } & {
@@ -921,6 +1233,10 @@ export declare type EventEdgeFieldsFragment = ({
 export declare const PageInfoFieldsFragmentDoc: import("graphql").DocumentNode;
 export declare const InstallEdgeFieldsFragmentDoc: import("graphql").DocumentNode;
 export declare const AppInstallEdgeFieldsFragmentDoc: import("graphql").DocumentNode;
+export declare const WifiFieldsFragmentDoc: import("graphql").DocumentNode;
+export declare const WifimeshFieldsFragmentDoc: import("graphql").DocumentNode;
+export declare const ConnectedNetworkFieldsFragmentDoc: import("graphql").DocumentNode;
+export declare const DeviceLiveInfoFieldsFragmentDoc: import("graphql").DocumentNode;
 export declare const DeviceEdgeFieldsFragmentDoc: import("graphql").DocumentNode;
 export declare const EventEdgeFieldsFragmentDoc: import("graphql").DocumentNode;
 export declare const WebappDocument: import("graphql").DocumentNode;
