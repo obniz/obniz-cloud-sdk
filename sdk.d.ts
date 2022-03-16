@@ -40,6 +40,7 @@ export declare type Query = {
     operationResults?: Maybe<OperationResultsConnection>;
     /** Token permission. */
     token?: Maybe<Token>;
+    device?: Maybe<DeviceNoAuthRequired>;
 };
 /** Root of api.obniz.com graphql api endpoint queries */
 export declare type QueryDevicesArgs = {
@@ -84,6 +85,10 @@ export declare type QueryOperationResultsArgs = {
     first?: Maybe<Scalars['first']>;
     operationId?: Maybe<Scalars['ID']>;
     operationSettingId?: Maybe<Scalars['ID']>;
+};
+/** Root of api.obniz.com graphql api endpoint queries */
+export declare type QueryDeviceArgs = {
+    serialUrl?: Maybe<Scalars['String']>;
 };
 /** WebApp object. This contains webapp information which created on obniz.com as WebApp */
 export declare type Webapp = {
@@ -272,7 +277,7 @@ export declare type Installed_Device = {
      *       'inactive': inactivated
      */
     status: Scalars['String'];
-    /** Online Check Interval in milli seconds. By default it is null and automatic interval under 1 minutes. */
+    /** Online Check Interval in minutes. By default it is null and automatic interval under 1 minutes. */
     pingInterval?: Maybe<Scalars['Int']>;
     /** Installed time */
     createdAt: Scalars['Date'];
@@ -288,6 +293,10 @@ export declare type DeviceLiveInfo = {
     __typename?: 'deviceLiveInfo';
     /** Live Information. Device is Online or Offline */
     isOnline: Scalars['Boolean'];
+    /** The time device become online on the cloud */
+    onlineAt?: Maybe<Scalars['Date']>;
+    /** The time device become offline on the cloud */
+    offlineAt?: Maybe<Scalars['Date']>;
     /** Live Information. Connected Wi-Fi and RSSI and other related. */
     connectedNetwork?: Maybe<ConnectedNetwork>;
 };
@@ -420,7 +429,7 @@ export declare type Device = {
      *       'inactive': inactivated
      */
     status: Scalars['String'];
-    /** Online Check Interval in milli seconds. By default it is null and automatic interval under 1 minutes. */
+    /** Online Check Interval in minutes. By default it is null and automatic interval under 1 minutes. */
     pingInterval?: Maybe<Scalars['Int']>;
     /** Installed time */
     createdAt: Scalars['Date'];
@@ -684,6 +693,11 @@ export declare type Token = {
     /** device_control permission. none / read / full  */
     device_control: Scalars['String'];
 };
+export declare type DeviceNoAuthRequired = {
+    __typename?: 'deviceNoAuthRequired';
+    /** Format is like XXXX-XXXX */
+    id: Scalars['String'];
+};
 /** Root of api.obniz.com graphql api endpoint mutations */
 export declare type Mutation = {
     __typename?: 'Mutation';
@@ -709,6 +723,10 @@ export declare type Mutation = {
     installApp?: Maybe<Device>;
     /** Install App To Device */
     uninstallApp?: Maybe<Device>;
+    /** Create app log */
+    createAppLog?: Maybe<AppLog>;
+    /** Create app status */
+    createAppStatus?: Maybe<AppStatus>;
     updateStatusOperationSetting?: Maybe<UpdateStatusOperationSettingResult>;
     createOperationResult?: Maybe<OperationResult>;
     removeOperationResult?: Maybe<RemoveOperationResultResponse>;
@@ -756,6 +774,14 @@ export declare type MutationInstallAppArgs = {
 /** Root of api.obniz.com graphql api endpoint mutations */
 export declare type MutationUninstallAppArgs = {
     uninstall: AppUninstallInput;
+};
+/** Root of api.obniz.com graphql api endpoint mutations */
+export declare type MutationCreateAppLogArgs = {
+    input: CreateAppLogInput;
+};
+/** Root of api.obniz.com graphql api endpoint mutations */
+export declare type MutationCreateAppStatusArgs = {
+    input: CreateAppStatusInput;
 };
 /** Root of api.obniz.com graphql api endpoint mutations */
 export declare type MutationUpdateStatusOperationSettingArgs = {
@@ -939,6 +965,68 @@ export declare type AppUninstallInputDevice = {
     /** obnizID */
     id: Scalars['String'];
 };
+export declare type CreateAppLogInput = {
+    obniz: CreateAppLogInputDevice;
+    app: CreateAppLogInputApp;
+};
+export declare type CreateAppLogInputDevice = {
+    /** obnizID */
+    id: Scalars['ID'];
+};
+export declare type CreateAppLogInputApp = {
+    /** The string must be json format and include a key 'message'. e.g. '{ 'message': 'log message' }' */
+    logJson: Scalars['String'];
+    /** log level: info or error */
+    level: Scalars['String'];
+};
+/** App log */
+export declare type AppLog = {
+    __typename?: 'appLog';
+    /** Unique ID */
+    id: Scalars['ID'];
+    /** obniz ID */
+    obnizId: Scalars['ID'];
+    /** The app log is targetted at an app having this ID */
+    appId: Scalars['ID'];
+    /** String representation of json including log information. */
+    logJson: Scalars['String'];
+    /** Log level of the app log. Possibilitties are either 'info' or 'error' */
+    level: Scalars['String'];
+    /** Created at */
+    createdAt: Scalars['Date'];
+};
+export declare type CreateAppStatusInput = {
+    obniz: CreateAppStatusInputDevice;
+    result: CreateAppStatusInputApp;
+};
+export declare type CreateAppStatusInputDevice = {
+    /** obnizID */
+    id: Scalars['ID'];
+};
+export declare type CreateAppStatusInputApp = {
+    /** status */
+    status: Scalars['String'];
+    /** text */
+    text: Scalars['String'];
+};
+/** App status */
+export declare type AppStatus = {
+    __typename?: 'appStatus';
+    /** Unique ID */
+    id: Scalars['ID'];
+    /** obniz ID */
+    obnizId: Scalars['ID'];
+    result?: Maybe<AppStatusResult>;
+    /** created at */
+    createdAt?: Maybe<Scalars['Date']>;
+};
+export declare type AppStatusResult = {
+    __typename?: 'appStatusResult';
+    /** app status */
+    status: Scalars['String'];
+    /** text detailing the app status */
+    text: Scalars['String'];
+};
 export declare type UpdateStatusOperationSettingResult = {
     __typename?: 'updateStatusOperationSettingResult';
     updated: Scalars['Boolean'];
@@ -1031,6 +1119,14 @@ export declare type UserQuery = ({
 export declare type DevicesQueryVariables = {
     first?: Maybe<Scalars['first']>;
     skip?: Maybe<Scalars['skip']>;
+    id?: Maybe<Scalars['String']>;
+    hw?: Maybe<Scalars['String']>;
+    app?: Maybe<Scalars['Int']>;
+    status?: Maybe<Scalars['String']>;
+    created?: Maybe<Scalars['String']>;
+    serialCode?: Maybe<Scalars['String']>;
+    sort?: Maybe<Scalars['String']>;
+    order?: Maybe<Scalars['String']>;
 };
 export declare type DevicesQuery = ({
     __typename?: 'Query';
@@ -1202,7 +1298,7 @@ export declare type DeviceEdgeFieldsFragment = ({
 });
 export declare type DeviceLiveInfoFieldsFragment = ({
     __typename?: 'deviceLiveInfo';
-} & Pick<DeviceLiveInfo, 'isOnline'> & {
+} & Pick<DeviceLiveInfo, 'isOnline' | 'onlineAt' | 'offlineAt'> & {
     connectedNetwork?: Maybe<({
         __typename?: 'connectedNetwork';
     } & ConnectedNetworkFieldsFragment)>;
