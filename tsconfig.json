@@ -2,7 +2,10 @@
   "compilerOptions": {
     "target": "es2017",
     "module": "commonjs",
-    "lib": ["es2018", "dom"],
+    "lib": [
+      "es2018",
+      "dom"
+    ],
     "outDir": "./",
     "strict": true,
     "declaration": true,
@@ -10,6 +13,11 @@
     "sourceMap": false,
     "resolveJsonModule": true
   },
-  "include": ["./*.ts", "./package.json"],
-  "exclude": ["node_modules"]
+  "include": [
+    "./*.ts",
+    "./package.json"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
