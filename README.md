@@ -19,7 +19,7 @@ npm i obniz-cloud-sdk
 import { getSdk } from 'obniz-cloud-sdk';
 
 async function getApp(token: string) {
-    const sdk = getSDK(token);
+    const sdk = getSdk(token);
     const app = await sdk.app();
     console.log(app);
 }
