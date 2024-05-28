@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSdk = exports.RemoveOperationResultDocument = exports.CreateOperationResultDocument = exports.UpdateStatusOperationSettingDocument = exports.DeleteDeviceAccessTokenDocument = exports.GenerateDeviceAccessTokenDocument = exports.UninstallAppDocument = exports.UpdateDeviceSettingsForInstalledAppDocument = exports.InstallAppDocument = exports.UpdateDeviceDocument = exports.RegistrateDeviceDocument = exports.CreateDeviceDocument = exports.DeleteEventDocument = exports.UpdateEventDocument = exports.CreateEventDocument = exports.TokenDocument = exports.OperationResultsDocument = exports.OperationSettingsDocument = exports.OperationsDocument = exports.AppEventsDocument = exports.OsDocument = exports.HardwaresDocument = exports.EventsDocument = exports.DevicesDocument = exports.UserDocument = exports.AppDocument = exports.WebappDocument = exports.EventEdgeFieldsFragmentDoc = exports.DeviceEdgeFieldsFragmentDoc = exports.AppInstallEdgeFieldsFragmentDoc = exports.InstallEdgeFieldsFragmentDoc = exports.PageInfoFieldsFragmentDoc = void 0;
+exports.getSdk = exports.RemoveOperationResultDocument = exports.CreateOperationResultDocument = exports.UpdateStatusOperationSettingDocument = exports.DeleteDeviceAccessTokenDocument = exports.GenerateDeviceAccessTokenDocument = exports.UninstallAppDocument = exports.UpdateDeviceSettingsForInstalledAppDocument = exports.InstallAppDocument = exports.UpdateDeviceDocument = exports.RegistrateDeviceDocument = exports.CreateDeviceDocument = exports.DeleteEventDocument = exports.UpdateEventDocument = exports.CreateEventDocument = exports.TokenDocument = exports.OperationResultsDocument = exports.OperationSettingsDocument = exports.OperationsDocument = exports.AppEventsDocument = exports.OsDocument = exports.HardwaresDocument = exports.EventsDocument = exports.DeviceDocument = exports.DevicesDocument = exports.UserDocument = exports.AppDocument = exports.WebappDocument = exports.EventEdgeFieldsFragmentDoc = exports.DeviceEdgeFieldsFragmentDoc = exports.DeviceLiveInfoFieldsFragmentDoc = exports.ConnectedNetworkFieldsFragmentDoc = exports.CellularFieldsFragmentDoc = exports.WifimeshFieldsFragmentDoc = exports.WifiFieldsFragmentDoc = exports.AppInstallEdgeFieldsFragmentDoc = exports.InstallEdgeFieldsFragmentDoc = exports.PageInfoFieldsFragmentDoc = void 0;
 const graphql_tag_1 = __importDefault(require("graphql-tag"));
 exports.PageInfoFieldsFragmentDoc = (0, graphql_tag_1.default) `
     fragment pageInfoFields on pageInfo {
@@ -57,6 +57,60 @@ exports.AppInstallEdgeFieldsFragmentDoc = (0, graphql_tag_1.default) `
   }
 }
     `;
+exports.WifiFieldsFragmentDoc = (0, graphql_tag_1.default) `
+    fragment wifiFields on wifi {
+  ssid
+  macAddress
+  rssi
+}
+    `;
+exports.WifimeshFieldsFragmentDoc = (0, graphql_tag_1.default) `
+    fragment wifimeshFields on wifimesh {
+  meshid
+  parent_obniz_id
+  root_obniz_id
+  layer
+  rssi
+}
+    `;
+exports.CellularFieldsFragmentDoc = (0, graphql_tag_1.default) `
+    fragment cellularFields on cellular {
+  cnum
+  iccid
+  imei
+  imsi
+  rssi
+}
+    `;
+exports.ConnectedNetworkFieldsFragmentDoc = (0, graphql_tag_1.default) `
+    fragment connectedNetworkFields on connectedNetwork {
+  online_at
+  net
+  local_ip
+  global_ip
+  wifi {
+    ...wifiFields
+  }
+  wifimesh {
+    ...wifimeshFields
+  }
+  cellular {
+    ...cellularFields
+  }
+}
+    ${exports.WifiFieldsFragmentDoc}
+${exports.WifimeshFieldsFragmentDoc}
+${exports.CellularFieldsFragmentDoc}`;
+exports.DeviceLiveInfoFieldsFragmentDoc = (0, graphql_tag_1.default) `
+    fragment deviceLiveInfoFields on deviceLiveInfo {
+  isOnline
+  onlineAt
+  offlineAt
+  connectedNetwork {
+    ...connectedNetworkFields
+  }
+}
+    ${exports.ConnectedNetworkFieldsFragmentDoc}`;
 exports.DeviceEdgeFieldsFragmentDoc = (0, graphql_tag_1.default) `
     fragment deviceEdgeFields on deviceEdge {
   node {
@@ -70,9 +124,13 @@ exports.DeviceEdgeFieldsFragmentDoc = (0, graphql_tag_1.default) `
     region
     status
     createdAt
+    pingInterval
+    deviceLiveInfo {
+      ...deviceLiveInfoFields
+    }
   }
 }
-    `;
+    ${exports.DeviceLiveInfoFieldsFragmentDoc}`;
 exports.EventEdgeFieldsFragmentDoc = (0, graphql_tag_1.default) `
     fragment eventEdgeFields on eventEdge {
   node {
@@ -142,7 +200,7 @@ exports.UserDocument = (0, graphql_tag_1.default) `
     `;
 exports.DevicesDocument = (0, graphql_tag_1.default) `
     query devices($first: first, $skip: skip, $id: String, $hw: String, $app: Int, $status: String, $created: String, $serialCode: String, $sort: String, $order: String) {
-  devices(first: $first, skip: $skip, id: $id, hw: $hw, app: $app, status: $status, created: $created, serialCode: $serialCode, sort: $sort, order: $order) {
+  devices {
     totalCount
     pageInfo {
       ...pageInfoFields
@@ -154,6 +212,13 @@ exports.DevicesDocument = (0, graphql_tag_1.default) `
 }
     ${exports.PageInfoFieldsFragmentDoc}
 ${exports.DeviceEdgeFieldsFragmentDoc}`;
+exports.DeviceDocument = (0, graphql_tag_1.default) `
+    query device($serialUrl: String) {
+  device(serialUrl: $serialUrl) {
+    id
+  }
+}
+    `;
 exports.EventsDocument = (0, graphql_tag_1.default) `
     query events($first: first, $skip: skip) {
   events(first: $first, skip: $skip) {
@@ -609,6 +674,9 @@ function getSdk(client, withWrapper = defaultWrapper) {
         },
         devices(variables, requestHeaders) {
             return withWrapper((wrappedRequestHeaders) => client.request(exports.DevicesDocument, variables, Object.assign(Object.assign({}, requestHeaders), wrappedRequestHeaders)), 'devices', 'query');
+        },
+        device(variables, requestHeaders) {
+            return withWrapper((wrappedRequestHeaders) => client.request(exports.DeviceDocument, variables, Object.assign(Object.assign({}, requestHeaders), wrappedRequestHeaders)), 'device', 'query');
         },
         events(variables, requestHeaders) {
             return withWrapper((wrappedRequestHeaders) => client.request(exports.EventsDocument, variables, Object.assign(Object.assign({}, requestHeaders), wrappedRequestHeaders)), 'events', 'query');

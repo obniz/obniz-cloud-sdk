@@ -48,30 +48,9 @@ query user {
   }
 }
 
-query devices(
-  $first: first
-  $skip: skip
-  $id: String
-  $hw: String
-  $app: Int
-  $status: String
-  $created: String
-  $serialCode: String
-  $sort: String
-  $order: String
+query devices($first: first, $skip: skip, $id: String, $hw: String, $app: Int, $status: String, $created: String, $serialCode: String, $sort: String, $order: String
 ) {
-  devices(
-    first: $first
-    skip: $skip
-    id: $id
-    hw: $hw
-    app: $app
-    status: $status
-    created: $created
-    serialCode: $serialCode
-    sort: $sort
-    order: $order
-  ) {
+  devices{
     totalCount
     pageInfo {
       ...pageInfoFields
@@ -79,6 +58,16 @@ query devices(
     edges {
       ...deviceEdgeFields
     }
+  }
+}
+
+query device(
+  $serialUrl: String
+) {
+  device(
+    serialUrl: $serialUrl
+  ) {
+   id
   }
 }
 
@@ -567,17 +556,68 @@ fragment appInstallEdgeFields on appInstallEdge {
 
 fragment deviceEdgeFields on deviceEdge {
   node {
-    id
-    access_token
-    description
-    devicekey
-    hardware
-    os
-    osVersion
-    region
-    status
-    createdAt
+    id,
+    access_token,
+    description,
+    devicekey,
+    hardware,
+    os,
+    osVersion,
+    region,
+    status,
+    createdAt,
+    pingInterval,
+    deviceLiveInfo {
+      ...deviceLiveInfoFields,
+    },
   }
+}
+
+fragment deviceLiveInfoFields on deviceLiveInfo {
+  isOnline,
+  onlineAt,
+  offlineAt,
+  connectedNetwork {
+    ...connectedNetworkFields,
+  },
+}
+
+fragment connectedNetworkFields on connectedNetwork {
+  online_at,
+  net,
+  local_ip,
+  global_ip,
+  wifi {
+    ...wifiFields,
+  },
+  wifimesh {
+    ...wifimeshFields,
+  },
+  cellular {
+     ...cellularFields,
+  }
+}
+
+fragment wifiFields on wifi {
+  ssid,
+  macAddress,
+  rssi,
+}
+
+fragment wifimeshFields on wifimesh {
+  meshid,
+  parent_obniz_id,
+  root_obniz_id,
+  layer,
+  rssi,
+}
+
+fragment cellularFields on cellular {
+  cnum,
+  iccid,
+  imei,
+  imsi,
+  rssi,
 }
 
 fragment eventEdgeFields on eventEdge {
