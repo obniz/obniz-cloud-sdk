@@ -48,30 +48,9 @@ query user {
   }
 }
 
-query devices(
-  $first: first
-  $skip: skip
-  $id: String
-  $hw: String
-  $app: Int
-  $status: String
-  $created: String
-  $serialCode: String
-  $sort: String
-  $order: String
+query devices($first: first, $skip: skip, $id: String, $hw: String, $app: Int, $status: String, $created: String, $serialCode: String, $sort: String, $order: String
 ) {
-  devices(
-    first: $first
-    skip: $skip
-    id: $id
-    hw: $hw
-    app: $app
-    status: $status
-    created: $created
-    serialCode: $serialCode
-    sort: $sort
-    order: $order
-  ) {
+  devices{
     totalCount
     pageInfo {
       ...pageInfoFields

@@ -200,7 +200,7 @@ exports.UserDocument = (0, graphql_tag_1.default) `
     `;
 exports.DevicesDocument = (0, graphql_tag_1.default) `
     query devices($first: first, $skip: skip, $id: String, $hw: String, $app: Int, $status: String, $created: String, $serialCode: String, $sort: String, $order: String) {
-  devices(first: $first, skip: $skip, id: $id, hw: $hw, app: $app, status: $status, created: $created, serialCode: $serialCode, sort: $sort, order: $order) {
+  devices {
     totalCount
     pageInfo {
       ...pageInfoFields
