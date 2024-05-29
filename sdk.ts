@@ -1404,7 +1404,7 @@ export type DevicesQueryVariables = Exact<{
 }>;
 
 
-export type DevicesQuery = { __typename?: 'Query', devices?: { __typename?: 'deviceConnection', totalCount: number, pageInfo: { __typename?: 'pageInfo', hasPreviousPage: boolean, hasNextPage: boolean }, edges: Array<{ __typename?: 'deviceEdge', node?: { __typename?: 'device', id: string, access_token?: string | null, description: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, pingInterval?: number | null, deviceLiveInfo?: { __typename?: 'deviceLiveInfo', isOnline: boolean, onlineAt?: any | null, offlineAt?: any | null, connectedNetwork?: { __typename?: 'connectedNetwork', online_at: any, net: string, local_ip?: string | null, global_ip?: string | null, wifi?: { __typename?: 'wifi', ssid?: string | null, macAddress?: string | null, rssi?: number | null } | null, wifimesh?: { __typename?: 'wifimesh', meshid?: string | null, parent_obniz_id?: string | null, root_obniz_id?: string | null, layer?: number | null, rssi: number } | null, cellular?: { __typename?: 'cellular', cnum?: string | null, iccid?: string | null, imei?: string | null, imsi?: string | null, rssi?: number | null } | null } | null } | null } | null } | null> } | null };
+export type DevicesQuery = { __typename?: 'Query', devices?: { __typename?: 'deviceConnection', totalCount: number, pageInfo: { __typename?: 'pageInfo', hasPreviousPage: boolean, hasNextPage: boolean }, edges: Array<{ __typename?: 'deviceEdge', node?: { __typename?: 'device', id: string, access_token?: string | null, description: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, pingInterval?: number | null, serialCode?: { __typename?: 'serialCode', serialCode?: string | null } | null, deviceLiveInfo?: { __typename?: 'deviceLiveInfo', isOnline: boolean, onlineAt?: any | null, offlineAt?: any | null, connectedNetwork?: { __typename?: 'connectedNetwork', online_at: any, net: string, local_ip?: string | null, global_ip?: string | null, wifi?: { __typename?: 'wifi', ssid?: string | null, macAddress?: string | null, rssi?: number | null } | null, wifimesh?: { __typename?: 'wifimesh', meshid?: string | null, parent_obniz_id?: string | null, root_obniz_id?: string | null, layer?: number | null, rssi: number } | null, cellular?: { __typename?: 'cellular', cnum?: string | null, iccid?: string | null, imei?: string | null, imsi?: string | null, rssi?: number | null } | null } | null } | null } | null } | null> } | null };
 
 export type DeviceQueryVariables = Exact<{
   serialUrl?: InputMaybe<Scalars['String']>;
@@ -1576,7 +1576,7 @@ export type InstallEdgeFieldsFragment = { __typename?: 'installEdge', node?: { _
 
 export type AppInstallEdgeFieldsFragment = { __typename?: 'appInstallEdge', node?: { __typename?: 'installed_device', id: string, access_token?: string | null, description: string, metadata: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, configs: string, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, createdAt: any, credit: string } | null } | null };
 
-export type DeviceEdgeFieldsFragment = { __typename?: 'deviceEdge', node?: { __typename?: 'device', id: string, access_token?: string | null, description: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, pingInterval?: number | null, deviceLiveInfo?: { __typename?: 'deviceLiveInfo', isOnline: boolean, onlineAt?: any | null, offlineAt?: any | null, connectedNetwork?: { __typename?: 'connectedNetwork', online_at: any, net: string, local_ip?: string | null, global_ip?: string | null, wifi?: { __typename?: 'wifi', ssid?: string | null, macAddress?: string | null, rssi?: number | null } | null, wifimesh?: { __typename?: 'wifimesh', meshid?: string | null, parent_obniz_id?: string | null, root_obniz_id?: string | null, layer?: number | null, rssi: number } | null, cellular?: { __typename?: 'cellular', cnum?: string | null, iccid?: string | null, imei?: string | null, imsi?: string | null, rssi?: number | null } | null } | null } | null } | null };
+export type DeviceEdgeFieldsFragment = { __typename?: 'deviceEdge', node?: { __typename?: 'device', id: string, access_token?: string | null, description: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, pingInterval?: number | null, serialCode?: { __typename?: 'serialCode', serialCode?: string | null } | null, deviceLiveInfo?: { __typename?: 'deviceLiveInfo', isOnline: boolean, onlineAt?: any | null, offlineAt?: any | null, connectedNetwork?: { __typename?: 'connectedNetwork', online_at: any, net: string, local_ip?: string | null, global_ip?: string | null, wifi?: { __typename?: 'wifi', ssid?: string | null, macAddress?: string | null, rssi?: number | null } | null, wifimesh?: { __typename?: 'wifimesh', meshid?: string | null, parent_obniz_id?: string | null, root_obniz_id?: string | null, layer?: number | null, rssi: number } | null, cellular?: { __typename?: 'cellular', cnum?: string | null, iccid?: string | null, imei?: string | null, imsi?: string | null, rssi?: number | null } | null } | null } | null } | null };
 
 export type DeviceLiveInfoFieldsFragment = { __typename?: 'deviceLiveInfo', isOnline: boolean, onlineAt?: any | null, offlineAt?: any | null, connectedNetwork?: { __typename?: 'connectedNetwork', online_at: any, net: string, local_ip?: string | null, global_ip?: string | null, wifi?: { __typename?: 'wifi', ssid?: string | null, macAddress?: string | null, rssi?: number | null } | null, wifimesh?: { __typename?: 'wifimesh', meshid?: string | null, parent_obniz_id?: string | null, root_obniz_id?: string | null, layer?: number | null, rssi: number } | null, cellular?: { __typename?: 'cellular', cnum?: string | null, iccid?: string | null, imei?: string | null, imsi?: string | null, rssi?: number | null } | null } | null };
 
@@ -1710,6 +1710,9 @@ export const DeviceEdgeFieldsFragmentDoc = gql`
     status
     createdAt
     pingInterval
+    serialCode {
+      serialCode
+    }
     deviceLiveInfo {
       ...deviceLiveInfoFields
     }
@@ -1785,7 +1788,7 @@ export const UserDocument = gql`
     `;
 export const DevicesDocument = gql`
     query devices($first: first, $skip: skip, $id: String, $hw: String, $app: Int, $status: String, $created: String, $serialCode: String, $sort: String, $order: String) {
-  devices {
+  devices(first: $first, skip: $skip, id: $id, hw: $hw, app: $app, status: $status, created: $created, serialCode: $serialCode, sort: $sort, order: $order) {
     totalCount
     pageInfo {
       ...pageInfoFields
