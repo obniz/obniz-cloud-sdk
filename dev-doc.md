@@ -18,7 +18,7 @@ import { GraphQLClient } from 'graphql-request';
 import { getSdk } from './sdk';
 
 async function getWebApp(token: string) {
-    const uri = "https://api.obniz.io/v1/graphql";
+    const uri = "https://api.obniz.com/v1/graphql";
     const client = new GraphQLClient(uri, {
         headers: {
             authorization: `Bearer ${token}`
