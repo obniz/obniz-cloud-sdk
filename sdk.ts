@@ -1,7 +1,11 @@
 import { GraphQLClient } from 'graphql-request';
-import { print } from 'graphql';
+import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -9,858 +13,849 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** ISO-8601 Format DateTime */
+  Date: any;
   /** [Int] Limitation of query results. range is 1..50 */
   first: any;
   /** [Int] offset of query results. range is 0<= */
   skip: any;
-  /** ISO-8601 Format DateTime */
-  Date: any;
   /** The `Upload` scalar type represents a file upload. */
   Upload: any;
 };
 
-/** Root of api.obniz.com graphql api endpoint queries */
-export type Query = {
-   __typename?: 'Query';
-  /** My WebApp Configration on obniz.com regarding accessToken. */
-  webapp?: Maybe<Webapp>;
-  /** My App Configration on obniz.com regarding accessToken. */
-  app?: Maybe<App>;
-  /** User information which is authorized for current Access Token. */
-  user?: Maybe<User>;
-  /** Devices a user has */
-  devices?: Maybe<DeviceConnection>;
-  /** User Configured Serverless Events */
-  events?: Maybe<EventConnection>;
-  /** Registrated obniz hardware list on obniz Cloud */
-  hardwares: Array<Maybe<Hardware>>;
-  /** obnizOS versions on obniz Cloud for queried hardware */
-  os: Array<Maybe<Os>>;
-  /** Query App event history. */
-  appEvents?: Maybe<AppEvents>;
-  operations?: Maybe<OperationsConnection>;
-  operationSettings?: Maybe<OperationSettingsConnection>;
-  operationResults?: Maybe<OperationResultsConnection>;
-  /** Token permission. */
-  token?: Maybe<Token>;
-  device?: Maybe<DeviceNoAuthRequired>;
-};
-
-
-/** Root of api.obniz.com graphql api endpoint queries */
-export type QueryDevicesArgs = {
-  first?: Maybe<Scalars['first']>;
-  skip?: Maybe<Scalars['skip']>;
-  id?: Maybe<Scalars['String']>;
-  hw?: Maybe<Scalars['String']>;
-  app?: Maybe<Scalars['Int']>;
-  status?: Maybe<Scalars['String']>;
-  created?: Maybe<Scalars['String']>;
-  serialCode?: Maybe<Scalars['String']>;
-  sort?: Maybe<Scalars['String']>;
-  order?: Maybe<Scalars['String']>;
-};
-
-
-/** Root of api.obniz.com graphql api endpoint queries */
-export type QueryEventsArgs = {
-  first?: Maybe<Scalars['first']>;
-  skip?: Maybe<Scalars['skip']>;
-};
-
-
-/** Root of api.obniz.com graphql api endpoint queries */
-export type QueryOsArgs = {
-  hardware: Scalars['String'];
-};
-
-
-/** Root of api.obniz.com graphql api endpoint queries */
-export type QueryAppEventsArgs = {
-  first?: Maybe<Scalars['first']>;
-  skip?: Maybe<Scalars['skip']>;
-};
-
-
-/** Root of api.obniz.com graphql api endpoint queries */
-export type QueryOperationsArgs = {
-  id?: Maybe<Scalars['Int']>;
-  facilityName?: Maybe<Scalars['String']>;
-};
-
-
-/** Root of api.obniz.com graphql api endpoint queries */
-export type QueryOperationSettingsArgs = {
-  first?: Maybe<Scalars['first']>;
-  operationId?: Maybe<Scalars['ID']>;
-  status?: Maybe<Scalars['Int']>;
-};
-
-
-/** Root of api.obniz.com graphql api endpoint queries */
-export type QueryOperationResultsArgs = {
-  first?: Maybe<Scalars['first']>;
-  operationId?: Maybe<Scalars['ID']>;
-  operationSettingId?: Maybe<Scalars['ID']>;
-};
-
-
-/** Root of api.obniz.com graphql api endpoint queries */
-export type QueryDeviceArgs = {
-  serialUrl?: Maybe<Scalars['String']>;
-};
-
-/** WebApp object. This contains webapp information which created on obniz.com as WebApp */
-export type Webapp = {
-   __typename?: 'webapp';
-  /** Unique Identifier of webapp */
-  id: Scalars['ID'];
-  /** English Title of WebApp */
-  title: Scalars['String'];
-  /** English Description */
-  short_body: Scalars['String'];
-  /** Type of WebApp. */
-  type: Scalars['String'];
-  /** Current Status on obniz.com Explore App */
-  store_status: Scalars['String'];
-  /** Query Installed Apps for WebApp. */
-  installs?: Maybe<InstallConnection>;
-};
-
-
-/** WebApp object. This contains webapp information which created on obniz.com as WebApp */
-export type WebappInstallsArgs = {
-  first?: Maybe<Scalars['first']>;
-  skip?: Maybe<Scalars['skip']>;
-};
-
-
-
-/** Connection of Install */
-export type InstallConnection = {
-   __typename?: 'installConnection';
-  /** Total Count of device edges */
-  totalCount: Scalars['Int'];
-  /** Page Information */
-  pageInfo: PageInfo;
-  /** Edges */
-  edges: Array<Maybe<InstallEdge>>;
-};
-
-/** Pagenation */
-export type PageInfo = {
-   __typename?: 'pageInfo';
-  /** result has next page */
-  hasNextPage: Scalars['Boolean'];
-  /** result has previous page */
-  hasPreviousPage: Scalars['Boolean'];
-};
-
-/** Install Edge */
-export type InstallEdge = {
-   __typename?: 'installEdge';
-  /** Cursor */
-  node?: Maybe<Install>;
-};
-
-/** Installed WebApp object. This contains user installed webapp configration */
-export type Install = {
-   __typename?: 'install';
-  /** Unique Identifier of install */
-  id: Scalars['ID'];
-  /** User information which is authorized for current Access Token. */
-  user?: Maybe<User>;
-  /** Installed time */
-  createdAt: Scalars['Date'];
-  /** Updated time */
-  updatedAt: Scalars['Date'];
-  /** JSON Representation of Installed app configration */
-  configs: Scalars['String'];
-};
-
-/** User information */
-export type User = {
-   __typename?: 'user';
-  /** Unique Identifier */
-  id: Scalars['ID'];
-  /** user name */
-  name?: Maybe<Scalars['String']>;
-  /** email address */
-  email?: Maybe<Scalars['String']>;
-  /** url for user icon */
-  picture?: Maybe<Scalars['String']>;
-  /** User Plan on obniz.com */
-  plan: Scalars['String'];
-  /** Credit Point user has */
-  credit: Scalars['String'];
-  /** Installed time */
-  createdAt: Scalars['Date'];
-};
-
-
 /** App object. This contains app information which created on obniz.com as App */
 export type App = {
-   __typename?: 'app';
+  __typename?: 'app';
   /** Unique Identifier of app */
   id: Scalars['ID'];
-  /** English Title of app */
-  title: Scalars['String'];
-  /** English Description */
-  short_body: Scalars['String'];
-  /** Type of app. */
-  type: Scalars['String'];
-  /** Current Status on obniz.com app on explore */
-  store_status: Scalars['String'];
   /** Query Installs for an App. */
   installs?: Maybe<AppInstallConnection>;
+  /** English Description */
+  short_body: Scalars['String'];
+  /** Current Status on app store */
+  store_status: Scalars['String'];
+  /** English Title of app */
+  title: Scalars['String'];
+  /** Type of app. */
+  type: Scalars['String'];
 };
 
 
 /** App object. This contains app information which created on obniz.com as App */
 export type AppInstallsArgs = {
-  first?: Maybe<Scalars['first']>;
-  skip?: Maybe<Scalars['skip']>;
+  first?: InputMaybe<Scalars['first']>;
+  skip?: InputMaybe<Scalars['skip']>;
 };
 
-/** Connection of Install */
-export type AppInstallConnection = {
-   __typename?: 'appInstallConnection';
-  /** Total Count of device edges */
-  totalCount: Scalars['Int'];
-  /** Page Information */
-  pageInfo: PageInfo;
-  /** Edges */
-  edges: Array<Maybe<AppInstallEdge>>;
-};
-
-/** Install Edge */
-export type AppInstallEdge = {
-   __typename?: 'appInstallEdge';
-  /** Cursor */
-  node?: Maybe<Installed_Device>;
-};
-
-/** Device information */
-export type Installed_Device = {
-   __typename?: 'installed_device';
-  /** Unique Identifier like "0000-0000" */
-  id: Scalars['ID'];
-  /** Access Token */
-  access_token?: Maybe<Scalars['String']>;
-  /**
-   * Description
-   * 
-   *       Same value are exist on metadata.description
-   */
-  description: Scalars['String'];
-  /**
-   * User Defined Metadata JSON string
-   * 
-   *       Useful for labeling device location or attached machine.
-   */
-  metadata: Scalars['String'];
-  /**
-   * DeviceKey
-   * 
-   *       String representation of DeviceKey which installed or to be installed on the device.
-   */
-  devicekey?: Maybe<Scalars['String']>;
-  /**
-   * Hardware Identifier
-   * 
-   *       'obnizb1': obniz Board
-   * 
-   *       'obnizb2': obniz Board 1Y
-   * 
-   *       'm5stickc': M5StickC
-   * 
-   *       'esp32w': obnizOS for ESP32
-   * 
-   *       'esp32p': obnizOS for ESP32 on ESP32-PICO
-   * 
-   *       'encored': obniz BLE/Wi-Fi Gateway
-   */
-  hardware: Scalars['String'];
-  /**
-   * OS Identifier
-   * 
-   *       'obnizb1': obniz Board
-   * 
-   *       'obnizb2': obniz Board 1Y
-   * 
-   *       'm5stickc': M5StickC
-   * 
-   *       'esp32w': obnizOS for ESP32
-   * 
-   *       'encored': obniz BLE/Wi-Fi Gateway
-   */
-  os: Scalars['String'];
-  /** Last time recognized os version like '1.0.0' */
-  osVersion: Scalars['String'];
-  /**
-   * Server Region
-   * 
-   *       'jp': Japan(East Asia)
-   * 
-   *       'us': United States of America(West-America)
-   */
-  region: Scalars['String'];
-  /**
-   * Status
-   * 
-   *       'active': activated
-   * 
-   *       'inactive': inactivated
-   */
-  status: Scalars['String'];
-  /** Online Check Interval in minutes. By default it is null and automatic interval under 1 minutes. */
-  pingInterval?: Maybe<Scalars['Int']>;
-  /** Installed time */
-  createdAt: Scalars['Date'];
-  /** Device Live Information. */
-  deviceLiveInfo?: Maybe<DeviceLiveInfo>;
-  /** User information which is authorized for current Access Token. */
-  user?: Maybe<User>;
-  /** JSON Representation of Installed app configration */
-  configs: Scalars['String'];
-};
-
-/** Device Live Information. */
-export type DeviceLiveInfo = {
-   __typename?: 'deviceLiveInfo';
-  /** Live Information. Device is Online or Offline */
-  isOnline: Scalars['Boolean'];
-  /** The time device become online on the cloud */
-  onlineAt?: Maybe<Scalars['Date']>;
-  /** The time device become offline on the cloud */
-  offlineAt?: Maybe<Scalars['Date']>;
-  /** Live Information. Connected Wi-Fi and RSSI and other related. */
-  connectedNetwork?: Maybe<ConnectedNetwork>;
-};
-
-/** Information of currently connected network  */
-export type ConnectedNetwork = {
-   __typename?: 'connectedNetwork';
-  /** The time device become online on the cloud */
-  online_at: Scalars['Date'];
-  /** Current connected network type. Defined in setting json. ex) wirelesslan */
-  net: Scalars['String'];
-  /** Local IP If exist. ex) 192.168.0.100 */
-  local_ip?: Maybe<Scalars['String']>;
-  /** Global IP if exist. ex) 201.200.199.198 */
-  global_ip?: Maybe<Scalars['String']>;
-  /** Wi-Fi information if network type is wifi */
-  wifi?: Maybe<Wifi>;
-  /** Wi-Fi Mesh information if network type is wifimesh */
-  wifimesh?: Maybe<Wifimesh>;
-};
-
-/** Information of currently connected wifi */
-export type Wifi = {
-   __typename?: 'wifi';
-  /** Current connected Accespoint SSID. ex) obniz-wifi */
-  ssid?: Maybe<Scalars['String']>;
-  /** Current connected Accespoint MacAddress. ex) 0123456789AB */
-  macAddress?: Maybe<Scalars['String']>;
-  /** Current RSSI for connected Accesspoint. RSSI is mesured only on connection timing. ex ) -40 */
-  rssi?: Maybe<Scalars['Int']>;
-};
-
-/** Information of currently connected wifimesh */
-export type Wifimesh = {
-   __typename?: 'wifimesh';
-  /** MESH ID of Currently joined MESH network. ex) 012345678901 */
-  meshid: Scalars['String'];
-  /** Id of parent node ex) 0000-0000 */
-  parent_obniz_id?: Maybe<Scalars['ID']>;
-  /** Id of root node. Root is only connected to The AccessPoint ex) 0000-0000 */
-  root_obniz_id?: Maybe<Scalars['ID']>;
-  /** Depth of MESH network. layer=1 is root node of a network. ex ) 1 */
-  layer: Scalars['Int'];
-  /** Current RSSI for connected Accesspoint. RSSI is mesured only on connection timing. ex ) -40 */
-  rssi: Scalars['Int'];
-};
-
-/** Connection of Device */
-export type DeviceConnection = {
-   __typename?: 'deviceConnection';
-  /** Total Count of device edges */
-  totalCount: Scalars['Int'];
-  /** Page Information */
-  pageInfo: PageInfo;
-  /** Edges */
-  edges: Array<Maybe<DeviceEdge>>;
-};
-
-/** Device Edge */
-export type DeviceEdge = {
-   __typename?: 'deviceEdge';
-  /** Cursor */
-  node?: Maybe<Device>;
-};
-
-/** Device information */
-export type Device = {
-   __typename?: 'device';
-  /** Unique Identifier like "0000-0000" */
-  id: Scalars['ID'];
-  /** Access Token */
-  access_token?: Maybe<Scalars['String']>;
-  /**
-   * Description
-   * 
-   *       Same value are exist on metadata.description
-   */
-  description: Scalars['String'];
-  /**
-   * User Defined Metadata JSON string
-   * 
-   *       Useful for labeling device location or attached machine.
-   */
-  metadata: Scalars['String'];
-  /**
-   * DeviceKey
-   * 
-   *       String representation of DeviceKey which installed or to be installed on the device.
-   */
-  devicekey?: Maybe<Scalars['String']>;
-  /**
-   * Hardware Identifier
-   * 
-   *       'obnizb1': obniz Board
-   * 
-   *       'obnizb2': obniz Board 1Y
-   * 
-   *       'm5stickc': M5StickC
-   * 
-   *       'esp32w': obnizOS for ESP32
-   * 
-   *       'esp32p': obnizOS for ESP32 on ESP32-PICO
-   * 
-   *       'encored': obniz BLE/Wi-Fi Gateway
-   */
-  hardware: Scalars['String'];
-  /**
-   * OS Identifier
-   * 
-   *       'obnizb1': obniz Board
-   * 
-   *       'obnizb2': obniz Board 1Y
-   * 
-   *       'm5stickc': M5StickC
-   * 
-   *       'esp32w': obnizOS for ESP32
-   * 
-   *       'encored': obniz BLE/Wi-Fi Gateway
-   */
-  os: Scalars['String'];
-  /** Last time recognized os version like '1.0.0' */
-  osVersion: Scalars['String'];
-  /**
-   * Server Region
-   * 
-   *       'jp': Japan(East Asia)
-   * 
-   *       'us': United States of America(West-America)
-   */
-  region: Scalars['String'];
-  /**
-   * Status
-   * 
-   *       'active': activated
-   * 
-   *       'inactive': inactivated
-   */
-  status: Scalars['String'];
-  /** Online Check Interval in minutes. By default it is null and automatic interval under 1 minutes. */
-  pingInterval?: Maybe<Scalars['Int']>;
-  /** Installed time */
-  createdAt: Scalars['Date'];
-  /** Device Live Information. */
-  deviceLiveInfo?: Maybe<DeviceLiveInfo>;
-  /** User information which is authorized for current Access Token. */
-  user?: Maybe<User>;
-  /** JSON Representation of Installed app configration */
-  configs: Scalars['String'];
-};
-
-/** Connection of Event */
-export type EventConnection = {
-   __typename?: 'eventConnection';
-  /** Total Count of device edges */
-  totalCount: Scalars['Int'];
-  /** Page Information */
-  pageInfo: PageInfo;
-  /** Edges */
-  edges: Array<Maybe<EventEdge>>;
-};
-
-/** Event Edge */
-export type EventEdge = {
-   __typename?: 'eventEdge';
-  /** Cursor */
-  node?: Maybe<Event>;
-};
-
-/** ServerlessEvent */
-export type Event = {
-   __typename?: 'event';
-  /** Unique Identifier */
-  id: Scalars['ID'];
-  /** User named */
-  name: Scalars['String'];
-  /**
-   * Event trigger as string.
-   * 
-   *       'webhook': webhook
-   * 
-   *       'everyday/{hour}:{time}': timing on a day
-   * 
-   *       'every/{time}{minutes or hours}': interval
-   * 
-   *       'device/{obniz_id}/switch_state_push': device event switch pressed.
-   * 
-   *       'device/{obniz_id}/online': device event online.
-   */
-  trigger: Scalars['String'];
-  /**
-   * Action uri
-   * 
-   *       '{filename_in_repo}': 
-   * 
-   *       'webapp://{install_id}/run': installed webapp
-   */
-  action: Scalars['String'];
-  /** webhook Endpoint if trigger is webhook. */
-  webhookUri?: Maybe<Scalars['String']>;
-  /** Created time */
-  createdAt: Scalars['Date'];
-};
-
-/** Hardware Information. This indicate related os information for each hardware */
-export type Hardware = {
-   __typename?: 'hardware';
-  /** Hardware Identifier  */
-  hardware: Scalars['String'];
-  /** OS identifier for hardware. */
-  os: Scalars['String'];
-};
-
-/** OS Information. Return value may different in user. */
-export type Os = {
-   __typename?: 'os';
-  /** version string */
-  version: Scalars['String'];
-  /** Binary URL for application */
-  app_url: Scalars['String'];
-  /** Binary URL for bootloader */
-  bootloader_url: Scalars['String'];
-  /** Binary URL for partition table */
-  partition_url: Scalars['String'];
-  /** Information of publicity. */
-  isPublic: Scalars['Boolean'];
-};
-
-/** Connection of Device */
-export type AppEvents = {
-   __typename?: 'appEvents';
-  /** Total Count of device edges */
-  totalCount: Scalars['Int'];
-  /** Page Information */
-  pageInfo: PageInfo;
-  /** Events */
-  events: Array<Maybe<AppEvent>>;
+export type AppConfigInput = {
+  key: Scalars['String'];
+  value: Scalars['String'];
 };
 
 /** This contains information that was sent by the webhook in the past. */
 export type AppEvent = {
-   __typename?: 'appEvent';
-  /** Unique Identifier of webhook for webapp */
-  id: Scalars['Int'];
+  __typename?: 'appEvent';
+  app: AppEventApp;
   /** The date and time the webhook was sent. */
   createdAt: Scalars['String'];
+  /** Unique Identifier of webhook for webapp */
+  id: Scalars['Int'];
+  payload: AppEventPayload;
   /** Type of event, */
   type: Scalars['String'];
-  app: AppEventApp;
-  payload: AppEventPayload;
 };
 
 export type AppEventApp = {
-   __typename?: 'appEventApp';
+  __typename?: 'appEventApp';
   /** Unique Identifier of webapp */
   id: Scalars['ID'];
 };
 
 /** Contains any of the following objects. */
 export type AppEventPayload = {
-   __typename?: 'appEventPayload';
-  user?: Maybe<User>;
+  __typename?: 'appEventPayload';
   device?: Maybe<Device>;
+  user?: Maybe<User>;
 };
 
-/** Connection of operations. */
-export type OperationsConnection = {
-   __typename?: 'operationsConnection';
-  /** Edges. */
-  edges: Array<Maybe<OperationEdge>>;
-};
-
-/** operation edge */
-export type OperationEdge = {
-   __typename?: 'operationEdge';
-  /** Cursor. */
-  node?: Maybe<Operation>;
-  /** Facility name. */
-  facilityName?: Maybe<Scalars['String']>;
-  /** The amount of devices that are going to be set. */
-  amountExpectedDevices?: Maybe<Scalars['Int']>;
-  /** The amount of devices that have already been set. */
-  amountOperatedDevices?: Maybe<Scalars['Int']>;
-  /** The amount of reports including both error and information. */
-  amountReport?: Maybe<Scalars['Int']>;
-  /** Indicates whether or not error occurred and its error level if any. NoPrombelm Error. */
-  errorLevelReport?: Maybe<Scalars['String']>;
-};
-
-/** operation. */
-export type Operation = {
-   __typename?: 'operation';
-  /** Unique identifier. */
-  id: Scalars['ID'];
-  /** Name of operation. */
-  name: Scalars['String'];
-  /** Facility ID which the operation targets at. */
-  facilityId: Scalars['Int'];
-  /** Criteria of completion. 0: written, 1: online. */
-  completionLevel: Scalars['Int'];
-  /** Evidence picture of completion is required if this param is true. */
-  needPicEvidence: Scalars['Boolean'];
-  /** Need to specify the exact device location if this param is true. */
-  needLocationNote: Scalars['Boolean'];
-  /** Time when the operation will be carried out. */
-  dueDate?: Maybe<Scalars['Date']>;
-  /** Token that is going to be inclued in the operation URL on Android APP. */
-  operationKey: Scalars['String'];
-  /** Time when the facility created at */
-  createdAt: Scalars['Date'];
-};
-
-/** Connection of operation settings */
-export type OperationSettingsConnection = {
-   __typename?: 'operationSettingsConnection';
-  /** Total count of operation settings edges */
+/** Connection of Device */
+export type AppEvents = {
+  __typename?: 'appEvents';
+  /** Events */
+  events: Array<Maybe<AppEvent>>;
+  /** Page Information */
+  pageInfo: PageInfo;
+  /** Total Count of device edges */
   totalCount: Scalars['Int'];
-  /** Edges. */
-  edges: Array<Maybe<OperationSettingEdge>>;
 };
 
-/** Operation setting edge. */
-export type OperationSettingEdge = {
-   __typename?: 'operationSettingEdge';
-  /** Cursor. */
-  node?: Maybe<OperationSetting>;
-  /** Operation result of the specific setting ID if any. */
-  operationResult?: Maybe<OperationResultForOperationSetting>;
-};
-
-/** Operation setting */
-export type OperationSetting = {
-   __typename?: 'operationSetting';
-  /** Unique identifier. */
-  id: Scalars['ID'];
-  /** Operation ID */
-  operationId: Scalars['ID'];
-  /** Indication ID. */
-  indicationId: Scalars['String'];
-  /** String representation of network config. Please see https://obniz.com/ja/doc/reference/obnizos-for-esp32/settings/setting-json */
-  networkConfigs: Scalars['String'];
-  /** App ID. This field will be null when app is not selected. */
-  appId?: Maybe<Scalars['Int']>;
-  /** String representation of app config object. Will be empty object when no app is selected. */
-  appConfigs: Scalars['String'];
-  /** When no description is set, this field will be an empty string. */
-  description: Scalars['String'];
-  /** 0: not operated yet, 1: in progress, 2: finished */
-  status: Scalars['Int'];
-};
-
-/** Operation result. */
-export type OperationResultForOperationSetting = {
-   __typename?: 'operationResultForOperationSetting';
-  /** Obniz Id. */
-  obnizId?: Maybe<Scalars['Int']>;
-  /** Time when operation setting has been written. */
-  successfullyWrittenAt?: Maybe<Scalars['Date']>;
-  /** Time when a device became online. */
-  becomeOnlineAt?: Maybe<Scalars['Date']>;
-  /** Url of evidence picture. */
-  picUrl?: Maybe<Scalars['String']>;
-  /** Note about where a device has been set. */
-  locationNote?: Maybe<Scalars['String']>;
-  /** Error code of operation failure. */
-  typeError?: Maybe<Scalars['Int']>;
-};
-
-/** Connection of operation results. */
-export type OperationResultsConnection = {
-   __typename?: 'operationResultsConnection';
-  /** Total count of operation results edges */
+/** Connection of Install */
+export type AppInstallConnection = {
+  __typename?: 'appInstallConnection';
+  /** Edges */
+  edges: Array<Maybe<AppInstallEdge>>;
+  /** Page Information */
+  pageInfo: PageInfo;
+  /** Total Count of device edges */
   totalCount: Scalars['Int'];
-  /** Edges. */
-  edges: Array<Maybe<OperationResultEdge>>;
 };
 
-/** Operation result edge. */
-export type OperationResultEdge = {
-   __typename?: 'operationResultEdge';
+/** Install Edge */
+export type AppInstallEdge = {
+  __typename?: 'appInstallEdge';
   /** Cursor */
-  node?: Maybe<OperationResult>;
+  node?: Maybe<Installed_Device>;
 };
 
-/** Operation result. */
-export type OperationResult = {
-   __typename?: 'operationResult';
-  /** Unique identifier. */
+export type AppInstallInput = {
+  app: AppInstallInputApp;
+  obniz: AppInstallInputDevice;
+};
+
+export type AppInstallInputApp = {
+  config: Array<AppConfigInput>;
+  /** appID */
   id: Scalars['ID'];
-  /** Operation Setting Id. */
-  operationSettingId: Scalars['ID'];
-  /** Indication Id. */
-  indicationId: Scalars['String'];
-  /** Obniz Id. */
-  obnizId?: Maybe<Scalars['Int']>;
-  /** Time when operation setting has been written. */
-  successfullyWrittenAt?: Maybe<Scalars['Date']>;
-  /** Time when a device became online. */
-  becomeOnlineAt?: Maybe<Scalars['Date']>;
-  /** Url of evidence picture. */
-  picUrl?: Maybe<Scalars['String']>;
-  /** Note about where a device has been set. */
-  locationNote?: Maybe<Scalars['String']>;
-  /** Error code of operation failure. */
-  typeError?: Maybe<Scalars['Int']>;
 };
 
-/** Token object. This contains token information */
-export type Token = {
-   __typename?: 'token';
-  /** Token type. app_token / oauth / api_key */
-  type: Scalars['String'];
-  /** user permission. none / read / full  */
-  user: Scalars['String'];
-  /** device permission. none / read / full  */
-  device: Scalars['String'];
-  /** event permission. none / read / full  */
-  event: Scalars['String'];
-  /** facility permission. none / read / full  */
-  facility: Scalars['String'];
-  /** device_control permission. none / read / full  */
-  device_control: Scalars['String'];
+export type AppInstallInputDevice = {
+  /** obnizID */
+  id: Scalars['ID'];
+};
+
+/** App log */
+export type AppLog = {
+  __typename?: 'appLog';
+  /** The app log is targetted at an app having this ID */
+  appId: Scalars['ID'];
+  /** Created at */
+  createdAt: Scalars['Date'];
+  /** Unique ID */
+  id: Scalars['ID'];
+  /** Log level of the app log. Possibilitties are either 'info' or 'error' */
+  level: Scalars['String'];
+  /** String representation of json including log information. */
+  logJson: Scalars['String'];
+  /** obniz ID */
+  obnizId: Scalars['ID'];
+};
+
+export type AppLogList = {
+  /** log level: info or error */
+  level: Scalars['String'];
+  /** The string must be json format and include a key 'message'. e.g. '{ 'message': 'log message' }' */
+  logJson: Scalars['String'];
+  /** Cassandra timeuuid string. If the value is omitted, a time when the API is called is used as a timestamp. */
+  timeuuid: Scalars['String'];
+};
+
+export type AppRelatedDataOfCreateAppLogsInput = {
+  logs: Array<InputMaybe<AppLogList>>;
+};
+
+/** App status */
+export type AppStatus = {
+  __typename?: 'appStatus';
+  /** created at */
+  createdAt?: Maybe<Scalars['Date']>;
+  /** Unique ID */
+  id: Scalars['ID'];
+  /** obniz ID */
+  obnizId: Scalars['ID'];
+  result?: Maybe<AppStatusResult>;
+};
+
+export type AppStatusResult = {
+  __typename?: 'appStatusResult';
+  /** app status */
+  status: Scalars['String'];
+  /** text detailing the app status */
+  text: Scalars['String'];
+};
+
+export type AppUninstallInput = {
+  obniz?: InputMaybe<AppUninstallInputDevice>;
+};
+
+export type AppUninstallInputDevice = {
+  /** obnizID */
+  id: Scalars['String'];
+};
+
+/** Information of currently connected cellullar network */
+export type Cellular = {
+  __typename?: 'cellular';
+  /** CNUM: Phone Number */
+  cnum?: Maybe<Scalars['String']>;
+  /** ICCID: Sim Card Identifier */
+  iccid?: Maybe<Scalars['String']>;
+  /** IMEI: Modem Identifier */
+  imei?: Maybe<Scalars['String']>;
+  /** IMSI: Mobile subscription identity */
+  imsi?: Maybe<Scalars['String']>;
+  /** Current RSSI for connected Network. RSSI is mesured only on connection timing. ex ) -40 */
+  rssi?: Maybe<Scalars['Int']>;
+};
+
+/** Information of currently connected network  */
+export type ConnectedNetwork = {
+  __typename?: 'connectedNetwork';
+  /** cellular information if network type is cellular */
+  cellular?: Maybe<Cellular>;
+  /** Global IP if exist. ex) 201.200.199.198 */
+  global_ip?: Maybe<Scalars['String']>;
+  /** Local IP If exist. ex) 192.168.0.100 */
+  local_ip?: Maybe<Scalars['String']>;
+  /** Current connected network type. Defined in setting json. ex) wirelesslan */
+  net: Scalars['String'];
+  /** The time device become online on the cloud */
+  online_at: Scalars['Date'];
+  /** Wi-Fi information if network type is wirelesslan */
+  wifi?: Maybe<Wifi>;
+  /** Wi-Fi Mesh information if network type is wifimesh */
+  wifimesh?: Maybe<Wifimesh>;
+};
+
+export type CreateAppLogInput = {
+  app: CreateAppLogInputApp;
+  obniz: CreateAppLogInputDevice;
+};
+
+export type CreateAppLogInputApp = {
+  /** log level: info or error */
+  level: Scalars['String'];
+  /** The string must be json format and include a key 'message'. e.g. '{ 'message': 'log message' }' */
+  logJson: Scalars['String'];
+};
+
+export type CreateAppLogInputDevice = {
+  /** obnizID */
+  id: Scalars['ID'];
+};
+
+export type CreateAppLogsInput = {
+  app: AppRelatedDataOfCreateAppLogsInput;
+  obniz: ObnizRelatedDataOfCreateAppLogsInput;
+};
+
+export type CreateAppStatusInput = {
+  obniz: CreateAppStatusInputDevice;
+  result: CreateAppStatusInputApp;
+};
+
+export type CreateAppStatusInputApp = {
+  /** status */
+  status: Scalars['String'];
+  /** text */
+  text: Scalars['String'];
+};
+
+export type CreateAppStatusInputDevice = {
+  /** obnizID */
+  id: Scalars['ID'];
+};
+
+export type CreateOperationResultInput = {
+  /** Time when an obniz became online. */
+  becomeOnlineAt?: InputMaybe<Scalars['Date']>;
+  /** Location note. */
+  locationNote?: InputMaybe<Scalars['String']>;
+  /** Obniz ID. Format can be both xxxx-xxxx and xxxxxxxx. */
+  obnizId?: InputMaybe<Scalars['String']>;
+  /** Operation setting ID. */
+  operationSettingId: Scalars['ID'];
+  /** Binary data of operation picture. */
+  picBinary?: InputMaybe<Scalars['Upload']>;
+  /** Time when a device setting is written onto an obniz. */
+  successfullyWrittenAt?: InputMaybe<Scalars['Date']>;
+  /**
+   * Type of operation error. Possibities:
+   *
+   *             - No error -> 0
+   *             - Gateway not found -> 1
+   *             - Found multi gateway -> 2
+   *             - Cannot connect to gateway -> 3
+   *             - Gateway cannot connect the wifi -> 4
+   *
+   *             - Invalid ssid or password -> 5
+   *             - Cannot resolve dns -> 6
+   *             - Cannot go out to the internet -> 7
+   *             - Cannot communicate with gateway -> 8
+   *
+   */
+  typeError: Scalars['Int'];
+};
+
+/** Device information */
+export type Device = {
+  __typename?: 'device';
+  /** Access Token */
+  access_token?: Maybe<Scalars['String']>;
+  /** JSON Representation of Installed app configration */
+  configs: Scalars['String'];
+  /** The time of device manufactured */
+  createdAt: Scalars['Date'];
+  /**
+   * Description
+   *
+   *       Same value are exist on metadata.description
+   *
+   */
+  description: Scalars['String'];
+  /**
+   * DeviceKey
+   *
+   *       String representation of DeviceKey which installed or to be installed on the device.
+   *
+   */
+  devicekey?: Maybe<Scalars['String']>;
+  /** Device Live Information. */
+  deviceLiveInfo?: Maybe<DeviceLiveInfo>;
+  /**
+   * Hardware Identifier
+   *
+   *       'obnizb1': obniz Board
+   *
+   *       'obnizb2': obniz Board 1Y
+   *
+   *       'm5stickc': M5StickC
+   *
+   *       'esp32w': obnizOS for ESP32
+   *
+   *       'esp32p': obnizOS for ESP32 on ESP32-PICO
+   *
+   *       'encored': obniz BLE/Wi-Fi Gateway
+   *
+   *       'blelte_gw2': obniz BLE/LTE Gateway (Cat.4)
+   *       'blewifi_gw2': obniz BLE/Wi-Fi Gateway Gen2.0
+   *
+   */
+  hardware: Scalars['String'];
+  /** Unique Identifier like "0000-0000" */
+  id: Scalars['ID'];
+  /** IMSI of LTE device. This will be recognized when LTE device was connected at least onece. */
+  imsi?: Maybe<Scalars['String']>;
+  /**
+   * User Defined Metadata JSON string
+   *
+   *       Useful for labeling device location or attached machine.
+   */
+  metadata: Scalars['String'];
+  /**
+   * OS Identifier
+   *
+   *       'obnizb1': obniz Board
+   *
+   *       'obnizb2': obniz Board 1Y
+   *
+   *       'm5stickc': M5StickC
+   *
+   *       'esp32w': obnizOS for ESP32
+   *
+   *       'encored': obniz BLE/Wi-Fi Gateway
+   *
+   *       'blewifi_gw2': obnizOS for obniz BLE/Wi-Fi Gateway Gen2.0
+   *       'blelte_gw2': obnizOS for obniz BLE/LTE Gateway (Cat.4)
+   *
+   */
+  os: Scalars['String'];
+  /** Last time recognized os version like '1.0.0' */
+  osVersion: Scalars['String'];
+  /** Online Check Interval in minutes. By default it is null and automatic interval under 1 minutes. */
+  pingInterval?: Maybe<Scalars['Int']>;
+  /**
+   * Server Region
+   *
+   *       'jp': Japan(East Asia)
+   *
+   *       'us': United States of America(West-America)
+   *
+   *
+   */
+  region: Scalars['String'];
+  /** The time of device registration to an account */
+  registeredAt?: Maybe<Scalars['Date']>;
+  /** Device SerialCode */
+  serialCode?: Maybe<SerialCode>;
+  /**
+   * Status
+   *
+   *       'active': activated
+   *
+   *       'inactive': inactivated
+   *
+   *
+   */
+  status: Scalars['String'];
+  /** User information which is authorized for current Access Token. */
+  user?: Maybe<User>;
+  /** Webhook event Destination URL. If not exist, then webhookUrl of the account will be used. */
+  webhookUrl?: Maybe<Scalars['String']>;
+};
+
+/** Connection of Device */
+export type DeviceConnection = {
+  __typename?: 'deviceConnection';
+  /** Edges */
+  edges: Array<Maybe<DeviceEdge>>;
+  /** Page Information */
+  pageInfo: PageInfo;
+  /** Total Count of device edges */
+  totalCount: Scalars['Int'];
+};
+
+export type DeviceCreateInput = {
+  /**
+   * Description
+   *
+   *       User Defined Metadata. Useful for labeling device location or attached machine.
+   *
+   */
+  description?: InputMaybe<Scalars['String']>;
+  /**
+   * Hardware Identifier
+   *
+   *       'esp32w': obnizOS for ESP32
+   *
+   *       'esp32p': obnizOS for ESP32 on ESP32-PICO
+   */
+  hardware: Scalars['String'];
+  /**
+   * Server Region
+   *
+   *       'jp': Japan(East Asia)
+   *
+   *       'us': United States of America(West-America)
+   *
+   *
+   */
+  region?: InputMaybe<Scalars['String']>;
+  /**
+   * Description
+   *
+   *       Option for manufacturer
+   *
+   */
+  serialdata?: InputMaybe<Scalars['String']>;
+};
+
+export type DeviceDeleteAccessTokenInput = {
+  obniz?: InputMaybe<DeviceDeleteAccessTokenInputDevice>;
+};
+
+export type DeviceDeleteAccessTokenInputDevice = {
+  /** obnizID */
+  id: Scalars['String'];
+};
+
+/** Device Edge */
+export type DeviceEdge = {
+  __typename?: 'deviceEdge';
+  /** Cursor */
+  node?: Maybe<Device>;
+};
+
+export type DeviceGenerateAccessTokenInput = {
+  obniz?: InputMaybe<DeviceGenerateAccessTokenInputDevice>;
+};
+
+export type DeviceGenerateAccessTokenInputDevice = {
+  /** obnizID */
+  id: Scalars['String'];
+};
+
+export type DeviceInstalledAppSettingsInput = {
+  app?: InputMaybe<DeviceInstalledAppSettingsInputApp>;
+  obniz?: InputMaybe<DeviceInstalledAppSettingsInputDevice>;
+};
+
+export type DeviceInstalledAppSettingsInputApp = {
+  config: Array<AppConfigInput>;
+};
+
+export type DeviceInstalledAppSettingsInputDevice = {
+  /** obnizID */
+  id: Scalars['ID'];
+};
+
+/** Device Live Information. */
+export type DeviceLiveInfo = {
+  __typename?: 'deviceLiveInfo';
+  /** Live Information. Connected Wi-Fi and RSSI and other related. */
+  connectedNetwork?: Maybe<ConnectedNetwork>;
+  /** Live Information. Device is Online or Offline */
+  isOnline: Scalars['Boolean'];
+  /** The time device become offline on the cloud */
+  offlineAt?: Maybe<Scalars['Date']>;
+  /** The time device become online on the cloud */
+  onlineAt?: Maybe<Scalars['Date']>;
 };
 
 export type DeviceNoAuthRequired = {
-   __typename?: 'deviceNoAuthRequired';
+  __typename?: 'deviceNoAuthRequired';
   /** Format is like XXXX-XXXX */
   id: Scalars['String'];
 };
 
+export type DeviceRegistrateInput = {
+  /** It can be obtained from the QR Code on the device. */
+  registrateUrl: Scalars['String'];
+};
+
+export type DeviceUpdateInput = {
+  /**
+   * Use Defined Description
+   *
+   *       Same value are exist on metadata.description
+   *
+   */
+  description?: InputMaybe<Scalars['String']>;
+  /** obnizID */
+  id: Scalars['ID'];
+  /**
+   * User Defined Metadata key-value JSON string
+   *
+   *       Only key:string and value:string is accepted
+   *       Useful for labeling device location or attached machine.
+   */
+  metadata?: InputMaybe<Scalars['String']>;
+  /** Detection period between going offline and alerting. (seconds) */
+  offlineDetectDuration?: InputMaybe<Scalars['Int']>;
+  /** Online Check Interval in milli seconds. By default it is null and automatic interval under 1 minutes. */
+  pingInterval?: InputMaybe<Scalars['Int']>;
+  /**
+   * Server Region
+   *
+   *       'jp': Japan(East Asia)
+   *
+   *       'us': United States of America(West-America)
+   *
+   *
+   */
+  region?: InputMaybe<Scalars['String']>;
+  /**
+   * Status
+   *
+   *       'active': activated
+   *
+   *       'inactive': inactivated
+   *
+   *
+   */
+  status?: InputMaybe<Scalars['String']>;
+  /** URL to be notified when offline, starting with `http://` or `https://` or `mailto:`. */
+  webhookUrl?: InputMaybe<Scalars['String']>;
+};
+
+/** ServerlessEvent */
+export type Event = {
+  __typename?: 'event';
+  /**
+   * Action uri
+   *
+   *       '{filename_in_repo}':
+   *
+   *       'webapp://{install_id}/run': installed webapp
+   *
+   *
+   */
+  action: Scalars['String'];
+  /** Created time */
+  createdAt: Scalars['Date'];
+  /** Unique Identifier */
+  id: Scalars['ID'];
+  /** User named */
+  name: Scalars['String'];
+  /**
+   * Event trigger as string.
+   *
+   *       'webhook': webhook
+   *
+   *       'everyday/{hour}:{time}': timing on a day
+   *
+   *       'every/{time}{minutes or hours}': interval
+   *
+   *       'device/{obniz_id}/switch_state_push': device event switch pressed.
+   *
+   *       'device/{obniz_id}/online': device event online.
+   *
+   */
+  trigger: Scalars['String'];
+  /** webhook Endpoint if trigger is webhook. */
+  webhookUri?: Maybe<Scalars['String']>;
+};
+
+/** Connection of Event */
+export type EventConnection = {
+  __typename?: 'eventConnection';
+  /** Edges */
+  edges: Array<Maybe<EventEdge>>;
+  /** Page Information */
+  pageInfo: PageInfo;
+  /** Total Count of device edges */
+  totalCount: Scalars['Int'];
+};
+
+export type EventCreateInput = {
+  /**
+   * Action uri
+   *
+   *       '{filename_in_repo}':
+   *
+   *       'webapp://{install_id}/run': installed webapp
+   *
+   */
+  action: Scalars['String'];
+  /** The Event name */
+  name: Scalars['String'];
+  /**
+   * Event trigger as string.
+   *
+   *       'webhook': webhook
+   *
+   *       'everyday/{hour}:{time}': timing on a day
+   *
+   *       'every/{time}{minutes or hours}': interval
+   *
+   *       'device/{obniz_id}/switch_state_push': device event switch pressed.
+   *
+   *       'device/{obniz_id}/online': device event online.
+   *
+   */
+  trigger: Scalars['String'];
+};
+
+/** Event Edge */
+export type EventEdge = {
+  __typename?: 'eventEdge';
+  /** Cursor */
+  node?: Maybe<Event>;
+};
+
+export type EventUpdateInput = {
+  /**
+   * Action uri
+   *       '{filename_in_repo}':
+   *       'webapp://{install_id}/run': installed webapp
+   *
+   */
+  action: Scalars['String'];
+  /** Unique Identifier */
+  id: Scalars['ID'];
+  /** The Event name */
+  name: Scalars['String'];
+  /**
+   * Event trigger as string.
+   *
+   *       'webhook': webhook
+   *
+   *       'everyday/{hour}:{time}': timing on a day
+   *
+   *       'every/{time}{minutes or hours}': interval
+   *
+   *       'device/{obniz_id}/switch_state_push': device event switch pressed.
+   *
+   *       'device/{obniz_id}/online': device event online.
+   *
+   */
+  trigger: Scalars['String'];
+};
+
+/** Hardware Information. This indicate related os information for each hardware */
+export type Hardware = {
+  __typename?: 'hardware';
+  /** Hardware Identifier  */
+  hardware: Scalars['String'];
+  /** OS identifier for hardware. */
+  os: Scalars['String'];
+};
+
+/** Installed WebApp object. This contains user installed webapp configration */
+export type Install = {
+  __typename?: 'install';
+  /** JSON Representation of Installed app configration */
+  configs: Scalars['String'];
+  /** Installed time */
+  createdAt: Scalars['Date'];
+  /** Unique Identifier of install */
+  id: Scalars['ID'];
+  /** Updated time */
+  updatedAt: Scalars['Date'];
+  /** User information which is authorized for current Access Token. */
+  user?: Maybe<User>;
+};
+
+/** Connection of Install */
+export type InstallConnection = {
+  __typename?: 'installConnection';
+  /** Edges */
+  edges: Array<Maybe<InstallEdge>>;
+  /** Page Information */
+  pageInfo: PageInfo;
+  /** Total Count of device edges */
+  totalCount: Scalars['Int'];
+};
+
+/** Device information */
+export type Installed_Device = {
+  __typename?: 'installed_device';
+  /** Access Token */
+  access_token?: Maybe<Scalars['String']>;
+  /** JSON Representation of Installed app configration */
+  configs: Scalars['String'];
+  /** The time of device manufactured */
+  createdAt: Scalars['Date'];
+  /**
+   * Description
+   *
+   *       Same value are exist on metadata.description
+   *
+   */
+  description: Scalars['String'];
+  /**
+   * DeviceKey
+   *
+   *       String representation of DeviceKey which installed or to be installed on the device.
+   *
+   */
+  devicekey?: Maybe<Scalars['String']>;
+  /** Device Live Information. */
+  deviceLiveInfo?: Maybe<DeviceLiveInfo>;
+  /**
+   * Hardware Identifier
+   *
+   *       'obnizb1': obniz Board
+   *
+   *       'obnizb2': obniz Board 1Y
+   *
+   *       'm5stickc': M5StickC
+   *
+   *       'esp32w': obnizOS for ESP32
+   *
+   *       'esp32p': obnizOS for ESP32 on ESP32-PICO
+   *
+   *       'encored': obniz BLE/Wi-Fi Gateway
+   *
+   *       'blelte_gw2': obniz BLE/LTE Gateway (Cat.4)
+   *       'blewifi_gw2': obniz BLE/Wi-Fi Gateway Gen2.0
+   *
+   */
+  hardware: Scalars['String'];
+  /** Unique Identifier like "0000-0000" */
+  id: Scalars['ID'];
+  /** IMSI of LTE device. This will be recognized when LTE device was connected at least onece. */
+  imsi?: Maybe<Scalars['String']>;
+  /**
+   * User Defined Metadata JSON string
+   *
+   *       Useful for labeling device location or attached machine.
+   */
+  metadata: Scalars['String'];
+  /**
+   * OS Identifier
+   *
+   *       'obnizb1': obniz Board
+   *
+   *       'obnizb2': obniz Board 1Y
+   *
+   *       'm5stickc': M5StickC
+   *
+   *       'esp32w': obnizOS for ESP32
+   *
+   *       'encored': obniz BLE/Wi-Fi Gateway
+   *
+   *       'blewifi_gw2': obnizOS for obniz BLE/Wi-Fi Gateway Gen2.0
+   *       'blelte_gw2': obnizOS for obniz BLE/LTE Gateway (Cat.4)
+   *
+   */
+  os: Scalars['String'];
+  /** Last time recognized os version like '1.0.0' */
+  osVersion: Scalars['String'];
+  /** Online Check Interval in minutes. By default it is null and automatic interval under 1 minutes. */
+  pingInterval?: Maybe<Scalars['Int']>;
+  /**
+   * Server Region
+   *
+   *       'jp': Japan(East Asia)
+   *
+   *       'us': United States of America(West-America)
+   *
+   *
+   */
+  region: Scalars['String'];
+  /** The time of device registration to an account */
+  registeredAt?: Maybe<Scalars['Date']>;
+  /** Device SerialCode */
+  serialCode?: Maybe<SerialCode>;
+  /**
+   * Status
+   *
+   *       'active': activated
+   *
+   *       'inactive': inactivated
+   *
+   *
+   */
+  status: Scalars['String'];
+  /** User information which is authorized for current Access Token. */
+  user?: Maybe<User>;
+  /** Webhook event Destination URL. If not exist, then webhookUrl of the account will be used. */
+  webhookUrl?: Maybe<Scalars['String']>;
+};
+
+/** Install Edge */
+export type InstallEdge = {
+  __typename?: 'installEdge';
+  /** Cursor */
+  node?: Maybe<Install>;
+};
+
 /** Root of api.obniz.com graphql api endpoint mutations */
 export type Mutation = {
-   __typename?: 'Mutation';
-  /** Create New Event */
-  createEvent?: Maybe<Event>;
-  /** Update Exist Event */
-  updateEvent?: Maybe<Event>;
-  /** Delete Exist Event */
-  deleteEvent: Scalars['ID'];
-  /** Create New Device */
-  createDevice?: Maybe<Device>;
-  /** Registration New Device */
-  registrateDevice?: Maybe<Device>;
-  /** Update Device */
-  updateDevice?: Maybe<Device>;
-  /** Generate Device Access Token */
-  generateDeviceAccessToken?: Maybe<Device>;
-  /** Delete Device Access Token */
-  deleteDeviceAccessToken?: Maybe<Device>;
-  /** Edit Settings For Installed App */
-  updateDeviceSettingsForInstalledApp?: Maybe<Device>;
-  /** Install App To Device */
-  installApp?: Maybe<Device>;
-  /** Install App To Device */
-  uninstallApp?: Maybe<Device>;
-  /** Create app log */
+  __typename?: 'Mutation';
+  /**
+   * Create app log
+   * @deprecated We now provide more flexible createAppLogs API by which you can send multiple logs in a single request and also set timestamps too.
+   */
   createAppLog?: Maybe<AppLog>;
+  /** Create multiple app logs. */
+  createAppLogs?: Maybe<Array<Maybe<AppLog>>>;
   /** Create app status */
   createAppStatus?: Maybe<AppStatus>;
-  updateStatusOperationSetting?: Maybe<UpdateStatusOperationSettingResult>;
+  /** Create New Device */
+  createDevice?: Maybe<Device>;
+  /**
+   * Create New Event
+   * @deprecated This is legacy feature, no more maintained and will be thrown away in the near future.
+   */
+  createEvent?: Maybe<Event>;
   createOperationResult?: Maybe<OperationResult>;
+  /** Delete Device Access Token */
+  deleteDeviceAccessToken?: Maybe<Device>;
+  /**
+   * Delete Exist Event
+   * @deprecated This is legacy feature, no more maintained and will be thrown away in the near future.
+   */
+  deleteEvent: Scalars['ID'];
+  /** Generate Device Access Token */
+  generateDeviceAccessToken?: Maybe<Device>;
+  /** Install App To Device */
+  installApp?: Maybe<Device>;
+  /** Get device ownership with 'registrateUrl'. */
+  registrateDevice?: Maybe<Device>;
   removeOperationResult?: Maybe<RemoveOperationResultResponse>;
-};
-
-
-/** Root of api.obniz.com graphql api endpoint mutations */
-export type MutationCreateEventArgs = {
-  event: EventCreateInput;
-};
-
-
-/** Root of api.obniz.com graphql api endpoint mutations */
-export type MutationUpdateEventArgs = {
-  event: EventUpdateInput;
-};
-
-
-/** Root of api.obniz.com graphql api endpoint mutations */
-export type MutationDeleteEventArgs = {
-  id: Scalars['ID'];
-};
-
-
-/** Root of api.obniz.com graphql api endpoint mutations */
-export type MutationCreateDeviceArgs = {
-  device: DeviceCreateInput;
-};
-
-
-/** Root of api.obniz.com graphql api endpoint mutations */
-export type MutationRegistrateDeviceArgs = {
-  device: DeviceRegistrateInput;
-};
-
-
-/** Root of api.obniz.com graphql api endpoint mutations */
-export type MutationUpdateDeviceArgs = {
-  device: DeviceUpdateInput;
-};
-
-
-/** Root of api.obniz.com graphql api endpoint mutations */
-export type MutationGenerateDeviceAccessTokenArgs = {
-  device: DeviceGenerateAccessTokenInput;
-};
-
-
-/** Root of api.obniz.com graphql api endpoint mutations */
-export type MutationDeleteDeviceAccessTokenArgs = {
-  device: DeviceDeleteAccessTokenInput;
-};
-
-
-/** Root of api.obniz.com graphql api endpoint mutations */
-export type MutationUpdateDeviceSettingsForInstalledAppArgs = {
-  edit: DeviceInstalledAppSettingsInput;
-};
-
-
-/** Root of api.obniz.com graphql api endpoint mutations */
-export type MutationInstallAppArgs = {
-  install: AppInstallInput;
-};
-
-
-/** Root of api.obniz.com graphql api endpoint mutations */
-export type MutationUninstallAppArgs = {
-  uninstall: AppUninstallInput;
+  /** Uninstall the app from the device. */
+  uninstallApp?: Maybe<Device>;
+  /** Update Device */
+  updateDevice?: Maybe<Device>;
+  /** Update install settings of the device. */
+  updateDeviceSettingsForInstalledApp?: Maybe<Device>;
+  /**
+   * Update Exist Event
+   * @deprecated This is legacy feature, no more maintained and will be thrown away in the near future.
+   */
+  updateEvent?: Maybe<Event>;
+  updateStatusOperationSetting?: Maybe<UpdateStatusOperationSettingResult>;
 };
 
 
@@ -871,14 +866,26 @@ export type MutationCreateAppLogArgs = {
 
 
 /** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationCreateAppLogsArgs = {
+  input: CreateAppLogsInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
 export type MutationCreateAppStatusArgs = {
   input: CreateAppStatusInput;
 };
 
 
 /** Root of api.obniz.com graphql api endpoint mutations */
-export type MutationUpdateStatusOperationSettingArgs = {
-  operationSettingId: Scalars['ID'];
+export type MutationCreateDeviceArgs = {
+  device: DeviceCreateInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationCreateEventArgs = {
+  event: EventCreateInput;
 };
 
 
@@ -889,620 +896,699 @@ export type MutationCreateOperationResultArgs = {
 
 
 /** Root of api.obniz.com graphql api endpoint mutations */
-export type MutationRemoveOperationResultArgs = {
-  operationSettingId: Scalars['ID'];
+export type MutationDeleteDeviceAccessTokenArgs = {
+  device: DeviceDeleteAccessTokenInput;
 };
 
-export type EventCreateInput = {
-  /** The Event name */
-  name: Scalars['String'];
-  /**
-   * Event trigger as string.
-   * 
-   *       'webhook': webhook
-   * 
-   *       'everyday/{hour}:{time}': timing on a day
-   * 
-   *       'every/{time}{minutes or hours}': interval
-   * 
-   *       'device/{obniz_id}/switch_state_push': device event switch pressed.
-   * 
-   *       'device/{obniz_id}/online': device event online.
-   */
-  trigger: Scalars['String'];
-  /**
-   * Action uri
-   * 
-   *       '{filename_in_repo}': 
-   * 
-   *       'webapp://{install_id}/run': installed webapp
-   */
-  action: Scalars['String'];
-};
 
-export type EventUpdateInput = {
-  /** Unique Identifier */
-  id: Scalars['ID'];
-  /** The Event name */
-  name: Scalars['String'];
-  /**
-   * Event trigger as string.
-   * 
-   *       'webhook': webhook
-   * 
-   *       'everyday/{hour}:{time}': timing on a day
-   * 
-   *       'every/{time}{minutes or hours}': interval
-   * 
-   *       'device/{obniz_id}/switch_state_push': device event switch pressed.
-   * 
-   *       'device/{obniz_id}/online': device event online.
-   */
-  trigger: Scalars['String'];
-  /**
-   * Action uri
-   *       '{filename_in_repo}': 
-   *       'webapp://{install_id}/run': installed webapp
-   */
-  action: Scalars['String'];
-};
-
-export type DeviceCreateInput = {
-  /**
-   * Hardware Identifier
-   * 
-   *       'esp32w': obnizOS for ESP32
-   * 
-   *       'esp32p': obnizOS for ESP32 on ESP32-PICO
-   */
-  hardware: Scalars['String'];
-  /**
-   * Server Region
-   * 
-   *       'jp': Japan(East Asia)
-   * 
-   *       'us': United States of America(West-America)
-   */
-  region?: Maybe<Scalars['String']>;
-  /**
-   * Description
-   * 
-   *       User Defined Metadata. Useful for labeling device location or attached machine.
-   */
-  description?: Maybe<Scalars['String']>;
-  /**
-   * Description
-   * 
-   *       Option for manufacturer
-   */
-  serialdata?: Maybe<Scalars['String']>;
-};
-
-export type DeviceRegistrateInput = {
-  /** It can be obtained from the QR Code on the device. */
-  registrateUrl: Scalars['String'];
-};
-
-export type DeviceUpdateInput = {
-  /** obnizID */
-  id: Scalars['ID'];
-  /**
-   * Server Region
-   * 
-   *       'jp': Japan(East Asia)
-   * 
-   *       'us': United States of America(West-America)
-   */
-  region?: Maybe<Scalars['String']>;
-  /**
-   * Use Defined Description
-   * 
-   *       Same value are exist on metadata.description
-   */
-  description?: Maybe<Scalars['String']>;
-  /**
-   * User Defined Metadata key-value JSON string
-   * 
-   *       Only key:string and value:string is accepted 
-   *       Useful for labeling device location or attached machine.
-   */
-  metadata?: Maybe<Scalars['String']>;
-  /**
-   * Status
-   * 
-   *       'active': activated
-   * 
-   *       'inactive': inactivated
-   */
-  status?: Maybe<Scalars['String']>;
-  /** Online Check Interval in milli seconds. By default it is null and automatic interval under 1 minutes. */
-  pingInterval?: Maybe<Scalars['Int']>;
-};
-
-export type DeviceGenerateAccessTokenInput = {
-  obniz?: Maybe<DeviceGenerateAccessTokenInputDevice>;
-};
-
-export type DeviceGenerateAccessTokenInputDevice = {
-  /** obnizID */
-  id: Scalars['String'];
-};
-
-export type DeviceDeleteAccessTokenInput = {
-  obniz?: Maybe<DeviceDeleteAccessTokenInputDevice>;
-};
-
-export type DeviceDeleteAccessTokenInputDevice = {
-  /** obnizID */
-  id: Scalars['String'];
-};
-
-export type DeviceInstalledAppSettingsInput = {
-  obniz?: Maybe<DeviceInstalledAppSettingsInputDevice>;
-  app?: Maybe<DeviceInstalledAppSettingsInputApp>;
-};
-
-export type DeviceInstalledAppSettingsInputDevice = {
-  /** obnizID */
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationDeleteEventArgs = {
   id: Scalars['ID'];
 };
 
-export type DeviceInstalledAppSettingsInputApp = {
-  config: Array<AppConfigInput>;
-};
 
-export type AppConfigInput = {
-  key: Scalars['String'];
-  value: Scalars['String'];
-};
-
-export type AppInstallInput = {
-  obniz: AppInstallInputDevice;
-  app: AppInstallInputApp;
-};
-
-export type AppInstallInputDevice = {
-  /** obnizID */
-  id: Scalars['ID'];
-};
-
-export type AppInstallInputApp = {
-  /** appID */
-  id: Scalars['ID'];
-  config: Array<AppConfigInput>;
-};
-
-export type AppUninstallInput = {
-  obniz?: Maybe<AppUninstallInputDevice>;
-};
-
-export type AppUninstallInputDevice = {
-  /** obnizID */
-  id: Scalars['String'];
-};
-
-export type CreateAppLogInput = {
-  obniz: CreateAppLogInputDevice;
-  app: CreateAppLogInputApp;
-};
-
-export type CreateAppLogInputDevice = {
-  /** obnizID */
-  id: Scalars['ID'];
-};
-
-export type CreateAppLogInputApp = {
-  /** The string must be json format and include a key 'message'. e.g. '{ 'message': 'log message' }' */
-  logJson: Scalars['String'];
-  /** log level: info or error */
-  level: Scalars['String'];
-};
-
-/** App log */
-export type AppLog = {
-   __typename?: 'appLog';
-  /** Unique ID */
-  id: Scalars['ID'];
-  /** obniz ID */
-  obnizId: Scalars['ID'];
-  /** The app log is targetted at an app having this ID */
-  appId: Scalars['ID'];
-  /** String representation of json including log information. */
-  logJson: Scalars['String'];
-  /** Log level of the app log. Possibilitties are either 'info' or 'error' */
-  level: Scalars['String'];
-  /** Created at */
-  createdAt: Scalars['Date'];
-};
-
-export type CreateAppStatusInput = {
-  obniz: CreateAppStatusInputDevice;
-  result: CreateAppStatusInputApp;
-};
-
-export type CreateAppStatusInputDevice = {
-  /** obnizID */
-  id: Scalars['ID'];
-};
-
-export type CreateAppStatusInputApp = {
-  /** status */
-  status: Scalars['String'];
-  /** text */
-  text: Scalars['String'];
-};
-
-/** App status */
-export type AppStatus = {
-   __typename?: 'appStatus';
-  /** Unique ID */
-  id: Scalars['ID'];
-  /** obniz ID */
-  obnizId: Scalars['ID'];
-  result?: Maybe<AppStatusResult>;
-  /** created at */
-  createdAt?: Maybe<Scalars['Date']>;
-};
-
-export type AppStatusResult = {
-   __typename?: 'appStatusResult';
-  /** app status */
-  status: Scalars['String'];
-  /** text detailing the app status */
-  text: Scalars['String'];
-};
-
-export type UpdateStatusOperationSettingResult = {
-   __typename?: 'updateStatusOperationSettingResult';
-  updated: Scalars['Boolean'];
-};
-
-export type CreateOperationResultInput = {
-  /** Operation setting ID. */
-  operationSettingId: Scalars['ID'];
-  /** Obniz ID. Format can be both xxxx-xxxx and xxxxxxxx. */
-  obnizId?: Maybe<Scalars['String']>;
-  /** Time when a device setting is written onto an obniz. */
-  successfullyWrittenAt?: Maybe<Scalars['Date']>;
-  /** Time when an obniz became online. */
-  becomeOnlineAt?: Maybe<Scalars['Date']>;
-  /** Binary data of operation picture. */
-  picBinary?: Maybe<Scalars['Upload']>;
-  /** Location note. */
-  locationNote?: Maybe<Scalars['String']>;
-  /**
-   * Type of operation error. Possibities:
-   * 
-   *             - No error -> 0
-   *             - Gateway not found -> 1
-   *             - Found multi gateway -> 2
-   *             - Cannot connect to gateway -> 3
-   *             - Gateway cannot connect the wifi -> 4
-   * 
-   *             - Invalid ssid or password -> 5
-   *             - Cannot resolve dns -> 6
-   *             - Cannot go out to the internet -> 7
-   *             - Cannot communicate with gateway -> 8
-   */
-  typeError: Scalars['Int'];
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationGenerateDeviceAccessTokenArgs = {
+  device: DeviceGenerateAccessTokenInput;
 };
 
 
-export type RemoveOperationResultResponse = {
-   __typename?: 'removeOperationResultResponse';
-  removed?: Maybe<Scalars['Boolean']>;
-};
-
-export type WebappQueryVariables = {
-  first?: Maybe<Scalars['first']>;
-  skip?: Maybe<Scalars['skip']>;
-};
-
-
-export type WebappQuery = (
-  { __typename?: 'Query' }
-  & { webapp?: Maybe<(
-    { __typename?: 'webapp' }
-    & Pick<Webapp, 'id' | 'title' | 'short_body' | 'type' | 'store_status'>
-    & { installs?: Maybe<(
-      { __typename?: 'installConnection' }
-      & Pick<InstallConnection, 'totalCount'>
-      & { pageInfo: (
-        { __typename?: 'pageInfo' }
-        & PageInfoFieldsFragment
-      ), edges: Array<Maybe<(
-        { __typename?: 'installEdge' }
-        & InstallEdgeFieldsFragment
-      )>> }
-    )> }
-  )> }
-);
-
-export type AppQueryVariables = {
-  first?: Maybe<Scalars['first']>;
-  skip?: Maybe<Scalars['skip']>;
-};
-
-
-export type AppQuery = (
-  { __typename?: 'Query' }
-  & { app?: Maybe<(
-    { __typename?: 'app' }
-    & Pick<App, 'id' | 'title' | 'short_body' | 'type' | 'store_status'>
-    & { installs?: Maybe<(
-      { __typename?: 'appInstallConnection' }
-      & Pick<AppInstallConnection, 'totalCount'>
-      & { pageInfo: (
-        { __typename?: 'pageInfo' }
-        & PageInfoFieldsFragment
-      ), edges: Array<Maybe<(
-        { __typename?: 'appInstallEdge' }
-        & AppInstallEdgeFieldsFragment
-      )>> }
-    )> }
-  )> }
-);
-
-export type UserQueryVariables = {};
-
-
-export type UserQuery = (
-  { __typename?: 'Query' }
-  & { user?: Maybe<(
-    { __typename?: 'user' }
-    & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
-  )> }
-);
-
-export type DevicesQueryVariables = {
-  first?: Maybe<Scalars['first']>;
-  skip?: Maybe<Scalars['skip']>;
-  id?: Maybe<Scalars['String']>;
-  hw?: Maybe<Scalars['String']>;
-  app?: Maybe<Scalars['Int']>;
-  status?: Maybe<Scalars['String']>;
-  created?: Maybe<Scalars['String']>;
-  serialCode?: Maybe<Scalars['String']>;
-  sort?: Maybe<Scalars['String']>;
-  order?: Maybe<Scalars['String']>;
-};
-
-
-export type DevicesQuery = (
-  { __typename?: 'Query' }
-  & { devices?: Maybe<(
-    { __typename?: 'deviceConnection' }
-    & Pick<DeviceConnection, 'totalCount'>
-    & { pageInfo: (
-      { __typename?: 'pageInfo' }
-      & PageInfoFieldsFragment
-    ), edges: Array<Maybe<(
-      { __typename?: 'deviceEdge' }
-      & DeviceEdgeFieldsFragment
-    )>> }
-  )> }
-);
-
-export type EventsQueryVariables = {
-  first?: Maybe<Scalars['first']>;
-  skip?: Maybe<Scalars['skip']>;
-};
-
-
-export type EventsQuery = (
-  { __typename?: 'Query' }
-  & { events?: Maybe<(
-    { __typename?: 'eventConnection' }
-    & Pick<EventConnection, 'totalCount'>
-    & { pageInfo: (
-      { __typename?: 'pageInfo' }
-      & PageInfoFieldsFragment
-    ), edges: Array<Maybe<(
-      { __typename?: 'eventEdge' }
-      & EventEdgeFieldsFragment
-    )>> }
-  )> }
-);
-
-export type AppEventsQueryVariables = {
-  first?: Maybe<Scalars['first']>;
-  skip?: Maybe<Scalars['skip']>;
-};
-
-
-export type AppEventsQuery = (
-  { __typename?: 'Query' }
-  & { appEvents?: Maybe<(
-    { __typename?: 'appEvents' }
-    & Pick<AppEvents, 'totalCount'>
-    & { pageInfo: (
-      { __typename?: 'pageInfo' }
-      & PageInfoFieldsFragment
-    ), events: Array<Maybe<(
-      { __typename?: 'appEvent' }
-      & Pick<AppEvent, 'id' | 'createdAt' | 'type'>
-      & { app: (
-        { __typename?: 'appEventApp' }
-        & Pick<AppEventApp, 'id'>
-      ), payload: (
-        { __typename?: 'appEventPayload' }
-        & { user?: Maybe<(
-          { __typename?: 'user' }
-          & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
-        )>, device?: Maybe<(
-          { __typename?: 'device' }
-          & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
-          & { user?: Maybe<(
-            { __typename?: 'user' }
-            & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
-          )> }
-        )> }
-      ) }
-    )>> }
-  )> }
-);
-
-export type RegistrateDeviceMutationVariables = {
-  device: DeviceRegistrateInput;
-};
-
-
-export type RegistrateDeviceMutation = (
-  { __typename?: 'Mutation' }
-  & { registrateDevice?: Maybe<(
-    { __typename?: 'device' }
-    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
-  )> }
-);
-
-export type InstallAppMutationVariables = {
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationInstallAppArgs = {
   install: AppInstallInput;
 };
 
 
-export type InstallAppMutation = (
-  { __typename?: 'Mutation' }
-  & { installApp?: Maybe<(
-    { __typename?: 'device' }
-    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
-  )> }
-);
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationRegistrateDeviceArgs = {
+  device: DeviceRegistrateInput;
+};
 
-export type UpdateDeviceSettingsForInstalledAppMutationVariables = {
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationRemoveOperationResultArgs = {
+  operationSettingId: Scalars['ID'];
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationUninstallAppArgs = {
+  uninstall: AppUninstallInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationUpdateDeviceArgs = {
+  device: DeviceUpdateInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationUpdateDeviceSettingsForInstalledAppArgs = {
+  edit: DeviceInstalledAppSettingsInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationUpdateEventArgs = {
+  event: EventUpdateInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationUpdateStatusOperationSettingArgs = {
+  operationSettingId: Scalars['ID'];
+};
+
+export type ObnizRelatedDataOfCreateAppLogsInput = {
+  /** obnizID */
+  id: Scalars['ID'];
+};
+
+/** operation. */
+export type Operation = {
+  __typename?: 'operation';
+  /** Criteria of completion. 0: written, 1: online. */
+  completionLevel: Scalars['Int'];
+  /** Time when the facility created at */
+  createdAt: Scalars['Date'];
+  /** Time when the operation will be carried out. */
+  dueDate?: Maybe<Scalars['Date']>;
+  /** Facility ID which the operation targets at. */
+  facilityId: Scalars['Int'];
+  /** Unique identifier. */
+  id: Scalars['ID'];
+  /** Name of operation. */
+  name: Scalars['String'];
+  /** Need to specify the exact device location if this param is true. */
+  needLocationNote: Scalars['Boolean'];
+  /** Evidence picture of completion is required if this param is true. */
+  needPicEvidence: Scalars['Boolean'];
+  /** Token that is going to be inclued in the operation URL on Android APP. */
+  operationKey: Scalars['String'];
+};
+
+/** operation edge */
+export type OperationEdge = {
+  __typename?: 'operationEdge';
+  /** The amount of devices that are going to be set. */
+  amountExpectedDevices?: Maybe<Scalars['Int']>;
+  /** The amount of devices that have already been set. */
+  amountOperatedDevices?: Maybe<Scalars['Int']>;
+  /** The amount of reports including both error and information. */
+  amountReport?: Maybe<Scalars['Int']>;
+  /** Indicates whether or not error occurred and its error level if any. NoPrombelm Error. */
+  errorLevelReport?: Maybe<Scalars['String']>;
+  /** Facility name. */
+  facilityName?: Maybe<Scalars['String']>;
+  /** Cursor. */
+  node?: Maybe<Operation>;
+};
+
+/** Operation result. */
+export type OperationResult = {
+  __typename?: 'operationResult';
+  /** Time when a device became online. */
+  becomeOnlineAt?: Maybe<Scalars['Date']>;
+  /** Unique identifier. */
+  id: Scalars['ID'];
+  /** Indication Id. */
+  indicationId: Scalars['String'];
+  /** Note about where a device has been set. */
+  locationNote?: Maybe<Scalars['String']>;
+  /** Obniz Id. */
+  obnizId?: Maybe<Scalars['Int']>;
+  /** Operation Setting Id. */
+  operationSettingId: Scalars['ID'];
+  /** Url of evidence picture. */
+  picUrl?: Maybe<Scalars['String']>;
+  /** Time when operation setting has been written. */
+  successfullyWrittenAt?: Maybe<Scalars['Date']>;
+  /** Error code of operation failure. */
+  typeError?: Maybe<Scalars['Int']>;
+};
+
+/** Operation result edge. */
+export type OperationResultEdge = {
+  __typename?: 'operationResultEdge';
+  /** Cursor */
+  node?: Maybe<OperationResult>;
+};
+
+/** Operation result. */
+export type OperationResultForOperationSetting = {
+  __typename?: 'operationResultForOperationSetting';
+  /** Time when a device became online. */
+  becomeOnlineAt?: Maybe<Scalars['Date']>;
+  /** Note about where a device has been set. */
+  locationNote?: Maybe<Scalars['String']>;
+  /** Obniz Id. */
+  obnizId?: Maybe<Scalars['Int']>;
+  /** Url of evidence picture. */
+  picUrl?: Maybe<Scalars['String']>;
+  /** Time when operation setting has been written. */
+  successfullyWrittenAt?: Maybe<Scalars['Date']>;
+  /** Error code of operation failure. */
+  typeError?: Maybe<Scalars['Int']>;
+};
+
+/** Connection of operation results. */
+export type OperationResultsConnection = {
+  __typename?: 'operationResultsConnection';
+  /** Edges. */
+  edges: Array<Maybe<OperationResultEdge>>;
+  /** Total count of operation results edges */
+  totalCount: Scalars['Int'];
+};
+
+/** Connection of operations. */
+export type OperationsConnection = {
+  __typename?: 'operationsConnection';
+  /** Edges. */
+  edges: Array<Maybe<OperationEdge>>;
+};
+
+/** Operation setting */
+export type OperationSetting = {
+  __typename?: 'operationSetting';
+  /** String representation of app config object. Will be empty object when no app is selected. */
+  appConfigs: Scalars['String'];
+  /** App ID. This field will be null when app is not selected. */
+  appId?: Maybe<Scalars['Int']>;
+  /** When no description is set, this field will be an empty string. */
+  description: Scalars['String'];
+  /** Unique identifier. */
+  id: Scalars['ID'];
+  /** Indication ID. */
+  indicationId: Scalars['String'];
+  /** String representation of network config. Please see https://docs.obniz.com/ja/reference/obnizos-for-esp32/settings/setting-json */
+  networkConfigs: Scalars['String'];
+  /** Operation ID */
+  operationId: Scalars['ID'];
+  /** 0: not operated yet, 1: in progress, 2: finished */
+  status: Scalars['Int'];
+};
+
+/** Operation setting edge. */
+export type OperationSettingEdge = {
+  __typename?: 'operationSettingEdge';
+  /** Cursor. */
+  node?: Maybe<OperationSetting>;
+  /** Operation result of the specific setting ID if any. */
+  operationResult?: Maybe<OperationResultForOperationSetting>;
+};
+
+/** Connection of operation settings */
+export type OperationSettingsConnection = {
+  __typename?: 'operationSettingsConnection';
+  /** Edges. */
+  edges: Array<Maybe<OperationSettingEdge>>;
+  /** Total count of operation settings edges */
+  totalCount: Scalars['Int'];
+};
+
+/** OS Information. Return value may different in user. */
+export type Os = {
+  __typename?: 'os';
+  /** Binary URL for application */
+  app_url: Scalars['String'];
+  /** Binary URL for bootloader */
+  bootloader_url: Scalars['String'];
+  /** Information of publicity. */
+  isPublic: Scalars['Boolean'];
+  /** Binary URL for partition table */
+  partition_url: Scalars['String'];
+  /** version string */
+  version: Scalars['String'];
+};
+
+/** Pagenation */
+export type PageInfo = {
+  __typename?: 'pageInfo';
+  /** result has next page */
+  hasNextPage: Scalars['Boolean'];
+  /** result has previous page */
+  hasPreviousPage: Scalars['Boolean'];
+};
+
+export type PipelineConfig = {
+  __typename?: 'pipelineConfig';
+  sensors: Array<Maybe<PipelineSensorConfig>>;
+};
+
+export type PipelineSensorConfig = {
+  __typename?: 'pipelineSensorConfig';
+  name: Scalars['String'];
+  type: Scalars['String'];
+  uuid: Scalars['String'];
+};
+
+export type PipelineSensorLog = {
+  __typename?: 'pipelineSensorLog';
+  event: Scalars['String'];
+  macAddress: Scalars['String'];
+  sensor: Scalars['String'];
+  timestamp: Scalars['Date'];
+  uuid: Scalars['String'];
+};
+
+/** Root of api.obniz.com graphql api endpoint queries */
+export type Query = {
+  __typename?: 'Query';
+  /** Information of app specified by given app token. */
+  app?: Maybe<App>;
+  /** Query event historys of Hosted App. */
+  appEvents?: Maybe<AppEvents>;
+  device?: Maybe<DeviceNoAuthRequired>;
+  /** Information of obniz devices that the request user owns. */
+  devices?: Maybe<DeviceConnection>;
+  /**
+   * User Configured Serverless Events
+   * @deprecated This is legacy feature, no more maintained and will be thrown away in the near future.
+   */
+  events?: Maybe<EventConnection>;
+  /** Registrated obniz hardware list on obniz Cloud */
+  hardwares: Array<Maybe<Hardware>>;
+  operationResults?: Maybe<OperationResultsConnection>;
+  operations?: Maybe<OperationsConnection>;
+  operationSettings?: Maybe<OperationSettingsConnection>;
+  /** obnizOS versions on obniz Cloud for queried hardware */
+  os: Array<Maybe<Os>>;
+  pipelineConfig?: Maybe<PipelineConfig>;
+  /** Get pipeline sensor logs for the specified obniz. */
+  pipelineSensorLogs?: Maybe<Array<Maybe<PipelineSensorLog>>>;
+  /** Token permission. */
+  token?: Maybe<Token>;
+  /** User information which is authorized for current Access Token. */
+  user?: Maybe<User>;
+  /**
+   * Information of webapp specified by given app token.
+   * @deprecated This is deprecated alias query for 'app' query. Use 'app' query instead.
+   */
+  webapp?: Maybe<Webapp>;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint queries */
+export type QueryAppEventsArgs = {
+  first?: InputMaybe<Scalars['first']>;
+  skip?: InputMaybe<Scalars['skip']>;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint queries */
+export type QueryDeviceArgs = {
+  serialUrl?: InputMaybe<Scalars['String']>;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint queries */
+export type QueryDevicesArgs = {
+  app?: InputMaybe<Scalars['Int']>;
+  created?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['first']>;
+  hw?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Scalars['String']>;
+  serialCode?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['skip']>;
+  sort?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<Scalars['String']>;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint queries */
+export type QueryEventsArgs = {
+  first?: InputMaybe<Scalars['first']>;
+  skip?: InputMaybe<Scalars['skip']>;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint queries */
+export type QueryOperationResultsArgs = {
+  first?: InputMaybe<Scalars['first']>;
+  operationId?: InputMaybe<Scalars['ID']>;
+  operationSettingId?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint queries */
+export type QueryOperationsArgs = {
+  facilityName?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['Int']>;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint queries */
+export type QueryOperationSettingsArgs = {
+  first?: InputMaybe<Scalars['first']>;
+  operationId?: InputMaybe<Scalars['ID']>;
+  status?: InputMaybe<Scalars['Int']>;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint queries */
+export type QueryOsArgs = {
+  hardware: Scalars['String'];
+};
+
+
+/** Root of api.obniz.com graphql api endpoint queries */
+export type QueryPipelineConfigArgs = {
+  obnizId: Scalars['ID'];
+};
+
+
+/** Root of api.obniz.com graphql api endpoint queries */
+export type QueryPipelineSensorLogsArgs = {
+  limitForSensorLogs?: InputMaybe<Scalars['Int']>;
+  obnizId: Scalars['ID'];
+  targetSensorUuids?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type RemoveOperationResultResponse = {
+  __typename?: 'removeOperationResultResponse';
+  removed?: Maybe<Scalars['Boolean']>;
+};
+
+/** Associated Serial Code */
+export type SerialCode = {
+  __typename?: 'serialCode';
+  /** Associated serial code string */
+  serialCode?: Maybe<Scalars['String']>;
+};
+
+/** Token object. This contains token information */
+export type Token = {
+  __typename?: 'token';
+  /** device permission. none / read / full  */
+  device: Scalars['String'];
+  /** device_control permission. none / read / full  */
+  device_control: Scalars['String'];
+  /** event permission. none / read / full  */
+  event: Scalars['String'];
+  /** facility permission. none / read / full  */
+  facility: Scalars['String'];
+  /** Token type. app_token / oauth / api_key */
+  type: Scalars['String'];
+  /** user permission. none / read / full  */
+  user: Scalars['String'];
+};
+
+export type UpdateStatusOperationSettingResult = {
+  __typename?: 'updateStatusOperationSettingResult';
+  updated: Scalars['Boolean'];
+};
+
+/** User information */
+export type User = {
+  __typename?: 'user';
+  /** Installed time */
+  createdAt: Scalars['Date'];
+  /** Credit Point user has */
+  credit: Scalars['String'];
+  /** email address */
+  email?: Maybe<Scalars['String']>;
+  /** Unique Identifier */
+  id: Scalars['ID'];
+  /** user name */
+  name?: Maybe<Scalars['String']>;
+  /** url for user icon */
+  picture?: Maybe<Scalars['String']>;
+  /** User Plan on obniz.com */
+  plan: Scalars['String'];
+};
+
+/** WebApp object. This contains webapp information which created on obniz.com as WebApp */
+export type Webapp = {
+  __typename?: 'webapp';
+  /** Unique Identifier of webapp */
+  id: Scalars['ID'];
+  /** Query Installed Apps for WebApp. */
+  installs?: Maybe<InstallConnection>;
+  /** English Description */
+  short_body: Scalars['String'];
+  /** Current Status on obniz.com Explore App */
+  store_status: Scalars['String'];
+  /** English Title of WebApp */
+  title: Scalars['String'];
+  /** Type of WebApp. */
+  type: Scalars['String'];
+};
+
+
+/** WebApp object. This contains webapp information which created on obniz.com as WebApp */
+export type WebappInstallsArgs = {
+  first?: InputMaybe<Scalars['first']>;
+  skip?: InputMaybe<Scalars['skip']>;
+};
+
+/** Information of currently connected wifi */
+export type Wifi = {
+  __typename?: 'wifi';
+  /** Current connected Accespoint MacAddress. ex) 0123456789AB */
+  macAddress?: Maybe<Scalars['String']>;
+  /** Current RSSI for connected Accesspoint. RSSI is mesured only on connection timing. ex ) -40 */
+  rssi?: Maybe<Scalars['Int']>;
+  /** Current connected Accespoint SSID. ex) obniz-wifi */
+  ssid?: Maybe<Scalars['String']>;
+};
+
+/** Information of currently connected wifimesh */
+export type Wifimesh = {
+  __typename?: 'wifimesh';
+  /** Depth of MESH network. layer=1 is root node of a network. ex ) 1 */
+  layer?: Maybe<Scalars['Int']>;
+  /** MESH ID of Currently joined MESH network. ex) 012345678901 */
+  meshid?: Maybe<Scalars['String']>;
+  /** Id of parent node ex) 0000-0000 */
+  parent_obniz_id?: Maybe<Scalars['ID']>;
+  /** Id of root node. Root is only connected to The AccessPoint ex) 0000-0000 */
+  root_obniz_id?: Maybe<Scalars['ID']>;
+  /** Current RSSI for connected Accesspoint. RSSI is mesured only on connection timing. ex ) -40 */
+  rssi: Scalars['Int'];
+};
+
+export type WebappQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['first']>;
+  skip?: InputMaybe<Scalars['skip']>;
+}>;
+
+
+export type WebappQuery = { __typename?: 'Query', webapp?: { __typename?: 'webapp', id: string, title: string, short_body: string, type: string, store_status: string, installs?: { __typename?: 'installConnection', totalCount: number, pageInfo: { __typename?: 'pageInfo', hasPreviousPage: boolean, hasNextPage: boolean }, edges: Array<{ __typename?: 'installEdge', node?: { __typename?: 'install', id: string, configs: string, createdAt: any, updatedAt: any, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, createdAt: any, credit: string } | null } | null } | null> } | null } | null };
+
+export type AppQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['first']>;
+  skip?: InputMaybe<Scalars['skip']>;
+}>;
+
+
+export type AppQuery = { __typename?: 'Query', app?: { __typename?: 'app', id: string, title: string, short_body: string, type: string, store_status: string, installs?: { __typename?: 'appInstallConnection', totalCount: number, pageInfo: { __typename?: 'pageInfo', hasPreviousPage: boolean, hasNextPage: boolean }, edges: Array<{ __typename?: 'appInstallEdge', node?: { __typename?: 'installed_device', id: string, access_token?: string | null, description: string, metadata: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, configs: string, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, createdAt: any, credit: string } | null } | null } | null> } | null } | null };
+
+export type UserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, credit: string, createdAt: any } | null };
+
+export type DevicesQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['first']>;
+  skip?: InputMaybe<Scalars['skip']>;
+  id?: InputMaybe<Scalars['String']>;
+  hw?: InputMaybe<Scalars['String']>;
+  app?: InputMaybe<Scalars['Int']>;
+  status?: InputMaybe<Scalars['String']>;
+  created?: InputMaybe<Scalars['String']>;
+  serialCode?: InputMaybe<Scalars['String']>;
+  sort?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type DevicesQuery = { __typename?: 'Query', devices?: { __typename?: 'deviceConnection', totalCount: number, pageInfo: { __typename?: 'pageInfo', hasPreviousPage: boolean, hasNextPage: boolean }, edges: Array<{ __typename?: 'deviceEdge', node?: { __typename?: 'device', id: string, access_token?: string | null, description: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, pingInterval?: number | null, serialCode?: { __typename?: 'serialCode', serialCode?: string | null } | null, deviceLiveInfo?: { __typename?: 'deviceLiveInfo', isOnline: boolean, onlineAt?: any | null, offlineAt?: any | null, connectedNetwork?: { __typename?: 'connectedNetwork', online_at: any, net: string, local_ip?: string | null, global_ip?: string | null, wifi?: { __typename?: 'wifi', ssid?: string | null, macAddress?: string | null, rssi?: number | null } | null, wifimesh?: { __typename?: 'wifimesh', meshid?: string | null, parent_obniz_id?: string | null, root_obniz_id?: string | null, layer?: number | null, rssi: number } | null, cellular?: { __typename?: 'cellular', cnum?: string | null, iccid?: string | null, imei?: string | null, imsi?: string | null, rssi?: number | null } | null } | null } | null } | null } | null> } | null };
+
+export type DeviceQueryVariables = Exact<{
+  serialUrl?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type DeviceQuery = { __typename?: 'Query', device?: { __typename?: 'deviceNoAuthRequired', id: string } | null };
+
+export type EventsQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['first']>;
+  skip?: InputMaybe<Scalars['skip']>;
+}>;
+
+
+export type EventsQuery = { __typename?: 'Query', events?: { __typename?: 'eventConnection', totalCount: number, pageInfo: { __typename?: 'pageInfo', hasPreviousPage: boolean, hasNextPage: boolean }, edges: Array<{ __typename?: 'eventEdge', node?: { __typename?: 'event', id: string, name: string, trigger: string, action: string, webhookUri?: string | null, createdAt: any } | null } | null> } | null };
+
+export type HardwaresQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type HardwaresQuery = { __typename?: 'Query', hardwares: Array<{ __typename?: 'hardware', hardware: string, os: string } | null> };
+
+export type OsQueryVariables = Exact<{
+  hardware: Scalars['String'];
+}>;
+
+
+export type OsQuery = { __typename?: 'Query', os: Array<{ __typename?: 'os', version: string, app_url: string, bootloader_url: string, partition_url: string } | null> };
+
+export type AppEventsQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['first']>;
+  skip?: InputMaybe<Scalars['skip']>;
+}>;
+
+
+export type AppEventsQuery = { __typename?: 'Query', appEvents?: { __typename?: 'appEvents', totalCount: number, pageInfo: { __typename?: 'pageInfo', hasPreviousPage: boolean, hasNextPage: boolean }, events: Array<{ __typename?: 'appEvent', id: number, createdAt: string, type: string, app: { __typename?: 'appEventApp', id: string }, payload: { __typename?: 'appEventPayload', user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, credit: string, createdAt: any } | null, device?: { __typename?: 'device', id: string, access_token?: string | null, description: string, metadata: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, configs: string, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, credit: string, createdAt: any } | null } | null } } | null> } | null };
+
+export type OperationsQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']>;
+  facilityName?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type OperationsQuery = { __typename?: 'Query', operations?: { __typename?: 'operationsConnection', edges: Array<{ __typename?: 'operationEdge', facilityName?: string | null, amountExpectedDevices?: number | null, amountOperatedDevices?: number | null, amountReport?: number | null, errorLevelReport?: string | null, node?: { __typename?: 'operation', id: string, name: string, facilityId: number, completionLevel: number, needPicEvidence: boolean, needLocationNote: boolean, dueDate?: any | null, operationKey: string, createdAt: any } | null } | null> } | null };
+
+export type OperationSettingsQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['first']>;
+  operationId?: InputMaybe<Scalars['ID']>;
+  status?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type OperationSettingsQuery = { __typename?: 'Query', operationSettings?: { __typename?: 'operationSettingsConnection', totalCount: number, edges: Array<{ __typename?: 'operationSettingEdge', node?: { __typename?: 'operationSetting', id: string, operationId: string, indicationId: string, networkConfigs: string, appId?: number | null, appConfigs: string, description: string, status: number } | null, operationResult?: { __typename?: 'operationResultForOperationSetting', obnizId?: number | null, successfullyWrittenAt?: any | null, becomeOnlineAt?: any | null, picUrl?: string | null, locationNote?: string | null, typeError?: number | null } | null } | null> } | null };
+
+export type OperationResultsQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['first']>;
+  operationId?: InputMaybe<Scalars['ID']>;
+  operationSettingId?: InputMaybe<Scalars['ID']>;
+}>;
+
+
+export type OperationResultsQuery = { __typename?: 'Query', operationResults?: { __typename?: 'operationResultsConnection', totalCount: number, edges: Array<{ __typename?: 'operationResultEdge', node?: { __typename?: 'operationResult', id: string, operationSettingId: string, indicationId: string, obnizId?: number | null, successfullyWrittenAt?: any | null, becomeOnlineAt?: any | null, picUrl?: string | null, locationNote?: string | null, typeError?: number | null } | null } | null> } | null };
+
+export type TokenQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TokenQuery = { __typename?: 'Query', token?: { __typename?: 'token', type: string, user: string, device: string, event: string, facility: string, device_control: string } | null };
+
+export type CreateEventMutationVariables = Exact<{
+  event: EventCreateInput;
+}>;
+
+
+export type CreateEventMutation = { __typename?: 'Mutation', createEvent?: { __typename?: 'event', id: string, name: string, trigger: string, action: string, webhookUri?: string | null, createdAt: any } | null };
+
+export type UpdateEventMutationVariables = Exact<{
+  event: EventUpdateInput;
+}>;
+
+
+export type UpdateEventMutation = { __typename?: 'Mutation', updateEvent?: { __typename?: 'event', id: string, name: string, trigger: string, action: string, webhookUri?: string | null, createdAt: any } | null };
+
+export type DeleteEventMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DeleteEventMutation = { __typename?: 'Mutation', deleteEvent: string };
+
+export type CreateDeviceMutationVariables = Exact<{
+  device: DeviceCreateInput;
+}>;
+
+
+export type CreateDeviceMutation = { __typename?: 'Mutation', createDevice?: { __typename?: 'device', id: string, access_token?: string | null, description: string, metadata: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, configs: string, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, credit: string, createdAt: any } | null } | null };
+
+export type RegistrateDeviceMutationVariables = Exact<{
+  device: DeviceRegistrateInput;
+}>;
+
+
+export type RegistrateDeviceMutation = { __typename?: 'Mutation', registrateDevice?: { __typename?: 'device', id: string, access_token?: string | null, description: string, metadata: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, configs: string, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, credit: string, createdAt: any } | null } | null };
+
+export type UpdateDeviceMutationVariables = Exact<{
+  device: DeviceUpdateInput;
+}>;
+
+
+export type UpdateDeviceMutation = { __typename?: 'Mutation', updateDevice?: { __typename?: 'device', id: string, access_token?: string | null, description: string, metadata: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, configs: string, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, credit: string, createdAt: any } | null } | null };
+
+export type InstallAppMutationVariables = Exact<{
+  install: AppInstallInput;
+}>;
+
+
+export type InstallAppMutation = { __typename?: 'Mutation', installApp?: { __typename?: 'device', id: string, access_token?: string | null, description: string, metadata: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, configs: string, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, credit: string, createdAt: any } | null } | null };
+
+export type UpdateDeviceSettingsForInstalledAppMutationVariables = Exact<{
   updateDeviceSettingsForInstalledApp: DeviceInstalledAppSettingsInput;
-};
+}>;
 
 
-export type UpdateDeviceSettingsForInstalledAppMutation = (
-  { __typename?: 'Mutation' }
-  & { updateDeviceSettingsForInstalledApp?: Maybe<(
-    { __typename?: 'device' }
-    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
-    & { user?: Maybe<(
-      { __typename?: 'user' }
-      & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'credit' | 'createdAt'>
-    )> }
-  )> }
-);
+export type UpdateDeviceSettingsForInstalledAppMutation = { __typename?: 'Mutation', updateDeviceSettingsForInstalledApp?: { __typename?: 'device', id: string, access_token?: string | null, description: string, metadata: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, configs: string, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, credit: string, createdAt: any } | null } | null };
 
-export type UninstallAppMutationVariables = {
+export type UninstallAppMutationVariables = Exact<{
   uninstallApp: AppUninstallInput;
-};
+}>;
 
 
-export type UninstallAppMutation = (
-  { __typename?: 'Mutation' }
-  & { uninstallApp?: Maybe<(
-    { __typename?: 'device' }
-    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
-  )> }
-);
+export type UninstallAppMutation = { __typename?: 'Mutation', uninstallApp?: { __typename?: 'device', id: string, access_token?: string | null, description: string, metadata: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, configs: string, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, credit: string, createdAt: any } | null } | null };
 
-export type GenerateDeviceAccessTokenMutationVariables = {
+export type GenerateDeviceAccessTokenMutationVariables = Exact<{
   generateDeviceAccessToken: DeviceGenerateAccessTokenInput;
-};
+}>;
 
 
-export type GenerateDeviceAccessTokenMutation = (
-  { __typename?: 'Mutation' }
-  & { generateDeviceAccessToken?: Maybe<(
-    { __typename?: 'device' }
-    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
-  )> }
-);
+export type GenerateDeviceAccessTokenMutation = { __typename?: 'Mutation', generateDeviceAccessToken?: { __typename?: 'device', id: string, access_token?: string | null, description: string, metadata: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, configs: string, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, credit: string, createdAt: any } | null } | null };
 
-export type DeleteDeviceAccessTokenMutationVariables = {
+export type DeleteDeviceAccessTokenMutationVariables = Exact<{
   deleteDeviceAccessToken: DeviceDeleteAccessTokenInput;
-};
+}>;
 
 
-export type DeleteDeviceAccessTokenMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteDeviceAccessToken?: Maybe<(
-    { __typename?: 'device' }
-    & Pick<Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
-  )> }
-);
+export type DeleteDeviceAccessTokenMutation = { __typename?: 'Mutation', deleteDeviceAccessToken?: { __typename?: 'device', id: string, access_token?: string | null, description: string, metadata: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, configs: string, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, credit: string, createdAt: any } | null } | null };
 
-export type PageInfoFieldsFragment = (
-  { __typename?: 'pageInfo' }
-  & Pick<PageInfo, 'hasPreviousPage' | 'hasNextPage'>
-);
+export type UpdateStatusOperationSettingMutationVariables = Exact<{
+  operationSettingId: Scalars['ID'];
+}>;
 
-export type InstallEdgeFieldsFragment = (
-  { __typename?: 'installEdge' }
-  & { node?: Maybe<(
-    { __typename?: 'install' }
-    & Pick<Install, 'id' | 'configs' | 'createdAt' | 'updatedAt'>
-    & { user?: Maybe<(
-      { __typename?: 'user' }
-      & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'createdAt' | 'credit'>
-    )> }
-  )> }
-);
 
-export type AppInstallEdgeFieldsFragment = (
-  { __typename?: 'appInstallEdge' }
-  & { node?: Maybe<(
-    { __typename?: 'installed_device' }
-    & Pick<Installed_Device, 'id' | 'access_token' | 'description' | 'metadata' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'configs'>
-    & { user?: Maybe<(
-      { __typename?: 'user' }
-      & Pick<User, 'id' | 'name' | 'email' | 'picture' | 'plan' | 'createdAt' | 'credit'>
-    )> }
-  )> }
-);
+export type UpdateStatusOperationSettingMutation = { __typename?: 'Mutation', updateStatusOperationSetting?: { __typename?: 'updateStatusOperationSettingResult', updated: boolean } | null };
 
-export type DeviceEdgeFieldsFragment = (
-  { __typename?: 'deviceEdge' }
-  & { node?: Maybe<(
-    { __typename?: 'device' }
-    & Pick<Device, 'id' | 'access_token' | 'description' | 'devicekey' | 'hardware' | 'os' | 'osVersion' | 'region' | 'status' | 'createdAt' | 'pingInterval'>
-    & { deviceLiveInfo?: Maybe<(
-      { __typename?: 'deviceLiveInfo' }
-      & DeviceLiveInfoFieldsFragment
-    )> }
-  )> }
-);
+export type CreateOperationResultMutationVariables = Exact<{
+  operationResult: CreateOperationResultInput;
+}>;
 
-export type DeviceLiveInfoFieldsFragment = (
-  { __typename?: 'deviceLiveInfo' }
-  & Pick<DeviceLiveInfo, 'isOnline' | 'onlineAt' | 'offlineAt'>
-  & { connectedNetwork?: Maybe<(
-    { __typename?: 'connectedNetwork' }
-    & ConnectedNetworkFieldsFragment
-  )> }
-);
 
-export type ConnectedNetworkFieldsFragment = (
-  { __typename?: 'connectedNetwork' }
-  & Pick<ConnectedNetwork, 'online_at' | 'net' | 'local_ip' | 'global_ip'>
-  & { wifi?: Maybe<(
-    { __typename?: 'wifi' }
-    & WifiFieldsFragment
-  )>, wifimesh?: Maybe<(
-    { __typename?: 'wifimesh' }
-    & WifimeshFieldsFragment
-  )> }
-);
+export type CreateOperationResultMutation = { __typename?: 'Mutation', createOperationResult?: { __typename?: 'operationResult', id: string, operationSettingId: string, indicationId: string, obnizId?: number | null, successfullyWrittenAt?: any | null, becomeOnlineAt?: any | null, picUrl?: string | null, locationNote?: string | null, typeError?: number | null } | null };
 
-export type WifiFieldsFragment = (
-  { __typename?: 'wifi' }
-  & Pick<Wifi, 'ssid' | 'macAddress' | 'rssi'>
-);
+export type RemoveOperationResultMutationVariables = Exact<{
+  operationSettingId: Scalars['ID'];
+}>;
 
-export type WifimeshFieldsFragment = (
-  { __typename?: 'wifimesh' }
-  & Pick<Wifimesh, 'meshid' | 'parent_obniz_id' | 'root_obniz_id' | 'layer' | 'rssi'>
-);
 
-export type EventEdgeFieldsFragment = (
-  { __typename?: 'eventEdge' }
-  & { node?: Maybe<(
-    { __typename?: 'event' }
-    & Pick<Event, 'id' | 'name' | 'trigger' | 'action' | 'webhookUri' | 'createdAt'>
-  )> }
-);
+export type RemoveOperationResultMutation = { __typename?: 'Mutation', removeOperationResult?: { __typename?: 'removeOperationResultResponse', removed?: boolean | null } | null };
+
+export type PageInfoFieldsFragment = { __typename?: 'pageInfo', hasPreviousPage: boolean, hasNextPage: boolean };
+
+export type InstallEdgeFieldsFragment = { __typename?: 'installEdge', node?: { __typename?: 'install', id: string, configs: string, createdAt: any, updatedAt: any, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, createdAt: any, credit: string } | null } | null };
+
+export type AppInstallEdgeFieldsFragment = { __typename?: 'appInstallEdge', node?: { __typename?: 'installed_device', id: string, access_token?: string | null, description: string, metadata: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, configs: string, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, createdAt: any, credit: string } | null } | null };
+
+export type DeviceEdgeFieldsFragment = { __typename?: 'deviceEdge', node?: { __typename?: 'device', id: string, access_token?: string | null, description: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, pingInterval?: number | null, serialCode?: { __typename?: 'serialCode', serialCode?: string | null } | null, deviceLiveInfo?: { __typename?: 'deviceLiveInfo', isOnline: boolean, onlineAt?: any | null, offlineAt?: any | null, connectedNetwork?: { __typename?: 'connectedNetwork', online_at: any, net: string, local_ip?: string | null, global_ip?: string | null, wifi?: { __typename?: 'wifi', ssid?: string | null, macAddress?: string | null, rssi?: number | null } | null, wifimesh?: { __typename?: 'wifimesh', meshid?: string | null, parent_obniz_id?: string | null, root_obniz_id?: string | null, layer?: number | null, rssi: number } | null, cellular?: { __typename?: 'cellular', cnum?: string | null, iccid?: string | null, imei?: string | null, imsi?: string | null, rssi?: number | null } | null } | null } | null } | null };
+
+export type DeviceLiveInfoFieldsFragment = { __typename?: 'deviceLiveInfo', isOnline: boolean, onlineAt?: any | null, offlineAt?: any | null, connectedNetwork?: { __typename?: 'connectedNetwork', online_at: any, net: string, local_ip?: string | null, global_ip?: string | null, wifi?: { __typename?: 'wifi', ssid?: string | null, macAddress?: string | null, rssi?: number | null } | null, wifimesh?: { __typename?: 'wifimesh', meshid?: string | null, parent_obniz_id?: string | null, root_obniz_id?: string | null, layer?: number | null, rssi: number } | null, cellular?: { __typename?: 'cellular', cnum?: string | null, iccid?: string | null, imei?: string | null, imsi?: string | null, rssi?: number | null } | null } | null };
+
+export type ConnectedNetworkFieldsFragment = { __typename?: 'connectedNetwork', online_at: any, net: string, local_ip?: string | null, global_ip?: string | null, wifi?: { __typename?: 'wifi', ssid?: string | null, macAddress?: string | null, rssi?: number | null } | null, wifimesh?: { __typename?: 'wifimesh', meshid?: string | null, parent_obniz_id?: string | null, root_obniz_id?: string | null, layer?: number | null, rssi: number } | null, cellular?: { __typename?: 'cellular', cnum?: string | null, iccid?: string | null, imei?: string | null, imsi?: string | null, rssi?: number | null } | null };
+
+export type WifiFieldsFragment = { __typename?: 'wifi', ssid?: string | null, macAddress?: string | null, rssi?: number | null };
+
+export type WifimeshFieldsFragment = { __typename?: 'wifimesh', meshid?: string | null, parent_obniz_id?: string | null, root_obniz_id?: string | null, layer?: number | null, rssi: number };
+
+export type CellularFieldsFragment = { __typename?: 'cellular', cnum?: string | null, iccid?: string | null, imei?: string | null, imsi?: string | null, rssi?: number | null };
+
+export type EventEdgeFieldsFragment = { __typename?: 'eventEdge', node?: { __typename?: 'event', id: string, name: string, trigger: string, action: string, webhookUri?: string | null, createdAt: any } | null };
 
 export const PageInfoFieldsFragmentDoc = gql`
     fragment pageInfoFields on pageInfo {
@@ -1572,6 +1658,15 @@ export const WifimeshFieldsFragmentDoc = gql`
   rssi
 }
     `;
+export const CellularFieldsFragmentDoc = gql`
+    fragment cellularFields on cellular {
+  cnum
+  iccid
+  imei
+  imsi
+  rssi
+}
+    `;
 export const ConnectedNetworkFieldsFragmentDoc = gql`
     fragment connectedNetworkFields on connectedNetwork {
   online_at
@@ -1584,9 +1679,13 @@ export const ConnectedNetworkFieldsFragmentDoc = gql`
   wifimesh {
     ...wifimeshFields
   }
+  cellular {
+    ...cellularFields
+  }
 }
     ${WifiFieldsFragmentDoc}
-${WifimeshFieldsFragmentDoc}`;
+${WifimeshFieldsFragmentDoc}
+${CellularFieldsFragmentDoc}`;
 export const DeviceLiveInfoFieldsFragmentDoc = gql`
     fragment deviceLiveInfoFields on deviceLiveInfo {
   isOnline
@@ -1611,6 +1710,9 @@ export const DeviceEdgeFieldsFragmentDoc = gql`
     status
     createdAt
     pingInterval
+    serialCode {
+      serialCode
+    }
     deviceLiveInfo {
       ...deviceLiveInfoFields
     }
@@ -1698,6 +1800,13 @@ export const DevicesDocument = gql`
 }
     ${PageInfoFieldsFragmentDoc}
 ${DeviceEdgeFieldsFragmentDoc}`;
+export const DeviceDocument = gql`
+    query device($serialUrl: String) {
+  device(serialUrl: $serialUrl) {
+    id
+  }
+}
+    `;
 export const EventsDocument = gql`
     query events($first: first, $skip: skip) {
   events(first: $first, skip: $skip) {
@@ -1712,6 +1821,24 @@ export const EventsDocument = gql`
 }
     ${PageInfoFieldsFragmentDoc}
 ${EventEdgeFieldsFragmentDoc}`;
+export const HardwaresDocument = gql`
+    query hardwares {
+  hardwares {
+    hardware
+    os
+  }
+}
+    `;
+export const OsDocument = gql`
+    query os($hardware: String!) {
+  os(hardware: $hardware) {
+    version
+    app_url
+    bootloader_url
+    partition_url
+  }
+}
+    `;
 export const AppEventsDocument = gql`
     query appEvents($first: first, $skip: skip) {
   appEvents(first: $first, skip: $skip) {
@@ -1764,6 +1891,145 @@ export const AppEventsDocument = gql`
   }
 }
     ${PageInfoFieldsFragmentDoc}`;
+export const OperationsDocument = gql`
+    query operations($id: Int, $facilityName: String) {
+  operations(id: $id, facilityName: $facilityName) {
+    edges {
+      node {
+        id
+        name
+        facilityId
+        completionLevel
+        needPicEvidence
+        needLocationNote
+        dueDate
+        operationKey
+        createdAt
+      }
+      facilityName
+      amountExpectedDevices
+      amountOperatedDevices
+      amountReport
+      errorLevelReport
+    }
+  }
+}
+    `;
+export const OperationSettingsDocument = gql`
+    query operationSettings($first: first, $operationId: ID, $status: Int) {
+  operationSettings(first: $first, operationId: $operationId, status: $status) {
+    totalCount
+    edges {
+      node {
+        id
+        operationId
+        indicationId
+        networkConfigs
+        appId
+        appConfigs
+        description
+        status
+      }
+      operationResult {
+        obnizId
+        successfullyWrittenAt
+        becomeOnlineAt
+        picUrl
+        locationNote
+        typeError
+      }
+    }
+  }
+}
+    `;
+export const OperationResultsDocument = gql`
+    query operationResults($first: first, $operationId: ID, $operationSettingId: ID) {
+  operationResults(first: $first, operationId: $operationId, operationSettingId: $operationSettingId) {
+    totalCount
+    edges {
+      node {
+        id
+        operationSettingId
+        indicationId
+        obnizId
+        successfullyWrittenAt
+        becomeOnlineAt
+        picUrl
+        locationNote
+        typeError
+      }
+    }
+  }
+}
+    `;
+export const TokenDocument = gql`
+    query token {
+  token {
+    type
+    user
+    device
+    event
+    facility
+    device_control
+  }
+}
+    `;
+export const CreateEventDocument = gql`
+    mutation createEvent($event: eventCreateInput!) {
+  createEvent(event: $event) {
+    id
+    name
+    trigger
+    action
+    webhookUri
+    createdAt
+  }
+}
+    `;
+export const UpdateEventDocument = gql`
+    mutation updateEvent($event: eventUpdateInput!) {
+  updateEvent(event: $event) {
+    id
+    name
+    trigger
+    action
+    webhookUri
+    createdAt
+  }
+}
+    `;
+export const DeleteEventDocument = gql`
+    mutation deleteEvent($id: ID!) {
+  deleteEvent(id: $id)
+}
+    `;
+export const CreateDeviceDocument = gql`
+    mutation createDevice($device: deviceCreateInput!) {
+  createDevice(device: $device) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+    `;
 export const RegistrateDeviceDocument = gql`
     mutation registrateDevice($device: deviceRegistrateInput!) {
   registrateDevice(device: $device) {
@@ -1778,6 +2044,42 @@ export const RegistrateDeviceDocument = gql`
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+    `;
+export const UpdateDeviceDocument = gql`
+    mutation updateDevice($device: deviceUpdateInput!) {
+  updateDevice(device: $device) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
@@ -1796,6 +2098,15 @@ export const InstallAppDocument = gql`
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
@@ -1841,6 +2152,15 @@ export const UninstallAppDocument = gql`
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
@@ -1859,6 +2179,15 @@ export const GenerateDeviceAccessTokenDocument = gql`
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
@@ -1877,52 +2206,136 @@ export const DeleteDeviceAccessTokenDocument = gql`
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
     `;
+export const UpdateStatusOperationSettingDocument = gql`
+    mutation updateStatusOperationSetting($operationSettingId: ID!) {
+  updateStatusOperationSetting(operationSettingId: $operationSettingId) {
+    updated
+  }
+}
+    `;
+export const CreateOperationResultDocument = gql`
+    mutation createOperationResult($operationResult: createOperationResultInput!) {
+  createOperationResult(operationResult: $operationResult) {
+    id
+    operationSettingId
+    indicationId
+    obnizId
+    successfullyWrittenAt
+    becomeOnlineAt
+    picUrl
+    locationNote
+    typeError
+  }
+}
+    `;
+export const RemoveOperationResultDocument = gql`
+    mutation removeOperationResult($operationSettingId: ID!) {
+  removeOperationResult(operationSettingId: $operationSettingId) {
+    removed
+  }
+}
+    `;
 
-export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
+export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
 
-const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
+
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    webapp(variables?: WebappQueryVariables): Promise<WebappQuery> {
-      return withWrapper(() => client.request<WebappQuery>(print(WebappDocument), variables));
+    webapp(variables?: WebappQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<WebappQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<WebappQuery>(WebappDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'webapp', 'query');
     },
-    app(variables?: AppQueryVariables): Promise<AppQuery> {
-      return withWrapper(() => client.request<AppQuery>(print(AppDocument), variables));
+    app(variables?: AppQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AppQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AppQuery>(AppDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'app', 'query');
     },
-    user(variables?: UserQueryVariables): Promise<UserQuery> {
-      return withWrapper(() => client.request<UserQuery>(print(UserDocument), variables));
+    user(variables?: UserQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UserQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UserQuery>(UserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'user', 'query');
     },
-    devices(variables?: DevicesQueryVariables): Promise<DevicesQuery> {
-      return withWrapper(() => client.request<DevicesQuery>(print(DevicesDocument), variables));
+    devices(variables?: DevicesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DevicesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DevicesQuery>(DevicesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'devices', 'query');
     },
-    events(variables?: EventsQueryVariables): Promise<EventsQuery> {
-      return withWrapper(() => client.request<EventsQuery>(print(EventsDocument), variables));
+    device(variables?: DeviceQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeviceQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeviceQuery>(DeviceDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'device', 'query');
     },
-    appEvents(variables?: AppEventsQueryVariables): Promise<AppEventsQuery> {
-      return withWrapper(() => client.request<AppEventsQuery>(print(AppEventsDocument), variables));
+    events(variables?: EventsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<EventsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<EventsQuery>(EventsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'events', 'query');
     },
-    registrateDevice(variables: RegistrateDeviceMutationVariables): Promise<RegistrateDeviceMutation> {
-      return withWrapper(() => client.request<RegistrateDeviceMutation>(print(RegistrateDeviceDocument), variables));
+    hardwares(variables?: HardwaresQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<HardwaresQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<HardwaresQuery>(HardwaresDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'hardwares', 'query');
     },
-    installApp(variables: InstallAppMutationVariables): Promise<InstallAppMutation> {
-      return withWrapper(() => client.request<InstallAppMutation>(print(InstallAppDocument), variables));
+    os(variables: OsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<OsQuery>(OsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'os', 'query');
     },
-    updateDeviceSettingsForInstalledApp(variables: UpdateDeviceSettingsForInstalledAppMutationVariables): Promise<UpdateDeviceSettingsForInstalledAppMutation> {
-      return withWrapper(() => client.request<UpdateDeviceSettingsForInstalledAppMutation>(print(UpdateDeviceSettingsForInstalledAppDocument), variables));
+    appEvents(variables?: AppEventsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AppEventsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AppEventsQuery>(AppEventsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'appEvents', 'query');
     },
-    uninstallApp(variables: UninstallAppMutationVariables): Promise<UninstallAppMutation> {
-      return withWrapper(() => client.request<UninstallAppMutation>(print(UninstallAppDocument), variables));
+    operations(variables?: OperationsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OperationsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<OperationsQuery>(OperationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'operations', 'query');
     },
-    generateDeviceAccessToken(variables: GenerateDeviceAccessTokenMutationVariables): Promise<GenerateDeviceAccessTokenMutation> {
-      return withWrapper(() => client.request<GenerateDeviceAccessTokenMutation>(print(GenerateDeviceAccessTokenDocument), variables));
+    operationSettings(variables?: OperationSettingsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OperationSettingsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<OperationSettingsQuery>(OperationSettingsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'operationSettings', 'query');
     },
-    deleteDeviceAccessToken(variables: DeleteDeviceAccessTokenMutationVariables): Promise<DeleteDeviceAccessTokenMutation> {
-      return withWrapper(() => client.request<DeleteDeviceAccessTokenMutation>(print(DeleteDeviceAccessTokenDocument), variables));
+    operationResults(variables?: OperationResultsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OperationResultsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<OperationResultsQuery>(OperationResultsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'operationResults', 'query');
+    },
+    token(variables?: TokenQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<TokenQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<TokenQuery>(TokenDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'token', 'query');
+    },
+    createEvent(variables: CreateEventMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateEventMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateEventMutation>(CreateEventDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createEvent', 'mutation');
+    },
+    updateEvent(variables: UpdateEventMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateEventMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateEventMutation>(UpdateEventDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateEvent', 'mutation');
+    },
+    deleteEvent(variables: DeleteEventMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteEventMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteEventMutation>(DeleteEventDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteEvent', 'mutation');
+    },
+    createDevice(variables: CreateDeviceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateDeviceMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateDeviceMutation>(CreateDeviceDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createDevice', 'mutation');
+    },
+    registrateDevice(variables: RegistrateDeviceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<RegistrateDeviceMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<RegistrateDeviceMutation>(RegistrateDeviceDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'registrateDevice', 'mutation');
+    },
+    updateDevice(variables: UpdateDeviceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateDeviceMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateDeviceMutation>(UpdateDeviceDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateDevice', 'mutation');
+    },
+    installApp(variables: InstallAppMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InstallAppMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<InstallAppMutation>(InstallAppDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'installApp', 'mutation');
+    },
+    updateDeviceSettingsForInstalledApp(variables: UpdateDeviceSettingsForInstalledAppMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateDeviceSettingsForInstalledAppMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateDeviceSettingsForInstalledAppMutation>(UpdateDeviceSettingsForInstalledAppDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateDeviceSettingsForInstalledApp', 'mutation');
+    },
+    uninstallApp(variables: UninstallAppMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UninstallAppMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UninstallAppMutation>(UninstallAppDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'uninstallApp', 'mutation');
+    },
+    generateDeviceAccessToken(variables: GenerateDeviceAccessTokenMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GenerateDeviceAccessTokenMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GenerateDeviceAccessTokenMutation>(GenerateDeviceAccessTokenDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'generateDeviceAccessToken', 'mutation');
+    },
+    deleteDeviceAccessToken(variables: DeleteDeviceAccessTokenMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteDeviceAccessTokenMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteDeviceAccessTokenMutation>(DeleteDeviceAccessTokenDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteDeviceAccessToken', 'mutation');
+    },
+    updateStatusOperationSetting(variables: UpdateStatusOperationSettingMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateStatusOperationSettingMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateStatusOperationSettingMutation>(UpdateStatusOperationSettingDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateStatusOperationSetting', 'mutation');
+    },
+    createOperationResult(variables: CreateOperationResultMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateOperationResultMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateOperationResultMutation>(CreateOperationResultDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createOperationResult', 'mutation');
+    },
+    removeOperationResult(variables: RemoveOperationResultMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<RemoveOperationResultMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<RemoveOperationResultMutation>(RemoveOperationResultDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'removeOperationResult', 'mutation');
     }
   };
 }

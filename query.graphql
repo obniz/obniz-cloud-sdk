@@ -1,15 +1,15 @@
-query webapp($first: first, $skip: skip){
-  webapp{
-    id,
-    title,
-    short_body,
-    type,
-    store_status,
+query webapp($first: first, $skip: skip) {
+  webapp {
+    id
+    title
+    short_body
+    type
+    store_status
     installs(first: $first, skip: $skip) {
-      totalCount,
+      totalCount
       pageInfo {
         ...pageInfoFields
-      },
+      }
       edges {
         ...installEdgeFields
       }
@@ -19,16 +19,16 @@ query webapp($first: first, $skip: skip){
 
 query app($first: first, $skip: skip) {
   app {
-    id,
-    title,
-    short_body,
-    type,
-    store_status,
+    id
+    title
+    short_body
+    type
+    store_status
     installs(first: $first, skip: $skip) {
-      totalCount,
+      totalCount
       pageInfo {
         ...pageInfoFields
-      },
+      }
       edges {
         ...appInstallEdgeFields
       }
@@ -38,12 +38,12 @@ query app($first: first, $skip: skip) {
 
 query user {
   user {
-    id,
-    name,
-    email,
-    picture,
-    plan,
-    credit,
+    id
+    name
+    email
+    picture
+    plan
+    credit
     createdAt
   }
 }
@@ -53,22 +53,48 @@ query devices($first: first, $skip: skip, $id: String, $hw: String, $app: Int, $
     totalCount,
     pageInfo {
       ...pageInfoFields
-    },
+    }
     edges {
       ...deviceEdgeFields
     }
   }
 }
 
+query device(
+  $serialUrl: String
+) {
+  device(
+    serialUrl: $serialUrl
+  ) {
+   id
+  }
+}
+
 query events($first: first, $skip: skip) {
   events(first: $first, skip: $skip) {
-    totalCount,
+    totalCount
     pageInfo {
       ...pageInfoFields
-    },
+    }
     edges {
       ...eventEdgeFields
     }
+  }
+}
+
+query hardwares {
+  hardwares {
+    hardware
+    os
+  }
+}
+
+query os($hardware: String!) {
+  os(hardware: $hardware) {
+    version
+    app_url
+    bootloader_url
+    partition_url
   }
 }
 
@@ -123,6 +149,145 @@ query appEvents($first: first, $skip: skip) {
   }
 }
 
+query operations($id: Int, $facilityName: String) {
+  operations(id: $id, facilityName: $facilityName) {
+    edges {
+      node {
+        id
+        name
+        facilityId
+        completionLevel
+        needPicEvidence
+        needLocationNote
+        dueDate
+        operationKey
+        createdAt
+      }
+      facilityName
+      amountExpectedDevices
+      amountOperatedDevices
+      amountReport
+      errorLevelReport
+    }
+  }
+}
+
+query operationSettings($first: first, $operationId: ID, $status: Int) {
+  operationSettings(first: $first, operationId: $operationId, status: $status) {
+    totalCount
+    edges {
+      node {
+        id
+        operationId
+        indicationId
+        networkConfigs
+        appId
+        appConfigs
+        description
+        status
+      }
+      operationResult {
+        obnizId
+        successfullyWrittenAt
+        becomeOnlineAt
+        picUrl
+        locationNote
+        typeError
+      }
+    }
+  }
+}
+
+query operationResults(
+  $first: first
+  $operationId: ID
+  $operationSettingId: ID
+) {
+  operationResults(
+    first: $first
+    operationId: $operationId
+    operationSettingId: $operationSettingId
+  ) {
+    totalCount
+    edges {
+      node {
+        id
+        operationSettingId
+        indicationId
+        obnizId
+        successfullyWrittenAt
+        becomeOnlineAt
+        picUrl
+        locationNote
+        typeError
+      }
+    }
+  }
+}
+
+query token {
+  token {
+    type
+    user
+    device
+    event
+    facility
+    device_control
+  }
+}
+
+mutation createEvent($event: eventCreateInput!) {
+  createEvent(event: $event) {
+    id
+    name
+    trigger
+    action
+    webhookUri
+    createdAt
+  }
+}
+
+mutation updateEvent($event: eventUpdateInput!) {
+  updateEvent(event: $event) {
+    id
+    name
+    trigger
+    action
+    webhookUri
+    createdAt
+  }
+}
+
+mutation deleteEvent($id: ID!) {
+  deleteEvent(id: $id)
+}
+
+mutation createDevice($device: deviceCreateInput!) {
+  createDevice(device: $device) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+
 mutation registrateDevice($device: deviceRegistrateInput!) {
   registrateDevice(device: $device) {
     id
@@ -136,6 +301,41 @@ mutation registrateDevice($device: deviceRegistrateInput!) {
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+
+mutation updateDevice($device: deviceUpdateInput!) {
+  updateDevice(device: $device) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
@@ -153,12 +353,25 @@ mutation installApp($install: appInstallInput!) {
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
 
-mutation updateDeviceSettingsForInstalledApp($updateDeviceSettingsForInstalledApp: deviceInstalledAppSettingsInput!) {
-  updateDeviceSettingsForInstalledApp(edit: $updateDeviceSettingsForInstalledApp) {
+mutation updateDeviceSettingsForInstalledApp(
+  $updateDeviceSettingsForInstalledApp: deviceInstalledAppSettingsInput!
+) {
+  updateDeviceSettingsForInstalledApp(
+    edit: $updateDeviceSettingsForInstalledApp
+  ) {
     id
     access_token
     description
@@ -196,11 +409,22 @@ mutation uninstallApp($uninstallApp: appUninstallInput!) {
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
 
-mutation generateDeviceAccessToken($generateDeviceAccessToken: DeviceGenerateAccessTokenInput!) {
+mutation generateDeviceAccessToken(
+  $generateDeviceAccessToken: DeviceGenerateAccessTokenInput!
+) {
   generateDeviceAccessToken(device: $generateDeviceAccessToken) {
     id
     access_token
@@ -213,11 +437,22 @@ mutation generateDeviceAccessToken($generateDeviceAccessToken: DeviceGenerateAcc
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
 
-mutation deleteDeviceAccessToken($deleteDeviceAccessToken: DeviceDeleteAccessTokenInput!) {
+mutation deleteDeviceAccessToken(
+  $deleteDeviceAccessToken: DeviceDeleteAccessTokenInput!
+) {
   deleteDeviceAccessToken(device: $deleteDeviceAccessToken) {
     id
     access_token
@@ -230,28 +465,63 @@ mutation deleteDeviceAccessToken($deleteDeviceAccessToken: DeviceDeleteAccessTok
     region
     status
     createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
     configs
   }
 }
 
+mutation updateStatusOperationSetting($operationSettingId: ID!) {
+  updateStatusOperationSetting(operationSettingId: $operationSettingId) {
+    updated
+  }
+}
+
+mutation createOperationResult($operationResult: createOperationResultInput!) {
+  createOperationResult(operationResult: $operationResult) {
+    id
+    operationSettingId
+    indicationId
+    obnizId
+    successfullyWrittenAt
+    becomeOnlineAt
+    picUrl
+    locationNote
+    typeError
+  }
+}
+
+mutation removeOperationResult($operationSettingId: ID!) {
+  removeOperationResult(operationSettingId: $operationSettingId) {
+    removed
+  }
+}
+
 fragment pageInfoFields on pageInfo {
-  hasPreviousPage,
+  hasPreviousPage
   hasNextPage
 }
 
 fragment installEdgeFields on installEdge {
   node {
-    id,
-    configs,
-    createdAt,
-    updatedAt,
+    id
+    configs
+    createdAt
+    updatedAt
     user {
-      id,
-      name,
-      email,
-      picture,
-      plan,
-      createdAt,
+      id
+      name
+      email
+      picture
+      plan
+      createdAt
       credit
     }
   }
@@ -259,26 +529,26 @@ fragment installEdgeFields on installEdge {
 
 fragment appInstallEdgeFields on appInstallEdge {
   node {
-    id,
-    access_token,
-    description,
-    metadata,
-    devicekey,
-    hardware,
-    os,
-    osVersion,
-    region,
-    status,
-    createdAt,
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
     user {
-      id,
-      name,
-      email,
-      picture,
-      plan,
-      createdAt,
+      id
+      name
+      email
+      picture
+      plan
+      createdAt
       credit
-    },
+    }
     configs
   }
 }
@@ -296,6 +566,9 @@ fragment deviceEdgeFields on deviceEdge {
     status,
     createdAt,
     pingInterval,
+    serialCode{
+      serialCode
+    }
     deviceLiveInfo {
       ...deviceLiveInfoFields,
     },
@@ -322,6 +595,9 @@ fragment connectedNetworkFields on connectedNetwork {
   wifimesh {
     ...wifimeshFields,
   },
+  cellular {
+     ...cellularFields,
+  }
 }
 
 fragment wifiFields on wifi {
@@ -338,13 +614,21 @@ fragment wifimeshFields on wifimesh {
   rssi,
 }
 
+fragment cellularFields on cellular {
+  cnum,
+  iccid,
+  imei,
+  imsi,
+  rssi,
+}
+
 fragment eventEdgeFields on eventEdge {
   node {
-    id,
-    name,
-    trigger,
-    action,
-    webhookUri,
+    id
+    name
+    trigger
+    action
+    webhookUri
     createdAt
   }
 }
