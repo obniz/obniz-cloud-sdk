@@ -1387,6 +1387,10 @@ export declare type DevicesQuery = {
                 status: string;
                 createdAt: any;
                 pingInterval?: number | null;
+                serialCode?: {
+                    __typename?: 'serialCode';
+                    serialCode?: string | null;
+                } | null;
                 deviceLiveInfo?: {
                     __typename?: 'deviceLiveInfo';
                     isOnline: boolean;
@@ -2050,6 +2054,10 @@ export declare type DeviceEdgeFieldsFragment = {
         status: string;
         createdAt: any;
         pingInterval?: number | null;
+        serialCode?: {
+            __typename?: 'serialCode';
+            serialCode?: string | null;
+        } | null;
         deviceLiveInfo?: {
             __typename?: 'deviceLiveInfo';
             isOnline: boolean;
