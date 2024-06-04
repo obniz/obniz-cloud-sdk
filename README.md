@@ -18,24 +18,38 @@ npm i obniz-cloud-sdk
 // Type Script
 import { getSdk } from 'obniz-cloud-sdk';
 
-async function getApp(token: string) {
-    const sdk = getSdk(token);
-    const app = await sdk.app();
-    console.log(app);
+async function getDevices(token: string) {
+  const obnizAPI = getSdk(token);
+  const result = await obnizAPI.devices();
+  for (const edge of result.devices!.edges) {
+    const obniz = edge!.node!;
+    console.log(obniz.id);
+    console.log(obniz.description);
+    console.log(obniz.osVersion);
+    console.log(obniz.deviceLiveInfo?.isOnline);
+    break;
+  }
 }
 
-getApp("apptoken_XXXXX")
+getDevices("token_XXXXXXXXXX")
 ```
 
 ```javascript
 // for javascript
 const getSdk = require('obniz-cloud-sdk').getSdk;
 
-async function getApp(token) {
-  const sdk = getSdk(token);
-  const app = await sdk.app();
-  console.log(app);
+async function getDevices(token) {
+  const obnizAPI = getSdk(token);
+  const result = await obnizAPI.devices();
+  for (const edge of result.devices.edges) {
+    const obniz = edge.node;
+    console.log(obniz.id);
+    console.log(obniz.description);
+    console.log(obniz.osVersion);
+    console.log(obniz.deviceLiveInfo?.isOnline);
+    break;
+  }
 }
 
-getApp('apptoken_XXXXX');
+getDevices("token_XXXXXXXXXX")
 ```
