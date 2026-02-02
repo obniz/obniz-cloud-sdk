@@ -489,6 +489,8 @@ export type DeviceLiveInfo = {
   offlineAt?: Maybe<Scalars['Date']>;
   /** The time device become online on the cloud */
   onlineAt?: Maybe<Scalars['Date']>;
+  /** OTA Progress. 0-100. null if not in progress. */
+  otaProgress?: Maybe<Scalars['Int']>;
 };
 
 export type DeviceNoAuthRequired = {
@@ -841,6 +843,8 @@ export type Mutation = {
   generateDeviceAccessToken?: Maybe<Device>;
   /** Install App To Device */
   installApp?: Maybe<Device>;
+  /** OTA */
+  otaDevice?: Maybe<Device>;
   /** Get device ownership with 'registrateUrl'. */
   registrateDevice?: Maybe<Device>;
   removeOperationResult?: Maybe<RemoveOperationResultResponse>;
@@ -916,6 +920,12 @@ export type MutationGenerateDeviceAccessTokenArgs = {
 /** Root of api.obniz.com graphql api endpoint mutations */
 export type MutationInstallAppArgs = {
   install: AppInstallInput;
+};
+
+
+/** Root of api.obniz.com graphql api endpoint mutations */
+export type MutationOtaDeviceArgs = {
+  device: OtaInput;
 };
 
 
@@ -1119,6 +1129,13 @@ export type Os = {
   /** Binary URL for partition table */
   partition_url: Scalars['String'];
   /** version string */
+  version: Scalars['String'];
+};
+
+export type OtaInput = {
+  /** obnizID */
+  id: Scalars['ID'];
+  /** os version */
   version: Scalars['String'];
 };
 
@@ -1404,7 +1421,7 @@ export type DevicesQueryVariables = Exact<{
 }>;
 
 
-export type DevicesQuery = { __typename?: 'Query', devices?: { __typename?: 'deviceConnection', totalCount: number, pageInfo: { __typename?: 'pageInfo', hasPreviousPage: boolean, hasNextPage: boolean }, edges: Array<{ __typename?: 'deviceEdge', node?: { __typename?: 'device', id: string, access_token?: string | null, description: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, pingInterval?: number | null, serialCode?: { __typename?: 'serialCode', serialCode?: string | null } | null, deviceLiveInfo?: { __typename?: 'deviceLiveInfo', isOnline: boolean, onlineAt?: any | null, offlineAt?: any | null, connectedNetwork?: { __typename?: 'connectedNetwork', online_at: any, net: string, local_ip?: string | null, global_ip?: string | null, wifi?: { __typename?: 'wifi', ssid?: string | null, macAddress?: string | null, rssi?: number | null } | null, wifimesh?: { __typename?: 'wifimesh', meshid?: string | null, parent_obniz_id?: string | null, root_obniz_id?: string | null, layer?: number | null, rssi: number } | null, cellular?: { __typename?: 'cellular', cnum?: string | null, iccid?: string | null, imei?: string | null, imsi?: string | null, rssi?: number | null } | null } | null } | null } | null } | null> } | null };
+export type DevicesQuery = { __typename?: 'Query', devices?: { __typename?: 'deviceConnection', totalCount: number, pageInfo: { __typename?: 'pageInfo', hasPreviousPage: boolean, hasNextPage: boolean }, edges: Array<{ __typename?: 'deviceEdge', node?: { __typename?: 'device', id: string, access_token?: string | null, description: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, pingInterval?: number | null, serialCode?: { __typename?: 'serialCode', serialCode?: string | null } | null, deviceLiveInfo?: { __typename?: 'deviceLiveInfo', isOnline: boolean, onlineAt?: any | null, offlineAt?: any | null, otaProgress?: number | null, connectedNetwork?: { __typename?: 'connectedNetwork', online_at: any, net: string, local_ip?: string | null, global_ip?: string | null, wifi?: { __typename?: 'wifi', ssid?: string | null, macAddress?: string | null, rssi?: number | null } | null, wifimesh?: { __typename?: 'wifimesh', meshid?: string | null, parent_obniz_id?: string | null, root_obniz_id?: string | null, layer?: number | null, rssi: number } | null, cellular?: { __typename?: 'cellular', cnum?: string | null, iccid?: string | null, imei?: string | null, imsi?: string | null, rssi?: number | null } | null } | null } | null } | null } | null> } | null };
 
 export type DeviceQueryVariables = Exact<{
   serialUrl?: InputMaybe<Scalars['String']>;
@@ -1514,6 +1531,13 @@ export type UpdateDeviceMutationVariables = Exact<{
 
 export type UpdateDeviceMutation = { __typename?: 'Mutation', updateDevice?: { __typename?: 'device', id: string, access_token?: string | null, description: string, metadata: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, configs: string, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, credit: string, createdAt: any } | null } | null };
 
+export type OtaDeviceMutationVariables = Exact<{
+  otaDevice: OtaInput;
+}>;
+
+
+export type OtaDeviceMutation = { __typename?: 'Mutation', otaDevice?: { __typename?: 'device', id: string, access_token?: string | null, description: string, metadata: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, configs: string, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, credit: string, createdAt: any } | null } | null };
+
 export type InstallAppMutationVariables = Exact<{
   install: AppInstallInput;
 }>;
@@ -1576,9 +1600,9 @@ export type InstallEdgeFieldsFragment = { __typename?: 'installEdge', node?: { _
 
 export type AppInstallEdgeFieldsFragment = { __typename?: 'appInstallEdge', node?: { __typename?: 'installed_device', id: string, access_token?: string | null, description: string, metadata: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, configs: string, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, createdAt: any, credit: string } | null } | null };
 
-export type DeviceEdgeFieldsFragment = { __typename?: 'deviceEdge', node?: { __typename?: 'device', id: string, access_token?: string | null, description: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, pingInterval?: number | null, serialCode?: { __typename?: 'serialCode', serialCode?: string | null } | null, deviceLiveInfo?: { __typename?: 'deviceLiveInfo', isOnline: boolean, onlineAt?: any | null, offlineAt?: any | null, connectedNetwork?: { __typename?: 'connectedNetwork', online_at: any, net: string, local_ip?: string | null, global_ip?: string | null, wifi?: { __typename?: 'wifi', ssid?: string | null, macAddress?: string | null, rssi?: number | null } | null, wifimesh?: { __typename?: 'wifimesh', meshid?: string | null, parent_obniz_id?: string | null, root_obniz_id?: string | null, layer?: number | null, rssi: number } | null, cellular?: { __typename?: 'cellular', cnum?: string | null, iccid?: string | null, imei?: string | null, imsi?: string | null, rssi?: number | null } | null } | null } | null } | null };
+export type DeviceEdgeFieldsFragment = { __typename?: 'deviceEdge', node?: { __typename?: 'device', id: string, access_token?: string | null, description: string, devicekey?: string | null, hardware: string, os: string, osVersion: string, region: string, status: string, createdAt: any, pingInterval?: number | null, serialCode?: { __typename?: 'serialCode', serialCode?: string | null } | null, deviceLiveInfo?: { __typename?: 'deviceLiveInfo', isOnline: boolean, onlineAt?: any | null, offlineAt?: any | null, otaProgress?: number | null, connectedNetwork?: { __typename?: 'connectedNetwork', online_at: any, net: string, local_ip?: string | null, global_ip?: string | null, wifi?: { __typename?: 'wifi', ssid?: string | null, macAddress?: string | null, rssi?: number | null } | null, wifimesh?: { __typename?: 'wifimesh', meshid?: string | null, parent_obniz_id?: string | null, root_obniz_id?: string | null, layer?: number | null, rssi: number } | null, cellular?: { __typename?: 'cellular', cnum?: string | null, iccid?: string | null, imei?: string | null, imsi?: string | null, rssi?: number | null } | null } | null } | null } | null };
 
-export type DeviceLiveInfoFieldsFragment = { __typename?: 'deviceLiveInfo', isOnline: boolean, onlineAt?: any | null, offlineAt?: any | null, connectedNetwork?: { __typename?: 'connectedNetwork', online_at: any, net: string, local_ip?: string | null, global_ip?: string | null, wifi?: { __typename?: 'wifi', ssid?: string | null, macAddress?: string | null, rssi?: number | null } | null, wifimesh?: { __typename?: 'wifimesh', meshid?: string | null, parent_obniz_id?: string | null, root_obniz_id?: string | null, layer?: number | null, rssi: number } | null, cellular?: { __typename?: 'cellular', cnum?: string | null, iccid?: string | null, imei?: string | null, imsi?: string | null, rssi?: number | null } | null } | null };
+export type DeviceLiveInfoFieldsFragment = { __typename?: 'deviceLiveInfo', isOnline: boolean, onlineAt?: any | null, offlineAt?: any | null, otaProgress?: number | null, connectedNetwork?: { __typename?: 'connectedNetwork', online_at: any, net: string, local_ip?: string | null, global_ip?: string | null, wifi?: { __typename?: 'wifi', ssid?: string | null, macAddress?: string | null, rssi?: number | null } | null, wifimesh?: { __typename?: 'wifimesh', meshid?: string | null, parent_obniz_id?: string | null, root_obniz_id?: string | null, layer?: number | null, rssi: number } | null, cellular?: { __typename?: 'cellular', cnum?: string | null, iccid?: string | null, imei?: string | null, imsi?: string | null, rssi?: number | null } | null } | null };
 
 export type ConnectedNetworkFieldsFragment = { __typename?: 'connectedNetwork', online_at: any, net: string, local_ip?: string | null, global_ip?: string | null, wifi?: { __typename?: 'wifi', ssid?: string | null, macAddress?: string | null, rssi?: number | null } | null, wifimesh?: { __typename?: 'wifimesh', meshid?: string | null, parent_obniz_id?: string | null, root_obniz_id?: string | null, layer?: number | null, rssi: number } | null, cellular?: { __typename?: 'cellular', cnum?: string | null, iccid?: string | null, imei?: string | null, imsi?: string | null, rssi?: number | null } | null };
 
@@ -1694,6 +1718,7 @@ export const DeviceLiveInfoFieldsFragmentDoc = gql`
   connectedNetwork {
     ...connectedNetworkFields
   }
+  otaProgress
 }
     ${ConnectedNetworkFieldsFragmentDoc}`;
 export const DeviceEdgeFieldsFragmentDoc = gql`
@@ -2084,6 +2109,33 @@ export const UpdateDeviceDocument = gql`
   }
 }
     `;
+export const OtaDeviceDocument = gql`
+    mutation otaDevice($otaDevice: otaInput!) {
+  otaDevice(device: $otaDevice) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+    `;
 export const InstallAppDocument = gql`
     mutation installApp($install: appInstallInput!) {
   installApp(install: $install) {
@@ -2312,6 +2364,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     updateDevice(variables: UpdateDeviceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateDeviceMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateDeviceMutation>(UpdateDeviceDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateDevice', 'mutation');
+    },
+    otaDevice(variables: OtaDeviceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OtaDeviceMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<OtaDeviceMutation>(OtaDeviceDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'otaDevice', 'mutation');
     },
     installApp(variables: InstallAppMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InstallAppMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InstallAppMutation>(InstallAppDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'installApp', 'mutation');
