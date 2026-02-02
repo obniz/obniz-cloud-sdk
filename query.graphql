@@ -340,6 +340,32 @@ mutation updateDevice($device: deviceUpdateInput!) {
   }
 }
 
+mutation otaDevice($otaDevice: otaInput!) {
+  otaDevice(device: $otaDevice) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+
 mutation installApp($install: appInstallInput!) {
   installApp(install: $install) {
     id
@@ -582,6 +608,7 @@ fragment deviceLiveInfoFields on deviceLiveInfo {
   connectedNetwork {
     ...connectedNetworkFields,
   },
+  otaProgress
 }
 
 fragment connectedNetworkFields on connectedNetwork {
