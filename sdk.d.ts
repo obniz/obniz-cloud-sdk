@@ -2032,6 +2032,48 @@ export declare type RemoveOperationResultMutation = {
         removed?: boolean | null;
     } | null;
 };
+export declare type CreateAppStatusMutationVariables = Exact<{
+    input: CreateAppStatusInput;
+}>;
+export declare type CreateAppStatusMutation = {
+    __typename?: 'Mutation';
+    createAppStatus?: {
+        __typename?: 'appStatus';
+        createdAt?: any | null;
+        id: string;
+        obnizId: string;
+    } | null;
+};
+export declare type CreateAppLogsMutationVariables = Exact<{
+    input: CreateAppLogsInput;
+}>;
+export declare type CreateAppLogsMutation = {
+    __typename?: 'Mutation';
+    createAppLogs?: Array<{
+        __typename?: 'appLog';
+        appId: string;
+        createdAt: any;
+        id: string;
+        level: string;
+        logJson: string;
+        obnizId: string;
+    } | null> | null;
+};
+export declare type CreateAppLogMutationVariables = Exact<{
+    input: CreateAppLogInput;
+}>;
+export declare type CreateAppLogMutation = {
+    __typename?: 'Mutation';
+    createAppLog?: {
+        __typename?: 'appLog';
+        appId: string;
+        createdAt: any;
+        id: string;
+        level: string;
+        logJson: string;
+        obnizId: string;
+    } | null;
+};
 export declare type PageInfoFieldsFragment = {
     __typename?: 'pageInfo';
     hasPreviousPage: boolean;
@@ -2279,6 +2321,9 @@ export declare const DeleteDeviceAccessTokenDocument: import("graphql/language/a
 export declare const UpdateStatusOperationSettingDocument: import("graphql/language/ast").DocumentNode;
 export declare const CreateOperationResultDocument: import("graphql/language/ast").DocumentNode;
 export declare const RemoveOperationResultDocument: import("graphql/language/ast").DocumentNode;
+export declare const CreateAppStatusDocument: import("graphql/language/ast").DocumentNode;
+export declare const CreateAppLogsDocument: import("graphql/language/ast").DocumentNode;
+export declare const CreateAppLogDocument: import("graphql/language/ast").DocumentNode;
 export declare type SdkFunctionWrapper = <T>(action: (requestHeaders?: Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 export declare function getSdk(client: GraphQLClient, withWrapper?: SdkFunctionWrapper): {
     webapp(variables?: Exact<{
@@ -2351,5 +2396,8 @@ export declare function getSdk(client: GraphQLClient, withWrapper?: SdkFunctionW
     updateStatusOperationSetting(variables: UpdateStatusOperationSettingMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateStatusOperationSettingMutation>;
     createOperationResult(variables: CreateOperationResultMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateOperationResultMutation>;
     removeOperationResult(variables: RemoveOperationResultMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<RemoveOperationResultMutation>;
+    createAppStatus(variables: CreateAppStatusMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateAppStatusMutation>;
+    createAppLogs(variables: CreateAppLogsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateAppLogsMutation>;
+    createAppLog(variables: CreateAppLogMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateAppLogMutation>;
 };
 export declare type Sdk = ReturnType<typeof getSdk>;

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSdk = exports.RemoveOperationResultDocument = exports.CreateOperationResultDocument = exports.UpdateStatusOperationSettingDocument = exports.DeleteDeviceAccessTokenDocument = exports.GenerateDeviceAccessTokenDocument = exports.UninstallAppDocument = exports.UpdateDeviceSettingsForInstalledAppDocument = exports.InstallAppDocument = exports.OtaDeviceDocument = exports.UpdateDeviceDocument = exports.RegistrateDeviceDocument = exports.CreateDeviceDocument = exports.DeleteEventDocument = exports.UpdateEventDocument = exports.CreateEventDocument = exports.TokenDocument = exports.OperationResultsDocument = exports.OperationSettingsDocument = exports.OperationsDocument = exports.AppEventsDocument = exports.OsDocument = exports.HardwaresDocument = exports.EventsDocument = exports.DeviceDocument = exports.DevicesDocument = exports.UserDocument = exports.AppDocument = exports.WebappDocument = exports.EventEdgeFieldsFragmentDoc = exports.DeviceEdgeFieldsFragmentDoc = exports.DeviceLiveInfoFieldsFragmentDoc = exports.ConnectedNetworkFieldsFragmentDoc = exports.CellularFieldsFragmentDoc = exports.WifimeshFieldsFragmentDoc = exports.WifiFieldsFragmentDoc = exports.AppInstallEdgeFieldsFragmentDoc = exports.InstallEdgeFieldsFragmentDoc = exports.PageInfoFieldsFragmentDoc = void 0;
+exports.getSdk = exports.CreateAppLogDocument = exports.CreateAppLogsDocument = exports.CreateAppStatusDocument = exports.RemoveOperationResultDocument = exports.CreateOperationResultDocument = exports.UpdateStatusOperationSettingDocument = exports.DeleteDeviceAccessTokenDocument = exports.GenerateDeviceAccessTokenDocument = exports.UninstallAppDocument = exports.UpdateDeviceSettingsForInstalledAppDocument = exports.InstallAppDocument = exports.OtaDeviceDocument = exports.UpdateDeviceDocument = exports.RegistrateDeviceDocument = exports.CreateDeviceDocument = exports.DeleteEventDocument = exports.UpdateEventDocument = exports.CreateEventDocument = exports.TokenDocument = exports.OperationResultsDocument = exports.OperationSettingsDocument = exports.OperationsDocument = exports.AppEventsDocument = exports.OsDocument = exports.HardwaresDocument = exports.EventsDocument = exports.DeviceDocument = exports.DevicesDocument = exports.UserDocument = exports.AppDocument = exports.WebappDocument = exports.EventEdgeFieldsFragmentDoc = exports.DeviceEdgeFieldsFragmentDoc = exports.DeviceLiveInfoFieldsFragmentDoc = exports.ConnectedNetworkFieldsFragmentDoc = exports.CellularFieldsFragmentDoc = exports.WifimeshFieldsFragmentDoc = exports.WifiFieldsFragmentDoc = exports.AppInstallEdgeFieldsFragmentDoc = exports.InstallEdgeFieldsFragmentDoc = exports.PageInfoFieldsFragmentDoc = void 0;
 const graphql_tag_1 = __importDefault(require("graphql-tag"));
 exports.PageInfoFieldsFragmentDoc = (0, graphql_tag_1.default) `
     fragment pageInfoFields on pageInfo {
@@ -691,6 +691,39 @@ exports.RemoveOperationResultDocument = (0, graphql_tag_1.default) `
   }
 }
     `;
+exports.CreateAppStatusDocument = (0, graphql_tag_1.default) `
+    mutation createAppStatus($input: createAppStatusInput!) {
+  createAppStatus(input: $input) {
+    createdAt
+    id
+    obnizId
+  }
+}
+    `;
+exports.CreateAppLogsDocument = (0, graphql_tag_1.default) `
+    mutation createAppLogs($input: createAppLogsInput!) {
+  createAppLogs(input: $input) {
+    appId
+    createdAt
+    id
+    level
+    logJson
+    obnizId
+  }
+}
+    `;
+exports.CreateAppLogDocument = (0, graphql_tag_1.default) `
+    mutation createAppLog($input: createAppLogInput!) {
+  createAppLog(input: $input) {
+    appId
+    createdAt
+    id
+    level
+    logJson
+    obnizId
+  }
+}
+    `;
 const defaultWrapper = (action, _operationName, _operationType) => action();
 function getSdk(client, withWrapper = defaultWrapper) {
     return {
@@ -777,6 +810,15 @@ function getSdk(client, withWrapper = defaultWrapper) {
         },
         removeOperationResult(variables, requestHeaders) {
             return withWrapper((wrappedRequestHeaders) => client.request(exports.RemoveOperationResultDocument, variables, Object.assign(Object.assign({}, requestHeaders), wrappedRequestHeaders)), 'removeOperationResult', 'mutation');
+        },
+        createAppStatus(variables, requestHeaders) {
+            return withWrapper((wrappedRequestHeaders) => client.request(exports.CreateAppStatusDocument, variables, Object.assign(Object.assign({}, requestHeaders), wrappedRequestHeaders)), 'createAppStatus', 'mutation');
+        },
+        createAppLogs(variables, requestHeaders) {
+            return withWrapper((wrappedRequestHeaders) => client.request(exports.CreateAppLogsDocument, variables, Object.assign(Object.assign({}, requestHeaders), wrappedRequestHeaders)), 'createAppLogs', 'mutation');
+        },
+        createAppLog(variables, requestHeaders) {
+            return withWrapper((wrappedRequestHeaders) => client.request(exports.CreateAppLogDocument, variables, Object.assign(Object.assign({}, requestHeaders), wrappedRequestHeaders)), 'createAppLog', 'mutation');
         }
     };
 }

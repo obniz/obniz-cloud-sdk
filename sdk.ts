@@ -1594,6 +1594,27 @@ export type RemoveOperationResultMutationVariables = Exact<{
 
 export type RemoveOperationResultMutation = { __typename?: 'Mutation', removeOperationResult?: { __typename?: 'removeOperationResultResponse', removed?: boolean | null } | null };
 
+export type CreateAppStatusMutationVariables = Exact<{
+  input: CreateAppStatusInput;
+}>;
+
+
+export type CreateAppStatusMutation = { __typename?: 'Mutation', createAppStatus?: { __typename?: 'appStatus', createdAt?: any | null, id: string, obnizId: string } | null };
+
+export type CreateAppLogsMutationVariables = Exact<{
+  input: CreateAppLogsInput;
+}>;
+
+
+export type CreateAppLogsMutation = { __typename?: 'Mutation', createAppLogs?: Array<{ __typename?: 'appLog', appId: string, createdAt: any, id: string, level: string, logJson: string, obnizId: string } | null> | null };
+
+export type CreateAppLogMutationVariables = Exact<{
+  input: CreateAppLogInput;
+}>;
+
+
+export type CreateAppLogMutation = { __typename?: 'Mutation', createAppLog?: { __typename?: 'appLog', appId: string, createdAt: any, id: string, level: string, logJson: string, obnizId: string } | null };
+
 export type PageInfoFieldsFragment = { __typename?: 'pageInfo', hasPreviousPage: boolean, hasNextPage: boolean };
 
 export type InstallEdgeFieldsFragment = { __typename?: 'installEdge', node?: { __typename?: 'install', id: string, configs: string, createdAt: any, updatedAt: any, user?: { __typename?: 'user', id: string, name?: string | null, email?: string | null, picture?: string | null, plan: string, createdAt: any, credit: string } | null } | null };
@@ -2300,6 +2321,39 @@ export const RemoveOperationResultDocument = gql`
   }
 }
     `;
+export const CreateAppStatusDocument = gql`
+    mutation createAppStatus($input: createAppStatusInput!) {
+  createAppStatus(input: $input) {
+    createdAt
+    id
+    obnizId
+  }
+}
+    `;
+export const CreateAppLogsDocument = gql`
+    mutation createAppLogs($input: createAppLogsInput!) {
+  createAppLogs(input: $input) {
+    appId
+    createdAt
+    id
+    level
+    logJson
+    obnizId
+  }
+}
+    `;
+export const CreateAppLogDocument = gql`
+    mutation createAppLog($input: createAppLogInput!) {
+  createAppLog(input: $input) {
+    appId
+    createdAt
+    id
+    level
+    logJson
+    obnizId
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
@@ -2391,6 +2445,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     removeOperationResult(variables: RemoveOperationResultMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<RemoveOperationResultMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<RemoveOperationResultMutation>(RemoveOperationResultDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'removeOperationResult', 'mutation');
+    },
+    createAppStatus(variables: CreateAppStatusMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateAppStatusMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateAppStatusMutation>(CreateAppStatusDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createAppStatus', 'mutation');
+    },
+    createAppLogs(variables: CreateAppLogsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateAppLogsMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateAppLogsMutation>(CreateAppLogsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createAppLogs', 'mutation');
+    },
+    createAppLog(variables: CreateAppLogMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateAppLogMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateAppLogMutation>(CreateAppLogDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createAppLog', 'mutation');
     }
   };
 }
