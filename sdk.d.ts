@@ -454,6 +454,8 @@ export declare type DeviceLiveInfo = {
     offlineAt?: Maybe<Scalars['Date']>;
     /** The time device become online on the cloud */
     onlineAt?: Maybe<Scalars['Date']>;
+    /** OTA Progress. 0-100. null if not in progress. */
+    otaProgress?: Maybe<Scalars['Int']>;
 };
 export declare type DeviceNoAuthRequired = {
     __typename?: 'deviceNoAuthRequired';
@@ -792,6 +794,8 @@ export declare type Mutation = {
     generateDeviceAccessToken?: Maybe<Device>;
     /** Install App To Device */
     installApp?: Maybe<Device>;
+    /** OTA */
+    otaDevice?: Maybe<Device>;
     /** Get device ownership with 'registrateUrl'. */
     registrateDevice?: Maybe<Device>;
     removeOperationResult?: Maybe<RemoveOperationResultResponse>;
@@ -847,6 +851,10 @@ export declare type MutationGenerateDeviceAccessTokenArgs = {
 /** Root of api.obniz.com graphql api endpoint mutations */
 export declare type MutationInstallAppArgs = {
     install: AppInstallInput;
+};
+/** Root of api.obniz.com graphql api endpoint mutations */
+export declare type MutationOtaDeviceArgs = {
+    device: OtaInput;
 };
 /** Root of api.obniz.com graphql api endpoint mutations */
 export declare type MutationRegistrateDeviceArgs = {
@@ -1024,6 +1032,12 @@ export declare type Os = {
     /** Binary URL for partition table */
     partition_url: Scalars['String'];
     /** version string */
+    version: Scalars['String'];
+};
+export declare type OtaInput = {
+    /** obnizID */
+    id: Scalars['ID'];
+    /** os version */
     version: Scalars['String'];
 };
 /** Pagenation */
@@ -1396,6 +1410,7 @@ export declare type DevicesQuery = {
                     isOnline: boolean;
                     onlineAt?: any | null;
                     offlineAt?: any | null;
+                    otaProgress?: number | null;
                     connectedNetwork?: {
                         __typename?: 'connectedNetwork';
                         online_at: any;
@@ -1793,6 +1808,37 @@ export declare type UpdateDeviceMutation = {
         } | null;
     } | null;
 };
+export declare type OtaDeviceMutationVariables = Exact<{
+    otaDevice: OtaInput;
+}>;
+export declare type OtaDeviceMutation = {
+    __typename?: 'Mutation';
+    otaDevice?: {
+        __typename?: 'device';
+        id: string;
+        access_token?: string | null;
+        description: string;
+        metadata: string;
+        devicekey?: string | null;
+        hardware: string;
+        os: string;
+        osVersion: string;
+        region: string;
+        status: string;
+        createdAt: any;
+        configs: string;
+        user?: {
+            __typename?: 'user';
+            id: string;
+            name?: string | null;
+            email?: string | null;
+            picture?: string | null;
+            plan: string;
+            credit: string;
+            createdAt: any;
+        } | null;
+    } | null;
+};
 export declare type InstallAppMutationVariables = Exact<{
     install: AppInstallInput;
 }>;
@@ -2063,6 +2109,7 @@ export declare type DeviceEdgeFieldsFragment = {
             isOnline: boolean;
             onlineAt?: any | null;
             offlineAt?: any | null;
+            otaProgress?: number | null;
             connectedNetwork?: {
                 __typename?: 'connectedNetwork';
                 online_at: any;
@@ -2100,6 +2147,7 @@ export declare type DeviceLiveInfoFieldsFragment = {
     isOnline: boolean;
     onlineAt?: any | null;
     offlineAt?: any | null;
+    otaProgress?: number | null;
     connectedNetwork?: {
         __typename?: 'connectedNetwork';
         online_at: any;
@@ -2222,6 +2270,7 @@ export declare const DeleteEventDocument: import("graphql/language/ast").Documen
 export declare const CreateDeviceDocument: import("graphql/language/ast").DocumentNode;
 export declare const RegistrateDeviceDocument: import("graphql/language/ast").DocumentNode;
 export declare const UpdateDeviceDocument: import("graphql/language/ast").DocumentNode;
+export declare const OtaDeviceDocument: import("graphql/language/ast").DocumentNode;
 export declare const InstallAppDocument: import("graphql/language/ast").DocumentNode;
 export declare const UpdateDeviceSettingsForInstalledAppDocument: import("graphql/language/ast").DocumentNode;
 export declare const UninstallAppDocument: import("graphql/language/ast").DocumentNode;
@@ -2293,6 +2342,7 @@ export declare function getSdk(client: GraphQLClient, withWrapper?: SdkFunctionW
     createDevice(variables: CreateDeviceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateDeviceMutation>;
     registrateDevice(variables: RegistrateDeviceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<RegistrateDeviceMutation>;
     updateDevice(variables: UpdateDeviceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateDeviceMutation>;
+    otaDevice(variables: OtaDeviceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OtaDeviceMutation>;
     installApp(variables: InstallAppMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InstallAppMutation>;
     updateDeviceSettingsForInstalledApp(variables: UpdateDeviceSettingsForInstalledAppMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateDeviceSettingsForInstalledAppMutation>;
     uninstallApp(variables: UninstallAppMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UninstallAppMutation>;

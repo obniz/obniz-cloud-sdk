@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSdk = exports.RemoveOperationResultDocument = exports.CreateOperationResultDocument = exports.UpdateStatusOperationSettingDocument = exports.DeleteDeviceAccessTokenDocument = exports.GenerateDeviceAccessTokenDocument = exports.UninstallAppDocument = exports.UpdateDeviceSettingsForInstalledAppDocument = exports.InstallAppDocument = exports.UpdateDeviceDocument = exports.RegistrateDeviceDocument = exports.CreateDeviceDocument = exports.DeleteEventDocument = exports.UpdateEventDocument = exports.CreateEventDocument = exports.TokenDocument = exports.OperationResultsDocument = exports.OperationSettingsDocument = exports.OperationsDocument = exports.AppEventsDocument = exports.OsDocument = exports.HardwaresDocument = exports.EventsDocument = exports.DeviceDocument = exports.DevicesDocument = exports.UserDocument = exports.AppDocument = exports.WebappDocument = exports.EventEdgeFieldsFragmentDoc = exports.DeviceEdgeFieldsFragmentDoc = exports.DeviceLiveInfoFieldsFragmentDoc = exports.ConnectedNetworkFieldsFragmentDoc = exports.CellularFieldsFragmentDoc = exports.WifimeshFieldsFragmentDoc = exports.WifiFieldsFragmentDoc = exports.AppInstallEdgeFieldsFragmentDoc = exports.InstallEdgeFieldsFragmentDoc = exports.PageInfoFieldsFragmentDoc = void 0;
+exports.getSdk = exports.RemoveOperationResultDocument = exports.CreateOperationResultDocument = exports.UpdateStatusOperationSettingDocument = exports.DeleteDeviceAccessTokenDocument = exports.GenerateDeviceAccessTokenDocument = exports.UninstallAppDocument = exports.UpdateDeviceSettingsForInstalledAppDocument = exports.InstallAppDocument = exports.OtaDeviceDocument = exports.UpdateDeviceDocument = exports.RegistrateDeviceDocument = exports.CreateDeviceDocument = exports.DeleteEventDocument = exports.UpdateEventDocument = exports.CreateEventDocument = exports.TokenDocument = exports.OperationResultsDocument = exports.OperationSettingsDocument = exports.OperationsDocument = exports.AppEventsDocument = exports.OsDocument = exports.HardwaresDocument = exports.EventsDocument = exports.DeviceDocument = exports.DevicesDocument = exports.UserDocument = exports.AppDocument = exports.WebappDocument = exports.EventEdgeFieldsFragmentDoc = exports.DeviceEdgeFieldsFragmentDoc = exports.DeviceLiveInfoFieldsFragmentDoc = exports.ConnectedNetworkFieldsFragmentDoc = exports.CellularFieldsFragmentDoc = exports.WifimeshFieldsFragmentDoc = exports.WifiFieldsFragmentDoc = exports.AppInstallEdgeFieldsFragmentDoc = exports.InstallEdgeFieldsFragmentDoc = exports.PageInfoFieldsFragmentDoc = void 0;
 const graphql_tag_1 = __importDefault(require("graphql-tag"));
 exports.PageInfoFieldsFragmentDoc = (0, graphql_tag_1.default) `
     fragment pageInfoFields on pageInfo {
@@ -109,6 +109,7 @@ exports.DeviceLiveInfoFieldsFragmentDoc = (0, graphql_tag_1.default) `
   connectedNetwork {
     ...connectedNetworkFields
   }
+  otaProgress
 }
     ${exports.ConnectedNetworkFieldsFragmentDoc}`;
 exports.DeviceEdgeFieldsFragmentDoc = (0, graphql_tag_1.default) `
@@ -499,6 +500,33 @@ exports.UpdateDeviceDocument = (0, graphql_tag_1.default) `
   }
 }
     `;
+exports.OtaDeviceDocument = (0, graphql_tag_1.default) `
+    mutation otaDevice($otaDevice: otaInput!) {
+  otaDevice(device: $otaDevice) {
+    id
+    access_token
+    description
+    metadata
+    devicekey
+    hardware
+    os
+    osVersion
+    region
+    status
+    createdAt
+    user {
+      id
+      name
+      email
+      picture
+      plan
+      credit
+      createdAt
+    }
+    configs
+  }
+}
+    `;
 exports.InstallAppDocument = (0, graphql_tag_1.default) `
     mutation installApp($install: appInstallInput!) {
   installApp(install: $install) {
@@ -722,6 +750,9 @@ function getSdk(client, withWrapper = defaultWrapper) {
         },
         updateDevice(variables, requestHeaders) {
             return withWrapper((wrappedRequestHeaders) => client.request(exports.UpdateDeviceDocument, variables, Object.assign(Object.assign({}, requestHeaders), wrappedRequestHeaders)), 'updateDevice', 'mutation');
+        },
+        otaDevice(variables, requestHeaders) {
+            return withWrapper((wrappedRequestHeaders) => client.request(exports.OtaDeviceDocument, variables, Object.assign(Object.assign({}, requestHeaders), wrappedRequestHeaders)), 'otaDevice', 'mutation');
         },
         installApp(variables, requestHeaders) {
             return withWrapper((wrappedRequestHeaders) => client.request(exports.InstallAppDocument, variables, Object.assign(Object.assign({}, requestHeaders), wrappedRequestHeaders)), 'installApp', 'mutation');

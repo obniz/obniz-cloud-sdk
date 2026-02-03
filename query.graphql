@@ -530,6 +530,35 @@ mutation removeOperationResult($operationSettingId: ID!) {
   }
 }
 
+mutation createAppStatus($input: createAppStatusInput!) {
+  createAppStatus(input: $input) {
+    createdAt
+    id
+    obnizId
+  }
+}
+
+mutation createAppLogs($input: createAppLogsInput!) {
+  createAppLogs(input: $input) {
+    appId
+    createdAt
+    id
+    level
+    logJson
+    obnizId
+  }
+}
+mutation createAppLog($input: createAppLogInput!) {
+  createAppLog(input: $input) {
+    appId
+    createdAt
+    id
+    level
+    logJson
+    obnizId
+  }
+}
+
 fragment pageInfoFields on pageInfo {
   hasPreviousPage
   hasNextPage
